@@ -67,7 +67,7 @@
 </template>
 
 <script>
-import { SkiIcon, SkiButton } from 'skimple-components'
+import { SkiButton, SkiIcon } from 'skimple-components'
 import CodeEditor from '~/components/Applications/Lessons/CodeEditor'
 import Protected from '~/components/Applications/Protected'
 import Spinner from '~/components/Spinner'
@@ -91,6 +91,7 @@ export default {
       exception: null
     }
   },
+  fetchOnServer: false,
   async fetch () {
     await this.refreshFileList()
   },

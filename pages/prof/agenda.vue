@@ -51,11 +51,10 @@ import { SkiButton, SkiModal } from 'skimple-components'
 import { marked } from 'marked'
 import Protected from '~/components/Applications/Protected'
 import Calendar from '~/components/Applications/Agenda/Calendar'
-import CodeEditor from '~/components/Applications/Lessons/CodeEditor'
 import Spinner from '~/components/Spinner'
 
 export default {
-  components: { CodeEditor, Calendar, Protected, Spinner, SkiButton, SkiModal },
+  components: { Calendar, Protected, Spinner, SkiButton, SkiModal },
   data () {
     return {
       currentDate: null,
@@ -65,12 +64,12 @@ export default {
       dates: []
     }
   },
+  fetchOnServer: false,
   async fetch () {
-    this.dates = (await this.$axios.$get('/api/calendar/dates')).dates.map(function (date) {
-      const result = new Date(date)
-      result.setHours(0)
-      return result
-    })
+    const response = await this.$axios.$get('/api/calendar/dates')
+    if (response) {
+      this.dates = response.dates
+    }
   },
   head: {
     title: 'Agenda'
@@ -81,16 +80,16 @@ export default {
     }
   },
   methods: {
-    async onDayClicked (date) {
+    async onDayClicked (yyyymmdd) {
       const bootstrap = await import('bootstrap/dist/js/bootstrap.min')
-      this.currentDate = date
+      this.currentDate = yyyymmdd
       const modal = new bootstrap.Modal(this.$refs.dateModal.$el)
       this.modalLoading = true
       modal.show()
-      if (this.dates.find(remoteDate => remoteDate.getTime() === date.getTime())) {
+      if (this.dates.includes(yyyymmdd)) {
         const response = await this.$axios.$get('/api/calendar/get', {
           params: {
-            date: this.formatDate(date)
+            date: yyyymmdd
           }
         })
         this.modalMarkdownContent = response.content
@@ -101,16 +100,11 @@ export default {
       this.modalLoading = true
       this.modalMarkdownContent = this.$refs.editor.$data.document
       await this.$axios.$post('/api/calendar/update', {
-        date: this.formatDate(this.currentDate),
+        date: this.currentDate,
         content: this.modalMarkdownContent
       })
       this.modalEdit = false
       this.modalLoading = false
-    },
-    formatDate (date) {
-      const offset = date.getTimezoneOffset()
-      const result = new Date(date.getTime() - (offset * 60 * 1000))
-      return result.getFullYear() + '-' + ('0' + (result.getMonth() + 1)).slice(-2) + '-' + ('0' + result.getDate()).slice(-2)
     }
   }
 }

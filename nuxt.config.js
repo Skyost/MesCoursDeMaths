@@ -73,9 +73,14 @@ export default {
     base: new URL(site.site.url).pathname
   },
 
+  loading: {
+    color: '#009688'
+  },
+
   axios: {
     credentials: true,
-    baseURL: site.site.url
+    baseURL: site.site.url,
+    browserBaseURL: site.site.url
   },
 
   robots: {

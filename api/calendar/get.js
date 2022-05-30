@@ -10,8 +10,8 @@ export default async function handler (request, response) {
   if (octokit === null) {
     return
   }
-  const calendar = await calendar.loadCalendar(octokit)
+  const calendarObject = await calendar.loadCalendar(octokit)
   response.status(200).json({
-    content: calendar === null || !Object.prototype.hasOwnProperty.call(calendar, request.query.date) ? '' : calendar[request.query.date]
+    content: calendarObject === null || !Object.prototype.hasOwnProperty.call(calendarObject, request.query.date) ? '' : calendarObject[request.query.date]
   })
 }

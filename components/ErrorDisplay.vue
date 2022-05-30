@@ -5,8 +5,7 @@
       Vous pouvez continuer votre navigation en allant sur <a href="javascript:history.back()">la page précédente</a> ou
       en allant sur <nuxt-link to="/">la page d'accueil</nuxt-link>.
       <span v-if="errorCode === 404">
-        Si quelque chose devait se trouver ici, n'hésitez pas à
-        <a href="https://skyost.eu/#contact">me contacter</a> pour me le signaler.
+        Si quelque chose devait se trouver ici, n'hésitez pas à me contacter pour me le signaler.
       </span>
     </p>
   </div>

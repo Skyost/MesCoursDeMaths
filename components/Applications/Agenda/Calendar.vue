@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import { SkiIcon, SkiButton, SkiColumns, SkiColumn } from 'skimple-components'
+import { SkiButton, SkiColumn, SkiColumns, SkiIcon } from 'skimple-components'
 
 export default {
   name: 'Calendar',
@@ -132,15 +132,21 @@ export default {
     onDayClicked (week, dayOfWeek) {
       const date = this.getDateFromWeekAndDayOfWeek(week, dayOfWeek)
       if (date.getMonth() === this.month) {
-        this.$emit('dayclick', date)
+        this.$emit('dayclick', this.formatDate(date))
       }
     },
     getColDayClass (week, dayOfWeek) {
       const date = this.getDateFromWeekAndDayOfWeek(week, dayOfWeek)
+      const yyyymmdd = this.formatDate(date)
       return {
-        'has-content': this.dates.find(remoteDate => remoteDate.getTime() === date.getTime()),
+        'has-content': this.dates.includes(yyyymmdd),
         disabled: date.getMonth() !== this.month
       }
+    },
+    formatDate (date) {
+      const offset = date.getTimezoneOffset()
+      const result = new Date(date.getTime() - (offset * 60 * 1000))
+      return result.getFullYear() + '-' + ('0' + (result.getMonth() + 1)).slice(-2) + '-' + ('0' + result.getDate()).slice(-2)
     }
   }
 }
