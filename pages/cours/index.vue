@@ -2,7 +2,7 @@
   <div>
     <social-head title="Liste des niveaux" />
     <h1>Liste des niveaux</h1>
-    <ski-columns class="justify-content-center">
+    <ski-columns v-if="levels && levels.length > 0" class="justify-content-center">
       <ski-column
         v-for="level in levels"
         :key="level.id"
@@ -20,11 +20,14 @@
         />
       </ski-column>
     </ski-columns>
+    <div class="text-center">
+      <em class="text-muted">Il n'y a pas de cours disponible.</em>
+    </div>
   </div>
 </template>
 
 <script>
-import { SkiColumns, SkiColumn } from 'skimple-components'
+import { SkiColumn, SkiColumns } from 'skimple-components'
 import ImageCard from '~/components/ImageCard'
 import level from '~/utils/level'
 
