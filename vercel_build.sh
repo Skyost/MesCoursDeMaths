@@ -15,11 +15,12 @@ ln -s "${PWD}/latexmk" /usr/bin/latexmk
 echo "Checking latexmk installation..."
 latexmk --version
 echo "Installing TeX Live..."
+yum install python
 wget -q http://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz
 tar xvzf install-tl-unx.tar.gz
 cd install-tl-*
 touch texlive.profile
-echo 'selected_scheme scheme-minimal
+echo 'selected_scheme scheme-small
 TEXDIR /tmp/texlive
 TEXMFCONFIG ~/.texlive/texmf-config
 TEXMFHOME ~/texmf
@@ -45,23 +46,9 @@ unset pathmunge
 cp $(kpsewhich -var-value TEXMFSYSVAR)/fonts/conf/texlive-fontconfig.conf /etc/fonts/conf.d/09-texlive.conf
 fc-cache -fsv
 cd ../
-tlmgr install latex-bin
-tlmgr install latexmk
-tlmgr install luatex85
-tlmgr install lualatex-math
-tlmgr install amsmath
-tlmgr install standalone
-tlmgr install unicode-math
-tlmgr install comment
-tlmgr install fourier
-tlmgr install fourier-otf
-tlmgr install pdftexcmds
-tlmgr install infwarerr
-tlmgr install ltxcmds
-tlmgr install tikz
-tlmgr install xkeyval
-yum install python
+tlmgr install luatex
 tlmgr install texliveonfly
+tlmgr option -autobackup 0
 echo "Checking TeX Live installation..."
 luatex --version
 echo "Installing Poppler-utils..."

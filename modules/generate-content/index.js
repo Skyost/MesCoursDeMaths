@@ -239,9 +239,9 @@ function latexmk (directory, file) {
       return false
     }
     if (commandExistsSync('texliveonfly')) {
-      execSync(`texliveonfly --compiler=latexmk --arguments='-pdflatex=lualatex -pdf' "${file}"`, { cwd: directory })
+      execSync(`texliveonfly --compiler=latexmk --arguments='-pdflatex=lualatex -pdf -shell-escape' "${file}"`, { cwd: directory })
     } else {
-      execSync(`latexmk -pdflatex=lualatex -pdf "${file}"`, { cwd: directory })
+      execSync(`latexmk -pdflatex=lualatex -pdf -shell-escape "${file}"`, { cwd: directory })
     }
     return true
   } catch (ex) {
