@@ -91,7 +91,6 @@ tlmgr install infwarerr
 tlmgr install standalone
 tlmgr install unicode-math
 tlmgr install latexmk
-tlmgr install texliveonfly
 echo "Checking TeX Live installation..."
 luatex --version
 echo "Installing Poppler-utils..."

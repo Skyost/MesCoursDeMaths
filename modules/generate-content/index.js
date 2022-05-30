@@ -10,7 +10,6 @@ const { Octokit } = require('@octokit/core')
 const fsExtra = require('fs-extra')
 const katex = require('katex')
 const matter = require('gray-matter')
-const commandExistsSync = require('command-exists').sync
 const logger = require('../../utils/logger')
 
 const ignored = site.contentGenerator.ignored.map(file => path.resolve(file))
@@ -238,11 +237,7 @@ function latexmk (directory, file) {
     if (site.debug && fs.existsSync(path.resolve(directory, file.replace('.tex', '.pdf')))) {
       return false
     }
-    if (commandExistsSync('texliveonfly')) {
-      execSync(`texliveonfly --compiler=latexmk --arguments='-pdflatex=lualatex -pdf -shell-escape' "${file}"`, { cwd: directory })
-    } else {
-      execSync(`latexmk -pdflatex=lualatex -pdf -shell-escape "${file}"`, { cwd: directory })
-    }
+    execSync(`latexmk -pdflatex=lualatex -pdf -shell-escape "${file}"`, { cwd: directory })
     return true
   } catch (ex) {
     logger.error(ex)
