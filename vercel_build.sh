@@ -81,6 +81,7 @@ tlmgr install marginfix
 tlmgr install luacolor
 tlmgr install lua-ul
 tlmgr install luatex85
+tlmgr install lualatex-math
 tlmgr install twemojis
 tlmgr install kvoptions
 tlmgr install xkeyval
