@@ -19,7 +19,7 @@ wget -q http://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz
 tar xvzf install-tl-unx.tar.gz
 cd install-tl-*
 touch texlive.profile
-echo 'selected_scheme scheme-small
+echo 'selected_scheme scheme-minimal
 TEXDIR /tmp/texlive
 TEXMFCONFIG ~/.texlive/texmf-config
 TEXMFHOME ~/texmf
@@ -45,6 +45,13 @@ unset pathmunge
 cp $(kpsewhich -var-value TEXMFSYSVAR)/fonts/conf/texlive-fontconfig.conf /etc/fonts/conf.d/09-texlive.conf
 fc-cache -fsv
 cd ../
+tlmgr install latex-bin
+tlmgr install latexmk
+tlmgr install luatex85
+tlmgr install lualatex-math
+tlmgr install standalone
+tlmgr install comment
+tlmgr install fourier
 yum install python
 tlmgr install texliveonfly
 echo "Checking TeX Live installation..."
