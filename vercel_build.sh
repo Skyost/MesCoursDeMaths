@@ -52,7 +52,7 @@ tlmgr install collection-langfrench
 tlmgr install comment
 tlmgr install hyperref
 tlmgr install amsmath
-tlmgr install amsthm
+tlmgr install amscls
 tlmgr install fourier
 tlmgr install erewhon-math
 tlmgr install fontspec
@@ -80,7 +80,15 @@ tlmgr install tkz-euclide
 tlmgr install marginfix
 tlmgr install luacolor
 tlmgr install lua-ul
+tlmgr install luatex85
 tlmgr install twemojis
+tlmgr install kvoptions
+tlmgr install xkeyval
+tlmgr install realscripts
+tlmgr install carlisle
+tlmgr install infwarerr
+tlmgr install standalone
+tlmgr install unicode-math
 tlmgr install latexmk
 tlmgr install texliveonfly
 echo "Checking TeX Live installation..."
