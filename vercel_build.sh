@@ -20,14 +20,23 @@ wget -q http://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz
 tar xvzf install-tl-unx.tar.gz
 cd install-tl-*
 touch texlive.profile
-echo 'selected_scheme scheme-small
-TEXDIR /tmp/texlive
+echo 'TEXDIR /tmp/texlive
 TEXMFCONFIG ~/.texlive/texmf-config
 TEXMFHOME ~/texmf
 TEXMFLOCAL /tmp/texlive/texmf-local
 TEXMFSYSCONFIG /tmp/texlive/texmf-config
 TEXMFSYSVAR /tmp/texlive/texmf-var
 TEXMFVAR ~/.texlive/texmf-var
+collection-basic 1
+collection-binextra 1
+collection-fontsextra 1
+collection-fontsrecommended 1
+collection-fontutils 1
+collection-langfrench 1
+collection-latex 1
+collection-latexrecommended 1
+collection-luatex 1
+collection-mathscience 1
 option_doc 0
 option_src 0' > texlive.profile
 ./install-tl --profile=texlive.profile
@@ -46,9 +55,6 @@ unset pathmunge
 cp $(kpsewhich -var-value TEXMFSYSVAR)/fonts/conf/texlive-fontconfig.conf /etc/fonts/conf.d/09-texlive.conf
 fc-cache -fsv
 cd ../
-tlmgr install luatex
-tlmgr install texliveonfly
-tlmgr option -autobackup 0
 echo "Checking TeX Live installation..."
 luatex --version
 echo "Installing Poppler-utils..."
