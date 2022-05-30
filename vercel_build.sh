@@ -20,23 +20,14 @@ wget -q http://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz
 tar xvzf install-tl-unx.tar.gz
 cd install-tl-*
 touch texlive.profile
-echo 'TEXDIR /tmp/texlive
+echo 'selected_scheme scheme-minimal
+TEXDIR /tmp/texlive
 TEXMFCONFIG ~/.texlive/texmf-config
 TEXMFHOME ~/texmf
 TEXMFLOCAL /tmp/texlive/texmf-local
 TEXMFSYSCONFIG /tmp/texlive/texmf-config
 TEXMFSYSVAR /tmp/texlive/texmf-var
 TEXMFVAR ~/.texlive/texmf-var
-collection-basic 1
-collection-binextra 1
-collection-fontsextra 1
-collection-fontsrecommended 1
-collection-fontutils 1
-collection-langfrench 1
-collection-latex 1
-collection-latexrecommended 1
-collection-luatex 1
-collection-mathscience 1
 option_doc 0
 option_src 0' > texlive.profile
 ./install-tl --profile=texlive.profile
@@ -55,6 +46,43 @@ unset pathmunge
 cp $(kpsewhich -var-value TEXMFSYSVAR)/fonts/conf/texlive-fontconfig.conf /etc/fonts/conf.d/09-texlive.conf
 fc-cache -fsv
 cd ../
+tlmgr install latex
+tlmgr install latex-bin
+tlmgr install collection-langfrench
+tlmgr install comment
+tlmgr install hyperref
+tlmgr install amsmath
+tlmgr install amsthm
+tlmgr install fourier
+tlmgr install erewhon-math
+tlmgr install fontspec
+tlmgr install geometry
+tlmgr install tools
+tlmgr install mdframed
+tlmgr install xcolor
+tlmgr install sectsty
+tlmgr install titlesec
+tlmgr install graphics
+tlmgr install tcolorbox
+tlmgr install etoolbox
+tlmgr install environ
+tlmgr install siunitx
+tlmgr install enumitem
+tlmgr install makecell
+tlmgr install was
+tlmgr install microtype
+tlmgr install fancyhdr
+tlmgr install lastpage
+tlmgr install cleveref
+tlmgr install colortbl
+tlmgr install pgf
+tlmgr install tkz-euclide
+tlmgr install marginfix
+tlmgr install luacolor
+tlmgr install lua-ul
+tlmgr install twemojis
+tlmgr install latexmk
+tlmgr install texliveonfly
 echo "Checking TeX Live installation..."
 luatex --version
 echo "Installing Poppler-utils..."
