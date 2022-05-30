@@ -16,7 +16,7 @@ echo "Checking latexmk installation..."
 latexmk --version
 echo "Installing MiKTeX..."
 yum install curl -y
-yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm -y
+amazon-linux-extras install -y epel
 yum install dnf -y
 yum remove epel-release -y
 rpm --import "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xD6BC243565B2087BC3F897C9277A7293F59E4889"
