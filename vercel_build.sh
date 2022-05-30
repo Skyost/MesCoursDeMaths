@@ -49,9 +49,17 @@ tlmgr install latex-bin
 tlmgr install latexmk
 tlmgr install luatex85
 tlmgr install lualatex-math
+tlmgr install amsmath
 tlmgr install standalone
+tlmgr install unicode-math
 tlmgr install comment
 tlmgr install fourier
+tlmgr install fourier-otf
+tlmgr install pdftexcmds
+tlmgr install infwarerr
+tlmgr install ltxcmds
+tlmgr install tikz
+tlmgr install xkeyval
 yum install python
 tlmgr install texliveonfly
 echo "Checking TeX Live installation..."
