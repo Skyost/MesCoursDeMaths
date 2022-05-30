@@ -20,7 +20,7 @@ wget -q http://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz
 tar xvzf install-tl-unx.tar.gz
 cd install-tl-*
 touch texlive.profile
-echo 'selected_scheme scheme-minimal
+echo 'selected_scheme scheme-basic
 TEXDIR /tmp/texlive
 TEXMFCONFIG ~/.texlive/texmf-config
 TEXMFHOME ~/texmf
