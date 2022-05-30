@@ -14,18 +14,38 @@ chmod +x latexmk
 ln -s "${PWD}/latexmk" /usr/bin/latexmk
 echo "Checking latexmk installation..."
 latexmk --version
-echo "Installing MiKTeX..."
-yum install curl -y
-amazon-linux-extras install -y epel
-yum install dnf -y
-yum remove epel-release -y
-rpm --import "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xD6BC243565B2087BC3F897C9277A7293F59E4889"
-curl -L -o /etc/yum.repos.d/miktex.repo https://miktex.org/download/centos/8/miktex.repo
-dnf update
-dnf install miktex
-miktexsetup finish
-initexmf --set-config-value [MPM]AutoInstall=1
-echo "Checking MiKTeX installation..."
+echo "Installing TeX Live..."
+wget -q http://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz
+tar xvzf install-tl-unx.tar.gz
+cd install-tl-*
+touch texlive.profile
+echo 'selected_scheme scheme-full
+TEXDIR /tmp/texlive
+TEXMFCONFIG ~/.texlive/texmf-config
+TEXMFHOME ~/texmf
+TEXMFLOCAL /tmp/texlive/texmf-local
+TEXMFSYSCONFIG /tmp/texlive/texmf-config
+TEXMFSYSVAR /tmp/texlive/texmf-var
+TEXMFVAR ~/.texlive/texmf-var
+option_doc 0
+option_src 0' > texlive.profile
+./install-tl --profile=texlive.profile
+ln -s /tmp/texlive/bin/x86_64-linux /opt/texbin
+pathmunge () {
+    if ! echo $PATH | /bin/egrep -q "(^|:)$1($|:)" ; then
+        if [ "$2" = "after" ] ; then
+            PATH=$PATH:$1
+        else
+            PATH=$1:$PATH
+        fi
+    fi
+}
+pathmunge /opt/texbin
+unset pathmunge
+cp $(kpsewhich -var-value TEXMFSYSVAR)/fonts/conf/texlive-fontconfig.conf /etc/fonts/conf.d/09-texlive.conf
+fc-cache -fsv
+cd ../
+echo "Checking TeX Live installation..."
 luatex --version
 echo "Installing Poppler-utils..."
 yum install poppler-utils -y
