@@ -20,7 +20,7 @@
         />
       </ski-column>
     </ski-columns>
-    <div class="text-center">
+    <div v-else class="text-center">
       <em class="text-muted">Il n'y a pas de cours disponible.</em>
     </div>
   </div>
@@ -39,15 +39,15 @@ export default {
     }
   },
   async fetch () {
-    let levels = await this.$content('', { deep: true })
+    const fetchedLevels = await this.$content('', { deep: true })
       .where({ extension: '.md' })
       .only(['dir'])
       .fetch()
-    levels = levels
-      .filter((value, index, self) => self.indexOf(value) === index)
-      .map((fetchedLevel) => {
-        const levelId = fetchedLevel.dir.substring(1)
-        return {
+    let levels = {}
+    for (const fetchedLevel of fetchedLevels) {
+      const levelId = fetchedLevel.dir.substring(1)
+      if (!Object.prototype.hasOwnProperty.call(levels, levelId)) {
+        levels[levelId] = {
           id: levelId,
           title: level.getLevelName(levelId),
           number: level.getLevelAsNumber(levelId),
@@ -56,7 +56,9 @@ export default {
           url: `/cours/${levelId}/`,
           image: `/images/levels/${levelId}.svg`
         }
-      })
+      }
+    }
+    levels = Object.values(levels)
     levels.sort((a, b) => (a.number < b.number ? 1 : (a.number > b.number ? -1 : 0)))
     this.levels = levels
   },

@@ -84,10 +84,11 @@ async function processFiles (directory, mdDir, pdfDir, tikzImagesDir, imagesDest
           encoding: 'utf-8'
         })
         const root = parse(htmlContent)
+        replaceTikzImages(root, imagesDestURL + '/' + fileName)
+        replaceVspaceElements(root)
         adjustColSize(root)
         numberizeTitles(root)
         renderMath(root)
-        replaceTikzImages(root, imagesDestURL + '/' + fileName)
         fs.writeFileSync(mdFile, toString(site.contentGenerator.fileNameFilter(fileName), root))
       }
       if (site.contentGenerator.shouldGeneratePDF(fileName) && latexmk(directory, file)) {
@@ -100,7 +101,9 @@ async function processFiles (directory, mdDir, pdfDir, tikzImagesDir, imagesDest
 }
 
 function extractImages (filePath, tikzImagesDir) {
-  const imagesDir = path.resolve(tikzImagesDir, utils.getFileName(filePath))
+  const originalFileName = utils.getFileName(filePath)
+  const imagesDir = path.resolve(tikzImagesDir, originalFileName)
+  const latexImagesDir = path.posix.join(path.relative(imagesDir, path.dirname(filePath)).split(path.sep).join(path.posix.sep), 'images')
   const regex = /\\begin{tikzpicture}([\s\S]*?)\\end{tikzpicture}/sg
   const content = fs.readFileSync(filePath, { encoding: 'utf-8' }).toString()
   let match = regex.exec(content)
@@ -117,8 +120,21 @@ function extractImages (filePath, tikzImagesDir) {
 \\usepackage{fourier-otf}
 \\usepackage{fontspec}
 \\usepackage{tkz-euclide}
+\\usepackage{pgfplots}
+\\usepackage{pgf-pie}
+\\usepackage{graphicx}
+\\usepackage{gensymb}
 
 \\setmathfont{Erewhon Math}
+
+\\usetikzlibrary{angles}
+\\usetikzlibrary{patterns}
+\\usetikzlibrary{intersections}
+\\usetikzlibrary{shadows.blur}
+\\usetikzlibrary{decorations.pathreplacing}
+\\usetikzlibrary{babel}
+
+\\graphicspath{{${latexImagesDir}}{${path.posix.join(latexImagesDir, originalFileName)}}}
 
 \\begin{document}
   ${tikzPicture}
@@ -126,6 +142,33 @@ function extractImages (filePath, tikzImagesDir) {
 `)
     i++
     match = regex.exec(content)
+  }
+}
+
+function replaceTikzImages (root, imagesDestURL) {
+  const pdfImages = root.querySelectorAll('img')
+  for (const pdfImage of pdfImages) {
+    const src = pdfImage.getAttribute('src')
+    if (src.endsWith('.pdf')) {
+      pdfImage.setAttribute('src', src.substring(0, src.length - '.pdf'.length) + '.svg')
+    }
+  }
+  const tikzImages = root.querySelectorAll('.tikz-image')
+  for (let i = 0; i < tikzImages.length; i++) {
+    tikzImages[i].replaceWith(`<img src="${imagesDestURL}/tikz-${i + 1}.svg" class="tikz-image" alt="Tikz ${i}">`)
+  }
+}
+
+function replaceVspaceElements (root) {
+  const vspaces = root.querySelectorAll('.vertical-space')
+  for (const vspace of vspaces) {
+    const text = vspace.text.trim()
+    if (text.startsWith('-')) {
+      vspace.remove()
+      continue
+    }
+    vspace.setAttribute('style', `height: ${text};`)
+    vspace.innerHTML = ''
   }
 }
 
@@ -166,26 +209,21 @@ function numberizeTitles (root) {
 function renderMath (root) {
   const mathElements = root.querySelectorAll('eq')
   for (const mathElement of mathElements) {
-    if (mathElement.text.trim() === 'dotfill') {
-      mathElement.replaceWith('<span class="dots"></span>')
-    } else {
-      mathElement.replaceWith(
-        katex.renderToString(mathElement.text, {
-          displayMode: mathElement.getAttribute('env') === 'displaymath',
-          output: 'html',
-          macros: {
-            '\\parallelslant': '\\mathbin{\\!/\\mkern-5mu/\\!}'
-          }
-        })
-      )
-    }
-  }
-}
-
-function replaceTikzImages (root, imagesDestURL) {
-  const tikzImages = root.querySelectorAll('.tikz-image')
-  for (let i = 0; i < tikzImages.length; i++) {
-    tikzImages[i].replaceWith(`<img src="${imagesDestURL}/tikz-${i + 1}.svg" class="tikz-image" alt="Tikz ${i}">`)
+    const text = mathElement.text.trim()
+    mathElement.replaceWith(
+      katex.renderToString(text, {
+        displayMode: mathElement.getAttribute('env') === 'displaymath',
+        output: 'html',
+        trust: true,
+        strict: errorCode => errorCode === 'htmlExtension' ? 'ignore' : 'warn',
+        macros: {
+          '\\parallelslant': '\\mathbin{\\!/\\mkern-5mu/\\!}',
+          '\\ensuremath': '#1',
+          '\\dotfillline': '\\htmlClass{dots}{}',
+          '\\dotfillsize': '\\htmlStyle{width: #1}{\\dotfillline}'
+        }
+      })
+    )
   }
 }
 
@@ -202,12 +240,17 @@ async function handleImages (imagesDir, imagesDestDir) {
       logger.info(`Handling image "${filePath}"...`)
 
       if (latexmk(imagesDir, file)) {
-        const fileName = utils.getFileName(file)
-        const imageDestFile = path.resolve(imagesDestDir, `${fileName}.svg`)
-        execSync(`pdftocairo -svg "${fileName}.pdf" "${fileName}.svg"`, { cwd: imagesDir })
+        const svgFile = pdftocairo(imagesDir, file)
         fs.mkdirSync(imagesDestDir, { recursive: true })
-        fs.copyFileSync(path.resolve(imagesDir, `${fileName}.svg`), imageDestFile)
+        fs.copyFileSync(path.resolve(imagesDir, svgFile), path.resolve(imagesDestDir, svgFile))
       }
+    } else if (file.endsWith('.pdf')) {
+      const svgFile = pdftocairo(imagesDir, file)
+      fs.mkdirSync(imagesDestDir, { recursive: true })
+      fs.copyFileSync(path.resolve(imagesDir, svgFile), path.resolve(imagesDestDir, svgFile))
+    } else if (file.endsWith('.png') || file.endsWith('.jpg') || file.endsWith('.jpeg')) {
+      fs.mkdirSync(imagesDestDir, { recursive: true })
+      fs.copyFileSync(path.resolve(imagesDir, file), path.resolve(imagesDestDir, file))
     }
   }
 }
@@ -227,7 +270,7 @@ function toString (slug, root) {
   }
   const number = root.querySelector('.docnumber p')
   if (number) {
-    header.number = number.innerHTML.trim()
+    header.number = parseInt(number.innerHTML.trim())
   }
   return matter.stringify(root.innerHTML, header)
 }
@@ -248,4 +291,11 @@ function latexmk (directory, file) {
     }
     return false
   }
+}
+
+function pdftocairo (directory, file) {
+  const fileName = utils.getFileName(file)
+  const svgFile = `${fileName}.svg`
+  execSync(`pdftocairo -svg "${fileName}.pdf" "${svgFile}"`, { cwd: directory })
+  return svgFile
 }

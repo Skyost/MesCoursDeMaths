@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import { SkiColumns, SkiColumn } from 'skimple-components'
+import { SkiColumn, SkiColumns } from 'skimple-components'
 
 export default {
   name: 'ImageCard',
@@ -54,6 +54,7 @@ export default {
   background-color: $light;
   padding: 15px;
   transition: background-color 200ms;
+  height: 100%;
 
   .image {
     width: 100%;

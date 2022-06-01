@@ -11,7 +11,7 @@ export default {
   github: {
     username: 'Skyost',
     repository: 'MesCoursDeMaths',
-    dataRepository: 'OPPDM_debug',
+    dataRepository: 'Cours-HD',
     authentication: {
       clientId: '9b549b66b9ffee93fa55',
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
@@ -34,6 +34,12 @@ export default {
     },
     shouldGenerateMarkdown: fileName => fileName.endsWith('-cours'),
     shouldGeneratePDF: () => true,
-    ignored: []
+    ignored: [
+      'latex/sixieme/eleve.tex',
+      'latex/sixieme/geogebra.tex',
+      'latex/sixieme/groupes.tex',
+      'latex/sixieme/impression.tex',
+      'latex/sixieme/scratch.tex'
+    ]
   }
 }

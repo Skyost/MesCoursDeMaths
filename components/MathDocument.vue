@@ -31,6 +31,7 @@ export default {
       print.style.float = 'right'
       print.style.marginTop = '-1.6em'
       print.style.cursor = 'pointer'
+      print.style.alignSelf = 'end'
       print.onclick = async function () {
         const canvas = await html2canvas(exercise)
         const newWindow = window.open()
@@ -47,8 +48,32 @@ export default {
         tikzImage.width = tikzImage.naturalWidth * 1.5
       }
     }
-    this.resizeDotLines()
-    window.onresize = this.resizeDotLines
+    const tables = this.$el.querySelectorAll('.math-document table')
+    for (const table of tables) {
+      table.classList.add('table')
+      table.classList.add('table-bordered')
+      table.classList.add('table-hover')
+    }
+    const dotLines = this.$el.getElementsByClassName('dots')
+    for (const dotLine of dotLines) {
+      const parent = dotLine.parentNode
+      const base = parent.closest('.base')
+      if (base) {
+        base.style.width = 'initial'
+      }
+      const enclosing = parent.closest('.enclosing')
+      if (enclosing) {
+        enclosing.style.display = 'inline-block'
+        enclosing.style.textAlign = 'center'
+      }
+    }
+    setTimeout(this.resizeDotLines, 1000)
+    window.addEventListener('load', this.resizeDotLines)
+    window.addEventListener('resize', this.resizeDotLines)
+  },
+  destroyed () {
+    window.removeEventListener('load', this.resizeDotLines)
+    window.removeEventListener('resize', this.resizeDotLines)
   },
   methods: {
     resizeDotLines () {
@@ -119,13 +144,13 @@ export default {
 
   h2 {
     color: #1c567d;
-    border-bottom: 1px solid #d7d7d7;
     padding-bottom: 0.2em;
     margin-bottom: 0.75em;
   }
 
   h3 {
     color: #2980b9;
+    border-bottom: 1px solid #d7d7d7;
     margin-bottom: 0.75em;
   }
 
@@ -133,6 +158,10 @@ export default {
     .doctitle,
     .docnumber {
       display: none;
+    }
+
+    .dots {
+      white-space: normal;
     }
 
     ol,
@@ -151,6 +180,10 @@ export default {
 
     ol li::marker {
       font-weight: bold;
+    }
+
+    .table {
+      background-color: white;
     }
 
     .center {
