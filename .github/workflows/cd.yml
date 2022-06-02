@@ -43,6 +43,7 @@ jobs:
           sudo apt-get install -y miktex
           sudo miktexsetup --shared=yes finish
           sudo initexmf --admin --set-config-value [MPM]AutoInstall=1
+          sudo miktex --admin packages update
       - name: Generate ⚙️
         run: npm run generate
         env:
@@ -50,8 +51,8 @@ jobs:
           SITE_API_URL: https://mes-cours-de-maths.fr/api
           GITHUB_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
           GITHUB_PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-      - name: Delete unnecessary files 🚮
-        run: rm -rf latex
+      # - name: Delete unnecessary files 🚮
+      #   run: rm -rf latex
       - name: Deploy 🚀
         uses: peaceiris/actions-gh-pages@v3
         with:

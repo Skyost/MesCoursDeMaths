@@ -19,7 +19,7 @@ export default {
     },
     lessonsDirectory: 'latex/',
     calendarFile: 'calendar.json',
-    downloadDirectory: process.env.GITHUB_DOWNLOAD_DIRECTORY || ''
+    downloadDirectory: process.env.GITHUB_DOWNLOAD_DIRECTORY || '.'
   },
   encryptionKey: process.env.ENCRYPTION_KEY,
   debug: process.env.DEBUG_MODE || false,
