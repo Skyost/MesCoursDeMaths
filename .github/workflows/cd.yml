@@ -2,9 +2,13 @@ name: Continuous Delivery
 
 on:
   push:
-    branches: [ $default-branch ]
+    branches:
+      - main
+      - master
   pull_request:
-    branches: [ $default-branch ]
+    branches:
+      - main
+      - master
 
 jobs:
   build:
@@ -41,6 +45,11 @@ jobs:
           sudo initexmf --admin --set-config-value [MPM]AutoInstall=1
       - name: Generate ⚙️
         run: npm run generate
+        env:
+          SITE_URL: https://mes-cours-de-maths.fr
+          SITE_API_URL: https://mes-cours-de-maths.fr/api
+          GITHUB_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+          GITHUB_PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
       - name: Delete unnecessary files 🚮
         run: rm -rf latex
       - name: Deploy 🚀
