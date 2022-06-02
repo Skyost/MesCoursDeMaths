@@ -30,7 +30,7 @@ jobs:
         run: npm ci
       - name: Install pandoc 📄
         run: |
-          wget https://github.com/jgm/pandoc/releases/download/${{ matrix.pandoc }}/pandoc-${{ matrix.pandoc }}-amd64.deb
+          wget https://github.com/jgm/pandoc/releases/download/${{ matrix.pandoc }}/pandoc-${{ matrix.pandoc }}-1-amd64.deb
           sudo dpkg -i pandoc-${{ matrix.pandoc }}-amd64.deb
           rm pandoc-${{ matrix.pandoc }}-amd64.deb
       - name: Install Poppler 🖼
