@@ -1,0 +1,51 @@
+name: Continuous Delivery
+
+on:
+  push:
+    branches: [ $default-branch ]
+  pull_request:
+    branches: [ $default-branch ]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-20.04 ]
+        node: [ 16 ]
+        pandoc: [ 2.18 ]
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@v3
+      - name: Setup Node.js ${{ matrix.node-version }} 🏗
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+      - name: Install dependencies 👨🏻‍💻
+        run: npm ci
+      - name: Install pandoc 📄
+        run: |
+          wget https://github.com/jgm/pandoc/releases/download/${{ matrix.pandoc }}/pandoc-${{ matrix.pandoc }}-amd64.deb
+          sudo dpkg -i pandoc-${{ matrix.pandoc }}-amd64.deb
+          rm pandoc-${{ matrix.pandoc }}-amd64.deb
+      - name: Install Poppler 🖼
+        run: sudo apt-get install -y poppler-utils
+      - name: Install MiKTeX 🖋
+        run: |
+          sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys D6BC243565B2087BC3F897C9277A7293F59E4889
+          echo "deb http://miktex.org/download/ubuntu focal universe" | sudo tee /etc/apt/sources.list.d/miktex.list
+          sudo apt-get update
+          sudo apt-get install miktex
+          sudo miktexsetup --shared=yes finish
+          sudo initexmf --admin --set-config-value [MPM]AutoInstall=1
+      - name: Generate ⚙️
+        run: npm run generate
+      - name: Delete unnecessary files 🚮
+        run: rm -rf latex
+      - name: Deploy 🚀
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: .
+          publish_branch: vercel
