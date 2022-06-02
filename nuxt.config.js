@@ -48,7 +48,8 @@ export default {
     '@nuxtjs/stylelint-module',
     '~/modules/generate-content',
     '~/modules/sitemap-dynamic-routes',
-    '@nuxtjs/google-fonts'
+    '@nuxtjs/google-fonts',
+    '@nuxtjs/web-vitals'
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules

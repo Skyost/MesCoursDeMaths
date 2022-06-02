@@ -19,7 +19,8 @@ export default {
       cookieExpirationDays: debug ? 365 : 1
     },
     lessonsDirectory: 'latex/',
-    calendarFile: 'calendar.json'
+    calendarFile: 'calendar.json',
+    downloadDirectory: process.env.GITHUB_DOWNLOAD_DIRECTORY || ''
   },
   encryptionKey: process.env.ENCRYPTION_KEY,
   debug,
