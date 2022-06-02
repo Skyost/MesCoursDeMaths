@@ -2,10 +2,10 @@ import path from 'path'
 import fs from 'fs'
 import { execSync } from 'child_process'
 import { parse } from 'node-html-parser'
-import tar from 'tar'
 import site from '../../site'
 import utils from './utils'
 
+const AdmZip = require('adm-zip')
 const { Octokit } = require('@octokit/core')
 const fsExtra = require('fs-extra')
 const katex = require('katex')
@@ -40,27 +40,20 @@ module.exports = function () {
 }
 
 async function downloadRemoteDirectory (srcDir) {
-  if (site.github.repository === site.github.dataRepository || fs.existsSync(srcDir)) {
-    return
-  }
   logger.info(`Downloading and unzipping ${site.github.username}/${site.github.dataRepository}...`)
-  const repoTempFile = path.resolve('repoTemp.tar.gz')
-  const tempDirectory = path.resolve('temp')
   const octokit = new Octokit({ auth: site.github.authentication.accessToken })
-  const file = fs.createWriteStream(repoTempFile)
-  const response = await octokit.request('GET /repos/{owner}/{repo}/tarball/{ref}', {
+  const response = await octokit.request('GET /repos/{owner}/{repo}/zipball/{ref}', {
     owner: site.github.username,
     repo: site.github.dataRepository,
     ref: 'main'
   })
-  file.write(Buffer.from(response.data))
-  file.end()
+  const zip = new AdmZip(Buffer.from(response.data))
+  const tempDirectory = path.resolve(site.github.downloadDirectory, 'temp')
   fs.mkdirSync(tempDirectory)
-  await tar.extract({ file: repoTempFile, cwd: tempDirectory })
+  zip.extractAllTo(tempDirectory, true)
   const repoDirectory = utils.getDirectories(tempDirectory)[0]
   fsExtra.copySync(path.resolve(tempDirectory, repoDirectory, site.github.lessonsDirectory), srcDir, {})
-  fsExtra.removeSync(repoTempFile)
-  fsExtra.removeSync(path.resolve(tempDirectory))
+  fsExtra.removeSync(tempDirectory)
 }
 
 async function processFiles (directory, mdDir, pdfDir, tikzImagesDir, imagesDestURL) {
