@@ -1,12 +1,11 @@
-const debug = process.env.DEBUG_MODE || false
-
 export default {
   site: {
     title: 'Mes cours de maths',
     tagline: 'Les cours de mathématiques de M. Delaunay, disponibles en ligne.',
     description: 'Petit site web où je mets tous mes cours à disposition ainsi que les ressources qui y sont liés.',
     author: 'Hugo Delaunay',
-    url: debug ? 'http://localhost:3000' : 'https://mes-cours-de-maths.fr'
+    url: process.env.SITE_URL || 'http://localhost:3000',
+    apiUrl: process.env.SITE_API_URL || 'http://localhost:3000/api'
   },
   github: {
     username: 'Skyost',
@@ -16,14 +15,14 @@ export default {
       clientId: '9b549b66b9ffee93fa55',
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
       accessToken: process.env.GITHUB_PERSONAL_ACCESS_TOKEN,
-      cookieExpirationDays: debug ? 365 : 1
+      cookieExpirationDays: process.env.DEBUG_MODE ? 365 : 1
     },
     lessonsDirectory: 'latex/',
     calendarFile: 'calendar.json',
     downloadDirectory: process.env.GITHUB_DOWNLOAD_DIRECTORY || ''
   },
   encryptionKey: process.env.ENCRYPTION_KEY,
-  debug,
+  debug: process.env.DEBUG_MODE || false,
   contentGenerator: {
     pdfDestination: '/pdf',
     imagesDestination: '/images/lessons',

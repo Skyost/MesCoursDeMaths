@@ -52,6 +52,7 @@ import { marked } from 'marked'
 import Protected from '~/components/Applications/Protected'
 import Calendar from '~/components/Applications/Agenda/Calendar'
 import Spinner from '~/components/Spinner'
+import site from '~/site'
 
 export default {
   components: { Calendar, Protected, Spinner, SkiButton, SkiModal },
@@ -66,7 +67,7 @@ export default {
   },
   fetchOnServer: false,
   async fetch () {
-    const response = await this.$axios.$get('/api/calendar/dates')
+    const response = await this.$axios.$get(`${site.site.apiUrl}/calendar/dates`)
     if (response) {
       this.dates = response.dates
     }
@@ -87,7 +88,7 @@ export default {
       this.modalLoading = true
       modal.show()
       if (this.dates.includes(yyyymmdd)) {
-        const response = await this.$axios.$get('/api/calendar/get', {
+        const response = await this.$axios.$get(`${site.site.apiUrl}/calendar/get`, {
           params: {
             date: yyyymmdd
           }
@@ -99,7 +100,7 @@ export default {
     async saveContent () {
       this.modalLoading = true
       this.modalMarkdownContent = this.$refs.editor.$data.document
-      await this.$axios.$post('/api/calendar/update', {
+      await this.$axios.$post(`${site.site.apiUrl}/calendar/update`, {
         date: this.currentDate,
         content: this.modalMarkdownContent
       })

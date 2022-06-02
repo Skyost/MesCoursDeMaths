@@ -45,7 +45,7 @@ export default {
       const { url } = oauthAuthorizationUrl({
         clientType: 'oauth-app',
         clientId: site.github.authentication.clientId,
-        redirectUrl: `${this.$axios.defaults.baseURL}/api/user/login`,
+        redirectUrl: `${site.site.apiUrl}/user/login`,
         login: site.github.username
       })
       return url
