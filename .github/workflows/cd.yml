@@ -43,6 +43,7 @@ jobs:
           sudo apt-get install -y miktex
           sudo miktexsetup --shared=yes finish
           sudo initexmf --admin --set-config-value [MPM]AutoInstall=1
+          miktex --help
           sudo miktex --admin packages update
       - name: Generate ⚙️
         run: npm run generate
