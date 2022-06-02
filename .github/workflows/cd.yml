@@ -41,8 +41,8 @@ jobs:
           echo "deb http://miktex.org/download/ubuntu focal universe" | sudo tee /etc/apt/sources.list.d/miktex.list
           sudo apt-get update
           sudo apt-get install -y miktex
-          sudo miktexsetup --shared=yes finish
-          sudo initexmf --admin --set-config-value [MPM]AutoInstall=1
+          miktexsetup finish
+          initexmf --set-config-value [MPM]AutoInstall=1
           miktex --help
           sudo miktex --admin packages update
       - name: Generate ⚙️
