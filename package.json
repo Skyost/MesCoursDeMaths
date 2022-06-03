@@ -26,7 +26,7 @@
     "dotenv": "^16.0.0",
     "html2canvas": "^1.4.1",
     "marked": "^4.0.15",
-    "nuxt": "^2.15.7",
+    "nuxt": "^2.15.8",
     "skimple-components": "^0.3.1"
   },
   "devDependencies": {
