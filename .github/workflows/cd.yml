@@ -54,6 +54,7 @@ jobs:
           GITHUB_PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
       - name: Deleting files before deployment 🚮
         run: |
+          ls
           rm .gitignore
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4.3.3
