@@ -1,5 +1,6 @@
 <template>
   <div>
+    <social-head title="Accueil" />
     <h1>Bienvenue !</h1>
     <p>
       Bonjour et bienvenue sur ce site où je mettrai en ligne tous mes cours ainsi que les ressources qui y sont rattachées.

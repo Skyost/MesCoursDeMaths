@@ -45,7 +45,7 @@ export default {
       const { url } = oauthAuthorizationUrl({
         clientType: 'oauth-app',
         clientId: site.github.authentication.clientId,
-        redirectUrl: `${site.site.apiUrl}/user/login`,
+        redirectUrl: `${this.$config.apiUrl}/user/login`,
         login: site.github.username
       })
       return url

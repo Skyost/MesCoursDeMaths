@@ -1,13 +1,11 @@
-require('dotenv').config()
-
 export default {
   site: {
     title: 'Mes cours de maths',
     tagline: 'Les cours de mathématiques de M. Delaunay, disponibles en ligne.',
     description: 'Petit site web où je mets tous mes cours à disposition ainsi que les ressources qui y sont liés.',
     author: 'Hugo Delaunay',
-    url: process.env.DEBUG_MODE === 'true' ? 'http://localhost:3000' : 'https://mes-cours-de-maths.fr',
-    apiUrl: process.env.DEBUG_MODE === 'true' ? 'http://localhost:3000/api' : 'https://mes-cours-de-maths.vercel.app/api'
+    url: 'https://mes-cours-de-maths.fr',
+    apiUrl: 'https://mes-cours-de-maths.vercel.app/api'
   },
   github: {
     username: 'Skyost',

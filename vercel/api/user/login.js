@@ -21,7 +21,7 @@ export default async function handler (request, response) {
       response.setHeader('Set-Cookie', [
         cookie.serialize('access_token', crypto.encrypt(githubResponse.token), { expires: expiration, path: '/' })
       ])
-      response.redirect('/prof')
+      response.redirect(`${site.site.url}/prof`)
     } else {
       response.status(500).send("Erreur provenant sûrement d'une mauvaise configuration.")
     }

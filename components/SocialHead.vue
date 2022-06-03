@@ -18,7 +18,7 @@ export default {
     },
     openGraphImage: {
       type: String,
-      default: `${site.site.url}/images/social/open-graph.png`
+      default: null
     },
     twitterCard: {
       type: String,
@@ -26,11 +26,11 @@ export default {
     },
     twitterImage: {
       type: String,
-      default: `${site.site.url}/images/social/twitter.png`
+      default: null
     }
   },
   head () {
-    const currentAddress = `${site.site.url}${this.$route.path}`
+    const currentAddress = `${this.$config.url}${this.$route.path}`
     return {
       meta: [
         {
@@ -60,7 +60,7 @@ export default {
         },
         {
           property: 'og:image',
-          content: this.openGraphImage
+          content: this.openGraphImage || `${this.$config.url}/images/social/open-graph.png`
         },
         {
           property: 'og:locale',
@@ -93,7 +93,7 @@ export default {
         },
         {
           name: 'twitter:image',
-          content: this.twitterImage
+          content: this.twitterImage || `${this.$config.url}/images/social/twitter.png`
         }
       ],
       link: [

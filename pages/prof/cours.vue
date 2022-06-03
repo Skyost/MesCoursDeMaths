@@ -72,7 +72,6 @@ import CodeEditor from '~/components/Applications/Lessons/CodeEditor'
 import Protected from '~/components/Applications/Protected'
 import Spinner from '~/components/Spinner'
 import FileUploadButton from '~/components/Applications/FileUploadButton'
-import site from '~/site'
 
 export default {
   components: {
@@ -136,7 +135,7 @@ export default {
         return
       }
       await this.request(async () => {
-        await this.$axios.$get(`${site.site.apiUrl}/lessons/rename`, {
+        await this.$axios.$get(`${this.$config.apiUrl}/lessons/rename`, {
           params: {
             name,
             path: file.path,
@@ -148,7 +147,7 @@ export default {
     },
     async deleteFile (file) {
       await this.request(async () => {
-        await this.$axios.$get(`${site.site.apiUrl}/lessons/delete`, {
+        await this.$axios.$get(`${this.$config.apiUrl}/lessons/delete`, {
           params: {
             path: file.path,
             sha: file.sha
@@ -162,12 +161,12 @@ export default {
         data.sha = sha
       }
       await this.request(async () => {
-        await this.$axios.$post(`${site.site.apiUrl}/lessons/update`, data)
+        await this.$axios.$post(`${this.$config.apiUrl}/lessons/update`, data)
       })
     },
     async refreshFileList () {
       await this.request(async () => {
-        this.fileList = await this.$axios.$get(`${site.site.apiUrl}/lessons/list`, {
+        this.fileList = await this.$axios.$get(`${this.$config.apiUrl}/lessons/list`, {
           params: {
             path: this.currentDirectory
           }
@@ -187,7 +186,7 @@ export default {
           break
         case 'file':
           await this.request(async () => {
-            this.currentFile = await this.$axios.$get(`${site.site.apiUrl}/lessons/get`, {
+            this.currentFile = await this.$axios.$get(`${this.$config.apiUrl}/lessons/get`, {
               params: {
                 path: data.path
               }

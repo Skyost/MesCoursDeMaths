@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import site from '../../site'
 
 const crypto = require('crypto')

@@ -1,6 +1,13 @@
 import 'dotenv/config'
 import site from './site'
 
+let url = site.site.url
+let apiUrl = site.site.apiUrl
+if (site.debug) {
+  url = 'https://localhost:3000'
+  apiUrl = 'https://localhost:3000/api'
+}
+
 export default {
   // Target: https://go.nuxtjs.dev/config-target
   target: 'static',
@@ -70,8 +77,13 @@ export default {
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
 
+  publicRuntimeConfig: {
+    url,
+    apiUrl
+  },
+
   router: {
-    base: new URL(site.site.url).pathname
+    base: new URL(url).pathname
   },
 
   loading: {
@@ -80,18 +92,18 @@ export default {
 
   axios: {
     credentials: true,
-    baseURL: site.site.url,
-    browserBaseURL: site.site.url
+    baseURL: url,
+    browserBaseURL: url
   },
 
   robots: {
     UserAgent: '*',
     Disallow: ['/api/', '/_nuxt/'],
-    Sitemap: `${site.site.url}/sitemap.xml`
+    Sitemap: `${url}/sitemap.xml`
   },
 
   sitemap: {
-    hostname: site.site.url,
+    hostname: url,
     defaults: {
       priority: 1,
       lastmod: new Date()

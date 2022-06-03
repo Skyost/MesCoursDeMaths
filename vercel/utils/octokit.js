@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import crypto from './crypto'
 
 const cookie = require('cookie')

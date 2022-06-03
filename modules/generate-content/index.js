@@ -12,12 +12,13 @@ const katex = require('katex')
 const matter = require('gray-matter')
 const logger = require('../../utils/logger')
 
+const nuxtDirectory = path.resolve(__dirname, '../', '../')
 const ignored = site.contentGenerator.ignored.map(file => path.resolve(site.github.downloadDirectory, file))
 
 const lessonsDirectory = path.resolve(site.github.downloadDirectory, site.github.lessonsDirectory)
 const pandocRedefinitions = path.resolve(lessonsDirectory, 'pandoc.tex')
 const imagesDir = path.resolve(lessonsDirectory, 'images')
-const tikzImagesDir = path.resolve(lessonsDirectory, 'tikz-images')
+const tikzImagesDir = path.resolve(nuxtDirectory, 'tikz-images')
 
 ignored.push(pandocRedefinitions)
 ignored.push(imagesDir)
@@ -26,9 +27,9 @@ ignored.push(tikzImagesDir)
 module.exports = function () {
   this.nuxt.hook('build:compile', async function ({ name }) {
     if (name === 'server') {
-      const mdDir = 'content/'
-      const pdfDir = `static/${site.contentGenerator.pdfDestination}`
-      const imagesDestDir = `static/${site.contentGenerator.imagesDestination}`
+      const mdDir = path.resolve(nuxtDirectory, 'content')
+      const pdfDir = path.resolve(nuxtDirectory, 'static', site.contentGenerator.pdfDestination)
+      const imagesDestDir = path.resolve(nuxtDirectory, 'static', site.contentGenerator.imagesDestination)
       const imagesDestURL = site.contentGenerator.imagesDestination
 
       await downloadRemoteDirectory(lessonsDirectory)
@@ -40,6 +41,9 @@ module.exports = function () {
 }
 
 async function downloadRemoteDirectory (srcDir) {
+  if (site.github.repository === site.github.dataRepository || fs.existsSync(srcDir)) {
+    return
+  }
   logger.info(`Downloading and unzipping ${site.github.username}/${site.github.dataRepository}...`)
   const octokit = new Octokit({ auth: site.github.authentication.accessToken })
   const response = await octokit.request('GET /repos/{owner}/{repo}/zipball/{ref}', {
@@ -289,6 +293,8 @@ function latexmk (directory, file) {
 function pdftocairo (directory, file) {
   const fileName = utils.getFileName(file)
   const svgFile = `${fileName}.svg`
-  execSync(`pdftocairo -svg "${fileName}.pdf" "${svgFile}"`, { cwd: directory })
+  if (!site.debug || !fs.existsSync(path.resolve(directory, svgFile))) {
+    execSync(`pdftocairo -svg "${fileName}.pdf" "${svgFile}"`, { cwd: directory })
+  }
   return svgFile
 }

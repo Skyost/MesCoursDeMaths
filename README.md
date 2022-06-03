@@ -94,9 +94,9 @@ Une fois créé, nous allons devoir ajouter deux variables d'environnements (dan
 
 Le domaine spécifié dans _Domains_ doit correspondre avec l'`apiUrl` du fichier `site.js`.
 
-Dans l'onglet `Git` spécifiez `api` en tant que branche de production. 
+Dans les paramètres généraux, inscrivez `cd ../ && nuxt` en commande de développement et `vercel/` en répertoire racine.
 
 ## Tests locaux
 
-Pour tester localement votre site web, une commande suffit : `npm run dev`. Il vous faut également
+Pour tester localement votre site web, une commande suffit : `npm run vercel`. Il vous faut également
 créer un fichier `.env` contenant toutes variables d'environnement listées [précédemment](#création-dun-projet-vercel).
