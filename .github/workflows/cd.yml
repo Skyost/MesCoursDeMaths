@@ -48,9 +48,11 @@ jobs:
           wget https://poppler.freedesktop.org/poppler-${{ matrix.poppler }}.tar.xz
           tar -xf poppler-${{ matrix.poppler }}.tar.xz
           cd poppler-${{ matrix.poppler }}
-          ./configure
+          mkdir build
+          cd build
+          cmake ..
           make
-          sudo checkinstall
+          sudo make install
           cd ../
           rm -rf poppler-${{ matrix.poppler }}
           pdftocairo -v
@@ -64,6 +66,8 @@ jobs:
           sudo initexmf --admin --set-config-value [MPM]AutoInstall=1
           sudo mpm --admin --update
           mpm --update
+          sudo initexmf --admin --update-fndb
+          miktex --version
       - name: Generate ⚙️
         run: npm run generate
         env:
