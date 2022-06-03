@@ -13,31 +13,33 @@ on:
 jobs:
   build:
     runs-on: ${{ matrix.os }}
-    container:
-      image: danteev/texlive:latest
     strategy:
       matrix:
-        os: [ ubuntu-22.04 ]
+        os: [ ubuntu-latest ]
         node: [ 16 ]
+        pandoc: [ 2.18 ]
     steps:
       - name: Checkout 🛎
         uses: actions/checkout@v3
-      - name: Install Node.js 🍵
-        run: |
-          apt install -y curl
-          curl -sL https://deb.nodesource.com/setup_16.x | bash -
-          apt update
-          apt install -y nodejs
-          apt install -y npm
       - name: Setup Node.js ${{ matrix.node-version }} 🏗
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
+      - name: Install dependencies 👨🏻‍💻
+        run: npm ci
+      - name: Install pandoc 📄
+        run: |
+          wget https://github.com/jgm/pandoc/releases/download/${{ matrix.pandoc }}/pandoc-${{ matrix.pandoc }}-1-amd64.deb
+          sudo dpkg -i pandoc-${{ matrix.pandoc }}-1-amd64.deb
+          rm pandoc-${{ matrix.pandoc }}-1-amd64.deb
       - name: Install Poppler 🖼
         run: |
-          apt install -y poppler-utils
+          sudo apt install poppler-utils
           pdftocairo -v
+      - name: Install TeXLive 🖋
+        run: |
+          sudo sudo apt-get install -y texlive-latex-base texlive-lang-french texlive-latex-extra texlive-fonts-extra texlive-bibtex-extra texlive-science texlive-luatex biber latexmk
       - name: Generate ⚙️
         run: npm run generate
         env:
