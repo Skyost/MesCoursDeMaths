@@ -28,40 +28,21 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
+      - name: Setup Homebrew 🍺
+        uses: Homebrew/actions/setup-homebrew@master
       - name: Install dependencies 👨🏻‍💻
         run: npm ci
       - name: Install pandoc 📄
         run: |
-          wget https://github.com/jgm/pandoc/releases/download/${{ matrix.pandoc }}/pandoc-${{ matrix.pandoc }}-1-amd64.deb
-          sudo dpkg -i pandoc-${{ matrix.pandoc }}-1-amd64.deb
-          rm pandoc-${{ matrix.pandoc }}-1-amd64.deb
+          brew install pandoc
           pandoc -v
       - name: Install Poppler 🖼
         run: |
-          sudo apt install -y checkinstall
-          wget https://poppler.freedesktop.org/poppler-data-${{ matrix.popplerdata }}.tar.gz
-          tar -xf poppler-data-${{ matrix.popplerdata }}.tar.gz
-          cd poppler-data-${{ matrix.popplerdata }}
-          sudo make install
-          cd ../
-          rm -rf poppler-data-${{ matrix.popplerdata }}
-          wget https://poppler.freedesktop.org/poppler-${{ matrix.poppler }}.tar.xz
-          tar -xf poppler-${{ matrix.poppler }}.tar.xz
-          cd poppler-${{ matrix.poppler }}
-          mkdir build
-          cd build
-          cmake ..
-          make
-          sudo make install
-          cd ../
-          rm -rf poppler-${{ matrix.poppler }}
+          brew install poppler
           pdftocairo -v
       - name: Install MiKTeX 🖋
         run: |
-          sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys D6BC243565B2087BC3F897C9277A7293F59E4889
-          echo "deb http://miktex.org/download/ubuntu focal universe" | sudo tee /etc/apt/sources.list.d/miktex.list
-          sudo apt-get update
-          sudo apt-get install -y miktex
+          brew install --cask miktex-console
           sudo miktexsetup --shared=yes finish
           sudo initexmf --admin --set-config-value [MPM]AutoInstall=1
           sudo mpm --admin --update
