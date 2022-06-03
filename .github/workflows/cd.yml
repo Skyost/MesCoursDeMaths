@@ -45,18 +45,21 @@ jobs:
           sudo initexmf --admin --set-config-value [MPM]AutoInstall=1
           miktex --help
           sudo mpm --admin --update
+          mpm --update
       - name: Generate ⚙️
-        run: npm run generate
+        run: |
+          npm run generate
+          cp -R api dist
         env:
           SITE_URL: https://mes-cours-de-maths.fr
           SITE_API_URL: https://mes-cours-de-maths.fr/api
           GITHUB_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
           GITHUB_PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-      # - name: Delete unnecessary files 🚮
-      #   run: rm -rf latex
       - name: Deploy 🚀
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: .
+          publish_dir: ./dist
           publish_branch: vercel
+          exclude_assets: 'latex'
+          enable_jekyll: true
