@@ -39,8 +39,6 @@ Dans les paramètres de votre dépôt Github, il va falloir créer deux secrets 
 Pour configurer le site web (nom, dépôt Github, répertoire des cours, etc.), il vous faut modifier le
 fichier `site.js`. Indiquez votre `Client ID` dans le champ `clientId`.
 
-Il faut également répercuter certaines de ces modifications dans le fichier `api.js` de la branche `api`.
-
 Pour modifier le contenu de la page d'accueil, il faut éditer le fichier `pages/index.vue`.
 Une façon plus rapide (et intuitive...) de modifier les pages sera sûrement ajoutée à l'avenir.
 

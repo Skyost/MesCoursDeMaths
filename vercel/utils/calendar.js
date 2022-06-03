@@ -1,12 +1,12 @@
-import api from '../api'
+import site from '../../site'
 
 async function loadCalendar (octokit) {
   let githubResponse
   try {
     githubResponse = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
-      owner: api.github.username,
-      repo: api.github.dataRepository,
-      path: api.github.calendarFile
+      owner: site.github.username,
+      repo: site.github.dataRepository,
+      path: site.github.calendarFile
     })
   } catch (ex) {
     githubResponse = ex
