@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 export default {
   site: {
     title: 'Mes cours de maths',
@@ -13,11 +15,15 @@ export default {
     dataRepository: 'Cours-HD',
     authentication: {
       clientId: '9b549b66b9ffee93fa55',
-      accessToken: process.env.GITHUB_PERSONAL_ACCESS_TOKEN
+      clientSecret: process.env.GITHUB_CLIENT_SECRET,
+      accessToken: process.env.GITHUB_PERSONAL_ACCESS_TOKEN,
+      cookieExpirationDays: process.env.DEBUG_MODE ? 365 : 1
     },
     lessonsDirectory: 'latex/',
+    calendarFile: 'calendar.json',
     downloadDirectory: process.env.GITHUB_DOWNLOAD_DIRECTORY || __dirname
   },
+  encryptionKey: process.env.ENCRYPTION_KEY,
   debug: process.env.DEBUG_MODE === 'true' || false,
   contentGenerator: {
     pdfDestination: '/pdf',

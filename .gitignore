@@ -108,3 +108,5 @@ static/images/lessons/
 static/pdf/
 static/CNAME
 latex/
+
+.vercel

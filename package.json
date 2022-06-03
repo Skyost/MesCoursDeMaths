@@ -37,6 +37,7 @@
     "@nuxtjs/robots": "^2.5.0",
     "@nuxtjs/sitemap": "^2.4.0",
     "@nuxtjs/stylelint-module": "^4.0.0",
+    "@nuxtjs/web-vitals": "^0.1.8",
     "adm-zip": "^0.5.9",
     "consola": "^2.15.3",
     "eslint": "^7.29.0",
