@@ -40,7 +40,7 @@ jobs:
       - name: Install TeXLive 🖋
         run: |
           sudo apt install -y unzip
-          sudo sudo apt install -y texlive-latex-base texlive-lang-french texlive-latex-extra texlive-fonts-extra texlive-science texlive-luatex latexmk
+          sudo sudo apt install -y texlive-full
           wget https://mirrors.ctan.org/macros/latex/contrib/twemojis.zip
           unzip twemojis.zip
           cd twemojis
