@@ -44,12 +44,13 @@ jobs:
           wget https://mirrors.ctan.org/macros/latex/contrib/twemojis.zip
           unzip twemojis.zip
           cd twemojis
-          latexmk twemojis.ins
+          pdflatex twemojis.ins
           sudo mkdir /usr/share/texmf/tex/latex/twemojis
           sudo cp twemojis.sty /usr/share/texmf/tex/latex/twemojis
           sudo cp all-twemojis.pdf /usr/share/texmf/tex/latex/twemojis
           sudo texhash
           sudo mktexlsr
+          cd ../
       - name: Generate ⚙️
         run: npm run generate
         env:
