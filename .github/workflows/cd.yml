@@ -17,9 +17,6 @@ jobs:
       matrix:
         os: [ ubuntu-20.04 ]
         node: [ 16 ]
-        pandoc: [ 2.18 ]
-        poppler: [ 22.06.0 ]
-        popplerdata: [ 0.4.11 ]
     steps:
       - name: Checkout 🛎
         uses: actions/checkout@v3
@@ -30,6 +27,15 @@ jobs:
           cache: 'npm'
       - name: Setup Homebrew 🍺
         uses: Homebrew/actions/setup-homebrew@master
+      - name: Cache Homebrew Bundler RubyGems 📥
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.set-up-homebrew.outputs.gems-path }}
+          key: ${{ runner.os }}-rubygems-${{ steps.set-up-homebrew.outputs.gems-hash }}
+          restore-keys: ${{ runner.os }}-rubygems-
+      - name: Install Homebrew Bundler RubyGems 📤
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: brew install-bundler-gems
       - name: Install dependencies 👨🏻‍💻
         run: npm ci
       - name: Install pandoc 📄
