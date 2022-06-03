@@ -13,9 +13,11 @@ on:
 jobs:
   build:
     runs-on: ${{ matrix.os }}
+    container:
+      image: danteev/texlive:latest
     strategy:
       matrix:
-        os: [ ubuntu-20.04 ]
+        os: [ ubuntu-22.04 ]
         node: [ 16 ]
     steps:
       - name: Checkout 🛎
@@ -25,41 +27,10 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-      - name: Setup Homebrew 🍺
-        id: set-up-homebrew
-        uses: Homebrew/actions/setup-homebrew@master
-      - name: Cache Homebrew Bundler RubyGems 📥
-        id: cache-homebrew
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.set-up-homebrew.outputs.gems-path }}
-          key: ${{ runner.os }}-rubygems-${{ steps.set-up-homebrew.outputs.gems-hash }}
-          restore-keys: ${{ runner.os }}-rubygems-
-      - name: Install Homebrew Bundler RubyGems 📤
-        if: steps.cache-homebrew.outputs.cache-hit != 'true'
-        run: brew install-bundler-gems
-      - name: Install dependencies 👨🏻‍💻
-        run: npm ci
-      - name: Install pandoc 📄
-        run: |
-          brew install pandoc
-          pandoc -v
       - name: Install Poppler 🖼
         run: |
-          brew install poppler
+          sudo apt-get install -y poppler-utils
           pdftocairo -v
-      - name: Install MiKTeX 🖋
-        run: |
-          sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys D6BC243565B2087BC3F897C9277A7293F59E4889
-          echo "deb http://miktex.org/download/ubuntu focal universe" | sudo tee /etc/apt/sources.list.d/miktex.list
-          sudo apt-get update
-          sudo apt-get install -y miktex
-          sudo miktexsetup --shared=yes finish
-          sudo initexmf --admin --set-config-value [MPM]AutoInstall=1
-          sudo mpm --admin --update
-          mpm --update
-          sudo initexmf --admin --update-fndb
-          miktex --version
       - name: Generate ⚙️
         run: npm run generate
         env:

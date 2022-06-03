@@ -92,9 +92,11 @@ Une fois créé, nous allons devoir ajouter deux variables d'environnements (dan
 * `GITHUB_CLIENT_SECRET`, qui contient votre `Client secret`.
 * `ENCRYPTION_KEY`, qui contient 32 caractères générés de manière aléatoire (majuscules, minuscules et chiffres uniquement).
 
+Dans les paramètres généraux, inscrivez `nuxt ../` en commande de développement et `vercel/` en répertoire racine.
+
 Le domaine spécifié dans _Domains_ doit correspondre avec l'`apiUrl` du fichier `site.js`.
 
-Dans les paramètres généraux, inscrivez `cd ../ && nuxt` en commande de développement et `vercel/` en répertoire racine.
+Enfin, pour éviter des builds inutiles, écrivez `"$VERCEL_ENV" != production` dans la section _Ignored Build Step_ de l'onglet _Git_.
 
 ## Tests locaux
 

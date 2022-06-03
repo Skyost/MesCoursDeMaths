@@ -4,8 +4,8 @@ import site from './site'
 let url = site.site.url
 let apiUrl = site.site.apiUrl
 if (site.debug) {
-  url = 'https://localhost:3000'
-  apiUrl = 'https://localhost:3000/api'
+  url = 'http://localhost:3000'
+  apiUrl = 'http://localhost:3000/api'
 }
 
 export default {
