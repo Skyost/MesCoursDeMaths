@@ -63,19 +63,11 @@ jobs:
       - name: Generate ⚙️
         run: npm run generate
         env:
-          SITE_URL: https://mes-cours-de-maths.fr
-          SITE_API_URL: https://mes-cours-de-maths.fr/api
           GITHUB_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
           GITHUB_PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-      - name: Deleting files before deployment 🚮
-        run: |
-          ls -A .
-          find . -type f -name .gitignore -exec rm {} \;
-          ls -A .
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4.3.3
         with:
-          folder: .
-          branch: vercel
-          clean: false
+          folder: dist
+          branch: gh-pages
           single-commit: true
