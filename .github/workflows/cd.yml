@@ -46,9 +46,7 @@ jobs:
           sudo mpm --admin --update
           mpm --update
       - name: Generate ⚙️
-        run: |
-          npm run generate
-          cp -R api dist
+        run: npm run generate
         env:
           SITE_URL: https://mes-cours-de-maths.fr
           SITE_API_URL: https://mes-cours-de-maths.fr/api
