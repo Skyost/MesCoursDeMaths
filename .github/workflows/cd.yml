@@ -39,7 +39,17 @@ jobs:
           pdftocairo -v
       - name: Install TeXLive 🖋
         run: |
-          sudo sudo apt-get install -y texlive-latex-base texlive-lang-french texlive-latex-extra texlive-fonts-extra texlive-science texlive-luatex biber latexmk
+          sudo apt install -y unzip
+          sudo sudo apt install -y texlive-latex-base texlive-lang-french texlive-latex-extra texlive-fonts-extra texlive-science texlive-luatex latexmk
+          wget https://mirrors.ctan.org/macros/latex/contrib/twemojis.zip
+          unzip twemojis.zip
+          cd twemojis
+          latexmk -q twemojis.ins
+          sudo mkdir /usr/share/texmf/tex/latex/twemojis
+          sudo cp twemojis.sty /usr/share/texmf/tex/latex/twemojis
+          sudo cp all-twemojis.pdf /usr/share/texmf/tex/latex/twemojis
+          sudo texhash
+          sudo mktexlsr
       - name: Generate ⚙️
         run: npm run generate
         env:
