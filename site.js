@@ -24,8 +24,8 @@ export default {
   encryptionKey: process.env.ENCRYPTION_KEY,
   debug: process.env.DEBUG_MODE === 'true' || false,
   contentGenerator: {
-    pdfDestination: '/pdf',
-    imagesDestination: '/images/lessons',
+    pdfDestination: 'pdf',
+    imagesDestination: 'images/lessons',
     fileNameFilter: (fileName) => {
       if (fileName.endsWith('-cours')) {
         return fileName.substring(0, fileName.length - '-cours'.length)

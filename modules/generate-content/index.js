@@ -29,7 +29,7 @@ module.exports = function () {
     if (name === 'server') {
       const srcDir = this.nuxt.options.srcDir
       const mdDir = path.resolve(srcDir, 'content')
-      const pdfDir = path.resolve(srcDir, 'assets', site.contentGenerator.pdfDestination)
+      const pdfDir = path.resolve(srcDir, 'static', site.contentGenerator.pdfDestination)
       const imagesDestDir = path.resolve(srcDir, 'static', site.contentGenerator.imagesDestination)
       const imagesDestURL = site.contentGenerator.imagesDestination
 
