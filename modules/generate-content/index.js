@@ -12,36 +12,43 @@ const katex = require('katex')
 const matter = require('gray-matter')
 const logger = require('../../utils/logger')
 
-const downloadDirectory = site.github.downloadDirectory || this.nuxt.options.srcDir
-const ignored = site.contentGenerator.ignored.map(file => path.resolve(downloadDirectory, file))
-
-const lessonsDirectory = path.resolve(downloadDirectory, site.github.lessonsDirectory)
-const pandocRedefinitions = path.resolve(lessonsDirectory, 'pandoc.tex')
-const imagesDir = path.resolve(lessonsDirectory, 'images')
-const tikzImagesDir = path.resolve(lessonsDirectory, 'tikz-images')
-
-ignored.push(pandocRedefinitions)
-ignored.push(imagesDir)
-ignored.push(tikzImagesDir)
-
 module.exports = function () {
   this.nuxt.hook('build:compile', async ({ name }) => {
     if (name === 'server') {
+      const downloadDirectory = site.github.downloadDirectory || this.nuxt.options.srcDir
+
+      const lessonsDirectory = path.resolve(downloadDirectory, site.github.lessonsDirectory)
+      const pandocRedefinitions = path.resolve(lessonsDirectory, 'pandoc.tex')
+      const tikzImagesDir = path.resolve(lessonsDirectory, 'tikz-images')
+
       const srcDir = this.nuxt.options.srcDir
+
       const mdDir = path.resolve(srcDir, 'content')
       const pdfDir = path.resolve(srcDir, 'static', site.contentGenerator.pdfDestination)
       const imagesDestDir = path.resolve(srcDir, 'static', site.contentGenerator.imagesDestination)
       const imagesDestURL = site.contentGenerator.imagesDestination
 
-      await downloadRemoteDirectory()
-      await processFiles(lessonsDirectory, mdDir, pdfDir, tikzImagesDir, imagesDestURL)
+      const imagesDirectories = Object.fromEntries(Object.entries(site.contentGenerator.imagesDirectories)
+        .map(([imagesDir, destDir]) => [path.resolve(downloadDirectory, imagesDir), path.resolve(imagesDestDir, destDir)]))
+
+      const ignored = site.contentGenerator.ignored
+        .map(file => path.resolve(downloadDirectory, file))
+        .concat(Object.keys(imagesDirectories))
+
+      ignored.push(tikzImagesDir)
+      ignored.push(pandocRedefinitions)
+
+      await downloadRemoteDirectory(lessonsDirectory)
+      for (const [directory, destination] of Object.entries(imagesDirectories)) {
+        await handleImages(directory, destination)
+      }
+      await processFiles(lessonsDirectory, mdDir, pdfDir, tikzImagesDir, imagesDestDir, imagesDestURL, pandocRedefinitions, ignored)
       await handleImages(tikzImagesDir, imagesDestDir)
-      await handleImages(imagesDir, imagesDestDir)
     }
   })
 }
 
-async function downloadRemoteDirectory () {
+async function downloadRemoteDirectory (lessonsDirectory) {
   if (site.github.repository === site.github.dataRepository || fs.existsSync(lessonsDirectory)) {
     return
   }
@@ -61,7 +68,7 @@ async function downloadRemoteDirectory () {
   fsExtra.removeSync(tempDirectory)
 }
 
-async function processFiles (directory, mdDir, pdfDir, tikzImagesDir, imagesDestURL) {
+async function processFiles (directory, mdDir, pdfDir, tikzImagesDir, imagesDestDir, imagesDestURL, pandocRedefinitions, ignored) {
   const files = fs.readdirSync(directory)
   for (const file of files) {
     const filePath = path.resolve(directory, file)
@@ -69,7 +76,7 @@ async function processFiles (directory, mdDir, pdfDir, tikzImagesDir, imagesDest
       continue
     }
     if (fs.lstatSync(filePath).isDirectory()) {
-      await processFiles(filePath, path.resolve(mdDir, file), path.resolve(pdfDir, file), path.resolve(tikzImagesDir, file), imagesDestURL + '/' + file)
+      await processFiles(filePath, path.resolve(mdDir, file), path.resolve(pdfDir, file), path.resolve(tikzImagesDir, file), path.resolve(imagesDestDir, file), imagesDestURL + '/' + file, pandocRedefinitions, ignored)
     } else if (file.endsWith('.tex')) {
       logger.info(`Processing "${filePath}"...`)
       const fileName = utils.getFileName(file)
@@ -82,7 +89,7 @@ async function processFiles (directory, mdDir, pdfDir, tikzImagesDir, imagesDest
           encoding: 'utf-8'
         })
         const root = parse(htmlContent)
-        replaceTikzImages(root, imagesDestURL + '/' + fileName)
+        replaceImages(root, path.resolve(imagesDestDir, fileName), imagesDestURL + '/' + fileName)
         replaceVspaceElements(root)
         adjustColSize(root)
         numberizeTitles(root)
@@ -143,12 +150,19 @@ function extractImages (filePath, tikzImagesDir) {
   }
 }
 
-function replaceTikzImages (root, imagesDestURL) {
-  const pdfImages = root.querySelectorAll('img')
-  for (const pdfImage of pdfImages) {
-    const src = pdfImage.getAttribute('src')
-    if (src.endsWith('.pdf')) {
-      pdfImage.setAttribute('src', src.substring(0, src.length - '.pdf'.length) + '.svg')
+function replaceImages (root, imagesDestDir, imagesDestURL) {
+  const images = root.querySelectorAll('img')
+  for (const image of images) {
+    const src = image.getAttribute('src')
+    const extension = path.extname(src)
+    if (extension === '') {
+      image.setAttribute('alt', src)
+      for (const testExtension of ['.svg', '.png', '.jpeg', '.jpg']) {
+        if (fs.existsSync(path.resolve(imagesDestDir, src + testExtension))) {
+          image.setAttribute('src', `${imagesDestURL}/${src}${testExtension}`)
+          break
+        }
+      }
     }
   }
   const tikzImages = root.querySelectorAll('.tikz-image')
@@ -177,8 +191,8 @@ function adjustColSize (root) {
     const columns = row.querySelectorAll('.col')
     if (sizeElement && sizeElement.text.trim().length > 0 && columns.length === 2) {
       const size = parseFloat(sizeElement.text.trim())
-      columns[0].setAttribute('style', `flex-grow: ${size}`)
-      columns[1].setAttribute('style', `flex-grow: ${1 - size}`)
+      columns[0].setAttribute('style', `--column-size: ${size};`)
+      columns[1].setAttribute('style', `--column-size: ${1 - size};`)
     }
     sizeElement.remove()
   }
@@ -236,7 +250,6 @@ async function handleImages (imagesDir, imagesDestDir) {
       await handleImages(filePath, path.resolve(imagesDestDir, file))
     } else if (file.endsWith('.tex')) {
       logger.info(`Handling image "${filePath}"...`)
-
       if (latexmk(imagesDir, file)) {
         const svgFile = pdftocairo(imagesDir, file)
         fs.mkdirSync(imagesDestDir, { recursive: true })

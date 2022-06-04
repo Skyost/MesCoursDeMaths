@@ -26,6 +26,9 @@ export default {
   contentGenerator: {
     pdfDestination: 'pdf',
     imagesDestination: 'images/lessons',
+    imagesDirectories: {
+      'latex/sixieme/images': 'sixieme'
+    },
     fileNameFilter: (fileName) => {
       if (fileName.endsWith('-cours')) {
         return fileName.substring(0, fileName.length - '-cours'.length)

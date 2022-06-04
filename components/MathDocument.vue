@@ -164,6 +164,16 @@ export default {
       white-space: normal;
     }
 
+    .framed {
+      border: 1px solid black;
+      margin-bottom: 1rem;
+
+      p,
+      img {
+        margin-bottom: 0 !important;
+      }
+    }
+
     ol,
     ul {
       margin-bottom: 1rem;
@@ -191,10 +201,14 @@ export default {
     }
 
     .col {
+      --column-size: 0.5;
+
       display: flex;
       flex-direction: column;
       align-items: flex-start;
       justify-content: center;
+      flex-grow: var(--column-size);
+      flex-shrink: var(--column-size);
 
       .text-center {
         align-self: center;
@@ -202,6 +216,10 @@ export default {
 
       .text-end {
         align-self: flex-end;
+      }
+
+      img {
+        max-width: 100%;
       }
     }
 
