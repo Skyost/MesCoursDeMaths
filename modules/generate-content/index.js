@@ -12,9 +12,10 @@ const katex = require('katex')
 const matter = require('gray-matter')
 const logger = require('../../utils/logger')
 
-const ignored = site.contentGenerator.ignored.map(file => path.resolve(site.github.downloadDirectory, file))
+const downloadDirectory = site.github.downloadDirectory || this.nuxt.options.srcDir
+const ignored = site.contentGenerator.ignored.map(file => path.resolve(downloadDirectory, file))
 
-const lessonsDirectory = path.resolve(site.github.downloadDirectory, site.github.lessonsDirectory)
+const lessonsDirectory = path.resolve(downloadDirectory, site.github.lessonsDirectory)
 const pandocRedefinitions = path.resolve(lessonsDirectory, 'pandoc.tex')
 const imagesDir = path.resolve(lessonsDirectory, 'images')
 const tikzImagesDir = path.resolve(lessonsDirectory, 'tikz-images')
@@ -32,7 +33,7 @@ module.exports = function () {
       const imagesDestDir = path.resolve(srcDir, 'static', site.contentGenerator.imagesDestination)
       const imagesDestURL = site.contentGenerator.imagesDestination
 
-      await downloadRemoteDirectory(lessonsDirectory)
+      await downloadRemoteDirectory()
       await processFiles(lessonsDirectory, mdDir, pdfDir, tikzImagesDir, imagesDestURL)
       await handleImages(tikzImagesDir, imagesDestDir)
       await handleImages(imagesDir, imagesDestDir)
@@ -40,8 +41,8 @@ module.exports = function () {
   })
 }
 
-async function downloadRemoteDirectory (srcDir) {
-  if (site.github.repository === site.github.dataRepository || fs.existsSync(srcDir)) {
+async function downloadRemoteDirectory () {
+  if (site.github.repository === site.github.dataRepository || fs.existsSync(lessonsDirectory)) {
     return
   }
   logger.info(`Downloading and unzipping ${site.github.username}/${site.github.dataRepository}...`)
@@ -56,7 +57,7 @@ async function downloadRemoteDirectory (srcDir) {
   fs.mkdirSync(tempDirectory)
   zip.extractAllTo(tempDirectory, true)
   const repoDirectory = utils.getDirectories(tempDirectory)[0]
-  fsExtra.copySync(path.resolve(tempDirectory, repoDirectory, site.github.lessonsDirectory), srcDir, {})
+  fsExtra.copySync(path.resolve(tempDirectory, repoDirectory, site.github.lessonsDirectory), lessonsDirectory, {})
   fsExtra.removeSync(tempDirectory)
 }
 
