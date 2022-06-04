@@ -40,9 +40,7 @@ jobs:
           pdftocairo -v
       - name: Install latexmk 📏
         run: |
-          sudo apt install perl  -y
-          sudo apt install perl-Digest-MD5 -y
-          wget -q -O latexmk https://mirrors.ircam.fr/pub/CTAN/support/latexmk/latexmk.pl
+          wget -O latexmk https://mirrors.ircam.fr/pub/CTAN/support/latexmk/latexmk.pl
           chmod +x latexmk
           ln -s "${PWD}/latexmk" /usr/bin/latexmk
           latexmk -v
