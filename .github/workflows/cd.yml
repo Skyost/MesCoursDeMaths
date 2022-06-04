@@ -42,7 +42,7 @@ jobs:
         run: |
           wget -O latexmk https://mirrors.ircam.fr/pub/CTAN/support/latexmk/latexmk.pl
           chmod +x latexmk
-          ln -s "${PWD}/latexmk" /usr/bin/latexmk
+          sudo ln -s "${PWD}/latexmk" /usr/bin/latexmk
           latexmk -v
       - name: Install TeXLive 🖋
         run: |
@@ -63,7 +63,7 @@ jobs:
           option_doc 0
           option_src 0' > texlive.profile
           ./install-tl --profile=texlive.profile
-          ln -s /tmp/texlive/bin/x86_64-linux /opt/texbin
+          sudo ln -s /tmp/texlive/bin/x86_64-linux /opt/texbin
           pathmunge () {
             if ! echo $PATH | /bin/egrep -q "(^|:)$1($|:)" ; then
             if [ "$2" = "after" ] ; then
