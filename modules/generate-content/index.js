@@ -278,7 +278,7 @@ function latexmk (directory, file) {
     if (site.debug && fs.existsSync(path.resolve(directory, file.replace('.tex', '.pdf')))) {
       return false
     }
-    execSync(`latexmk -pdflatex=lualatex -pdf "${file}"`, { cwd: directory })
+    execSync(`latexmk -lualatex "${file}"`, { cwd: directory })
     return true
   } catch (ex) {
     logger.error(ex)
