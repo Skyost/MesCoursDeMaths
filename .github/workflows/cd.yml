@@ -42,6 +42,7 @@ jobs:
           sudo apt install -y unzip
           wget http://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz
           tar xvzf install-tl-unx.tar.gz
+          rm install-tl-unx.tar.gz
           cd install-tl-*
           touch texlive.profile
           echo 'selected_scheme scheme-full
