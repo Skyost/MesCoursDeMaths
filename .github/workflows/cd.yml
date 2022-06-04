@@ -60,8 +60,7 @@ jobs:
           cd ../
           rm -rf install-tl-*
           echo "/usr/local/texlive/2022/bin/x86_64-linux" >> $GITHUB_PATH
-      - name: Finish TeXLive installation 🖋
-        run: |
+          export PATH="/usr/local/texlive/2022/bin/x86_64-linux:$PATH"
           sudo tlmgr path add
           sudo cp $(kpsewhich -var-value TEXMFSYSVAR)/fonts/conf/texlive-fontconfig.conf /etc/fonts/conf.d/09-texlive.conf
           sudo fc-cache -fsv
