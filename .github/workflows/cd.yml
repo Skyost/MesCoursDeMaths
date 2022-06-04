@@ -60,8 +60,9 @@ jobs:
           TEXMFSYSCONFIG /tmp/texlive/texmf-config
           TEXMFSYSVAR /tmp/texlive/texmf-var
           TEXMFVAR ~/.texlive/texmf-var
-          option_doc 0
-          option_src 0' > texlive.profile
+          tlpdbopt_install_docfiles 0
+          tlpdbopt_install_srcfiles 0
+          tlpdbopt_autobackup 0' > texlive.profile
           ./install-tl --profile=texlive.profile
           sudo ln -s /tmp/texlive/bin/x86_64-linux /opt/texbin
           pathmunge () {

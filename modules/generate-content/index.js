@@ -12,24 +12,24 @@ const katex = require('katex')
 const matter = require('gray-matter')
 const logger = require('../../utils/logger')
 
-const nuxtDirectory = path.resolve(__dirname, '../', '../')
 const ignored = site.contentGenerator.ignored.map(file => path.resolve(site.github.downloadDirectory, file))
 
 const lessonsDirectory = path.resolve(site.github.downloadDirectory, site.github.lessonsDirectory)
 const pandocRedefinitions = path.resolve(lessonsDirectory, 'pandoc.tex')
 const imagesDir = path.resolve(lessonsDirectory, 'images')
-const tikzImagesDir = path.resolve(nuxtDirectory, 'tikz-images')
+const tikzImagesDir = path.resolve(lessonsDirectory, 'tikz-images')
 
 ignored.push(pandocRedefinitions)
 ignored.push(imagesDir)
 ignored.push(tikzImagesDir)
 
 module.exports = function () {
-  this.nuxt.hook('build:compile', async function ({ name }) {
+  this.nuxt.hook('build:compile', async ({ name }) => {
     if (name === 'server') {
-      const mdDir = path.resolve(nuxtDirectory, 'content')
-      const pdfDir = path.resolve(nuxtDirectory, 'static', site.contentGenerator.pdfDestination)
-      const imagesDestDir = path.resolve(nuxtDirectory, 'static', site.contentGenerator.imagesDestination)
+      const srcDir = this.nuxt.options.srcDir
+      const mdDir = path.resolve(srcDir, 'content')
+      const pdfDir = path.resolve(srcDir, 'assets', site.contentGenerator.pdfDestination)
+      const imagesDestDir = path.resolve(srcDir, 'static', site.contentGenerator.imagesDestination)
       const imagesDestURL = site.contentGenerator.imagesDestination
 
       await downloadRemoteDirectory(lessonsDirectory)
