@@ -57,10 +57,10 @@ jobs:
           tlpdbopt_install_srcfiles 0
           tlpdbopt_autobackup 0
           tlpdbopt_sys_bin /usr/bin' > texlive.profile
-          ./install-tl --profile=texlive.profile
+          sudo ./install-tl --profile=texlive.profile
           cd ../
           rm -rf install-tl-*
-          tlmgr path add
+          sudo tlmgr path add
           sudo cp $(kpsewhich -var-value TEXMFSYSVAR)/fonts/conf/texlive-fontconfig.conf /etc/fonts/conf.d/09-texlive.conf
           sudo fc-cache -fsv
           latexmk --version
