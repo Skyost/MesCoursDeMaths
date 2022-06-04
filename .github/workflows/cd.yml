@@ -33,10 +33,19 @@ jobs:
           wget https://github.com/jgm/pandoc/releases/download/${{ matrix.pandoc }}/pandoc-${{ matrix.pandoc }}-1-amd64.deb
           sudo dpkg -i pandoc-${{ matrix.pandoc }}-1-amd64.deb
           rm pandoc-${{ matrix.pandoc }}-1-amd64.deb
+          pandoc -v
       - name: Install Poppler 🖼
         run: |
           sudo apt install poppler-utils
           pdftocairo -v
+      - name: Install latexmk 📏
+        run: |
+          sudo apt install perl  -y
+          sudo apt install perl-Digest-MD5 -y
+          wget -q -O latexmk https://mirrors.ircam.fr/pub/CTAN/support/latexmk/latexmk.pl
+          chmod +x latexmk
+          ln -s "${PWD}/latexmk" /usr/bin/latexmk
+          latexmk -v
       - name: Install TeXLive 🖋
         run: |
           sudo apt install -y unzip
@@ -71,6 +80,7 @@ jobs:
           sudo cp $(kpsewhich -var-value TEXMFSYSVAR)/fonts/conf/texlive-fontconfig.conf /etc/fonts/conf.d/09-texlive.conf
           sudo fc-cache -fsv
           cd ../
+          luatex --version
       - name: Generate ⚙️
         run: npm run generate
         env:

@@ -53,6 +53,7 @@ export default {
     '@nuxtjs/eslint-module',
     // https://go.nuxtjs.dev/stylelint
     '@nuxtjs/stylelint-module',
+    '~/modules/generate-cname',
     '~/modules/generate-content',
     '~/modules/sitemap-dynamic-routes',
     '@nuxtjs/google-fonts',
