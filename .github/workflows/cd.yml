@@ -9,6 +9,8 @@ on:
     branches:
       - main
       - master
+  repository_dispatch:
+    types: [ data-repository-updated ]
 
 jobs:
   build:
