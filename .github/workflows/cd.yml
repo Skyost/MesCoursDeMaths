@@ -15,6 +15,9 @@ on:
 jobs:
   configure:
     runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest ]
     outputs:
       containerUser: ${{ steps.get-user.outputs.containerUser }}
     steps:
@@ -30,7 +33,6 @@ jobs:
       matrix:
         os: [ ubuntu-latest ]
         node: [ 16 ]
-        pandoc: [ 2.18 ]
     steps:
       - name: Checkout 🛎
         uses: actions/checkout@v3
