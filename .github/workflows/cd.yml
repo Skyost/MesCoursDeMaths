@@ -15,7 +15,9 @@ on:
 jobs:
   build:
     runs-on: ${{ matrix.os }}
-    container: skyost/latex-docker
+    container:
+      image: skyost/latex-docker
+      options: --workdir=/home/build/mescoursdemaths
     strategy:
       matrix:
         os: [ ubuntu-latest ]
