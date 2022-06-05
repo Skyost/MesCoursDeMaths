@@ -54,7 +54,7 @@ jobs:
       #     sudo initexmf --admin --update-fndb
       #     miktex --version
       - name: Generate ⚙️
-        run: sudo npm run generate
+        run: npm run generate
         env:
           GITHUB_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
           GITHUB_PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
