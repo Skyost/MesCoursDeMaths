@@ -13,9 +13,18 @@ on:
     types: [ data-repository-updated ]
 
 jobs:
+  configure:
+    runs-on: ubuntu-latest
+    outputs:
+      containerUser: ${{ steps.get-user.outputs.containerUser }}
+    steps:
+      - id: get-user
+        run: echo "::set-output name=containerUser::`id -u`:`id -g`"
   build:
     runs-on: ${{ matrix.os }}
-    container: skyost/latex-docker
+    container:
+      image: skyost/latex-docker
+      options: --user ${{ needs.configure.outputs.containerUser }}
     strategy:
       matrix:
         os: [ ubuntu-latest ]
