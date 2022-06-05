@@ -15,9 +15,7 @@ on:
 jobs:
   build:
     runs-on: ${{ matrix.os }}
-    container:
-      image: skyost/latex-docker
-      options: --user root
+    container: skyost/latex-docker
     strategy:
       matrix:
         os: [ ubuntu-latest ]
@@ -56,7 +54,7 @@ jobs:
       #     sudo initexmf --admin --update-fndb
       #     miktex --version
       - name: Generate ⚙️
-        run: npm run generate
+        run: sudo npm run generate
         env:
           GITHUB_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
           GITHUB_PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
