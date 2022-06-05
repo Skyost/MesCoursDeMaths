@@ -14,13 +14,14 @@ on:
 
 jobs:
   configure:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     outputs:
       containerUser: ${{ steps.get-user.outputs.containerUser }}
     steps:
       - id: get-user
         run: echo "::set-output name=containerUser::`id -u`:`id -g`"
   build:
+    needs: configure
     runs-on: ${{ matrix.os }}
     container:
       image: skyost/latex-docker
