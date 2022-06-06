@@ -22,7 +22,7 @@ export default {
   },
   computed: {
     title () {
-      return this.errorCode === 404 ? 'Page non trouvée !' : `Erreur ${this.statusCode}`
+      return this.errorCode === 404 ? 'Page non trouvée !' : (`Erreur${this.statusCode ? (' ' + this.statusCode) : ''}`)
     }
   }
 }

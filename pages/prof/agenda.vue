@@ -21,6 +21,7 @@
         mode="markdown"
       />
       <div v-else @dblclick="modalEdit = true">
+        <!-- eslint-disable-next-line -->
         <div v-if="modalHtmlContent" v-html="modalHtmlContent" />
         <em v-else>Aucun contenu ici.</em>
       </div>
@@ -52,6 +53,7 @@ import { marked } from 'marked'
 import Protected from '~/components/Applications/Protected'
 import Calendar from '~/components/Applications/Agenda/Calendar'
 import Spinner from '~/components/Spinner'
+import accessTokenUtils from '~/utils/access-token'
 
 export default {
   components: { Calendar, Protected, Spinner, SkiButton, SkiModal },
@@ -66,7 +68,9 @@ export default {
   },
   fetchOnServer: false,
   async fetch () {
-    const response = await this.$axios.$get(`${this.$config.apiUrl}/calendar/dates`)
+    const response = await this.$axios.$get(`${this.$config.apiUrl}/calendar/dates`, {
+      headers: accessTokenUtils.getAuthorizationHeaders(this.$cookies)
+    })
     if (response) {
       this.dates = response.dates
     }
@@ -90,7 +94,8 @@ export default {
         const response = await this.$axios.$get(`${this.$config.apiUrl}/calendar/get`, {
           params: {
             date: yyyymmdd
-          }
+          },
+          headers: accessTokenUtils.getAuthorizationHeaders(this.$cookies)
         })
         this.modalMarkdownContent = response.content
       }
@@ -102,6 +107,8 @@ export default {
       await this.$axios.$post(`${this.$config.apiUrl}/calendar/update`, {
         date: this.currentDate,
         content: this.modalMarkdownContent
+      }, {
+        headers: accessTokenUtils.getAuthorizationHeaders(this.$cookies)
       })
       this.modalEdit = false
       this.modalLoading = false

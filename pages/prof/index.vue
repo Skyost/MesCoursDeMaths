@@ -28,8 +28,10 @@
 </template>
 
 <script>
-import { SkiColumns, SkiColumn, SkiButton, SkiIcon } from 'skimple-components'
+import { SkiButton, SkiColumn, SkiColumns, SkiIcon } from 'skimple-components'
 import Protected from '~/components/Applications/Protected'
+import site from '~/site'
+import accessTokenUtils from '~/utils/access-token'
 
 export default {
   components: { SkiColumns, SkiColumn, SkiButton, SkiIcon, Protected },
@@ -66,9 +68,22 @@ export default {
   head: {
     title: 'Accès enseignant'
   },
+  mounted () {
+    if (Object.prototype.hasOwnProperty.call(this.$route.query, 'access_token')) {
+      let expiration
+      if (Object.prototype.hasOwnProperty.call(this.$route.query, 'expiration')) {
+        expiration = new Date(parseInt(this.$route.query.expiration.toString()))
+      } else {
+        expiration = new Date()
+        expiration.setDate(expiration.getDate() + site.github.authentication.cookieExpirationDays)
+      }
+      accessTokenUtils.storeAccessTokenInCookies(this.$cookies, this.$route.query.access_token, expiration)
+      window.location.href = '/prof'
+    }
+  },
   methods: {
     logout () {
-      this.$cookies.remove('access_token')
+      accessTokenUtils.removeAccessTokenFromCookies(this.$cookies)
       window.location.href = '/prof'
     }
   }

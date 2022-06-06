@@ -17,7 +17,8 @@ Sur Github, il va falloir créer une application OAUTH. Pour cela, rendez-vous s
 [ce lien](https://github.com/settings/applications/new).
 
 * Dans `Application name`, mettez ce que vous souhaitez.
-* Dans `Homepage URL` et dans `Authorization callback URL`, mettez l'URL de votre site web.
+* Dans `Homepage URL`, mettez l'URL de votre site web.
+* Dans `Authorization callback URL`, mettez l'URL de votre [API hébergée sur Vercel](#création-dun-projet-vercel).
   Se référer à [https://docs.github.com/en/developers/apps/building-oauth-apps/authorizing-oauth-apps#redirect-urls](ce lien)
   pour le dernier champ.
 
@@ -37,7 +38,8 @@ Dans les paramètres de votre dépôt Github, il va falloir créer deux secrets 
 ### Configuration
 
 Pour configurer le site web (nom, dépôt Github, répertoire des cours, etc.), il vous faut modifier le
-fichier `site.js`. Indiquez votre `Client ID` dans le champ `clientId`.
+fichier `site.js`. Indiquez votre `Client ID` dans le champ `clientId`
+(j'ai personnellement choisi de le laisser dans une variable d'environnement, mais c'est à vous de voir).
 
 Pour modifier le contenu de la page d'accueil, il faut éditer le fichier `pages/index.vue`.
 Une façon plus rapide (et intuitive...) de modifier les pages sera sûrement ajoutée à l'avenir.
@@ -103,3 +105,13 @@ Enfin, [pour éviter des builds inutiles](https://www.codejam.info/2021/09/verce
 
 Pour tester localement votre site web, une commande suffit : `npm run vercel`. Il vous faut également
 créer un fichier `.env` contenant toutes variables d'environnement listées [précédemment](#création-dun-projet-vercel).
+
+Si vous souhaitez tester le site en local avec toutes les fonctionnalités, il faudra également adapter les variables
+d'environnement ajoutées sur Vercel (en spécifiant bien lesquelles doivent être utilisées en production, et lesquelles
+doivent l'être en développement).
+
+Il faut également ajouter une variable d'environnement de développement intitulée `DEBUG_MODE` et contenant la valeur `true`.
+
+Voici un aperçu des mes variables d'environnement :
+
+![Variables d'environnement](https://user-images.githubusercontent.com/3882599/172180030-ad6c6f70-094b-49a8-88fd-69328c6fdb60.png)

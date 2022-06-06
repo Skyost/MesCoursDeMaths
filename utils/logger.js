@@ -1,5 +1,3 @@
-/* istanbul ignore file */
-
 const consola = require('consola')
 
 function warn (message, options = null) {

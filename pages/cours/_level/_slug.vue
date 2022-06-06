@@ -21,7 +21,7 @@
 
 <script>
 import { SkiButton, SkiIcon } from 'skimple-components'
-import level from '~/utils/level'
+import levelUtils from '~/utils/level'
 
 export default {
   components: { SkiButton, SkiIcon },
@@ -44,10 +44,10 @@ export default {
       if (this.$fetchState.pending) {
         return 'Chargement...'
       }
-      return this.lesson ? `${level.getLevelName(this.$route.params.level)} > ${this.lesson['page-title']}` : "Affichage d'un cours"
+      return this.lesson ? `${levelUtils.getLevelName(this.$route.params.level)} > ${this.lesson['page-title']}` : "Affichage d'un cours"
     },
     documentColor () {
-      return level.getLevelColor(this.$route.params.level)
+      return levelUtils.getLevelColor(this.$route.params.level)
     }
   }
 }

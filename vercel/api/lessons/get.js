@@ -1,4 +1,4 @@
-import github from '../../utils/octokit'
+import octokitUtils from '../../utils/octokit'
 import site from '../../../site'
 
 export default async function handler (request, response) {
@@ -7,7 +7,7 @@ export default async function handler (request, response) {
     response.status(400).send('Il manque au moins un paramètre.')
     return
   }
-  const octokit = github.createOctokitFromRequest(request, response)
+  const octokit = octokitUtils.createOctokitFromRequest(request, response)
   if (octokit === null) {
     return
   }

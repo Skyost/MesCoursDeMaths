@@ -29,7 +29,7 @@
 <script>
 import { SkiColumn, SkiColumns } from 'skimple-components'
 import ImageCard from '~/components/ImageCard'
-import level from '~/utils/level'
+import levelUtils from '~/utils/level'
 
 export default {
   components: { SkiColumns, SkiColumn, ImageCard },
@@ -49,10 +49,10 @@ export default {
       if (!Object.prototype.hasOwnProperty.call(levels, levelId)) {
         levels[levelId] = {
           id: levelId,
-          title: level.getLevelName(levelId),
-          number: level.getLevelAsNumber(levelId),
-          subtitle: `Cours de ${level.getLevelAsNumber(levelId)}e`,
-          color: level.getLevelColor(levelId),
+          title: levelUtils.getLevelName(levelId),
+          number: levelUtils.getLevelAsNumber(levelId),
+          subtitle: `Cours de ${levelUtils.getLevelAsNumber(levelId)}e`,
+          color: levelUtils.getLevelColor(levelId),
           url: `/cours/${levelId}/`,
           image: `/images/levels/${levelId}.svg`
         }

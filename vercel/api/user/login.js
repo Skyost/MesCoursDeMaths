@@ -1,7 +1,6 @@
-import crypto from '../../utils/crypto'
+import cryptoUtils from '../../utils/crypto'
 import site from '../../../site'
 
-const cookie = require('cookie')
 const { createOAuthAppAuth } = require('@octokit/auth-oauth-app')
 
 export default async function handler (request, response) {
@@ -18,10 +17,13 @@ export default async function handler (request, response) {
     if (githubResponse.token) {
       const expiration = new Date()
       expiration.setDate(expiration.getDate() + site.github.authentication.cookieExpirationDays)
-      response.setHeader('Set-Cookie', [
-        cookie.serialize('access_token', crypto.encrypt(githubResponse.token), { expires: expiration, path: '/' })
-      ])
-      response.redirect(`${site.site.url}/prof`)
+
+      const url = site.debug ? 'http://localhost:3000' : site.site.url
+      const params = new URLSearchParams({
+        access_token: cryptoUtils.encrypt(githubResponse.token),
+        expiration: expiration.getTime().toString()
+      })
+      response.redirect(`${url}/prof?${params}`)
     } else {
       response.status(500).send("Erreur provenant sûrement d'une mauvaise configuration.")
     }

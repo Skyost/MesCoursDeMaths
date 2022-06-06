@@ -34,9 +34,9 @@
 </template>
 
 <script>
-import { SkiColumns, SkiColumn, SkiButton, SkiIcon } from 'skimple-components'
+import { SkiButton, SkiColumn, SkiColumns, SkiIcon } from 'skimple-components'
 import ImageCard from '~/components/ImageCard'
-import level from '~/utils/level'
+import levelUtils from '~/utils/level'
 
 export default {
   components: { SkiColumns, SkiColumn, SkiButton, SkiIcon, ImageCard },
@@ -54,7 +54,7 @@ export default {
         id: lesson.slug,
         title: lesson.name,
         subtitle: `Chapitre ${lesson.number}`,
-        color: level.getLevelColor(this.$route.params.level),
+        color: levelUtils.getLevelColor(this.$route.params.level),
         url: `/cours/${this.$route.params.level}/${lesson.slug}/`
       }
     })
@@ -69,7 +69,7 @@ export default {
       return `Liste des cours de ${this.levelName}`
     },
     levelName () {
-      return level.getLevelName(this.$route.params.level)
+      return levelUtils.getLevelName(this.$route.params.level)
     }
   }
 }

@@ -80,7 +80,8 @@ export default {
 
   publicRuntimeConfig: {
     url,
-    apiUrl
+    apiUrl,
+    githubClientId: site.github.authentication.clientId
   },
 
   router: {

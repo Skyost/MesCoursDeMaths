@@ -5,14 +5,14 @@ export default {
     description: 'Petit site web où je mets tous mes cours à disposition ainsi que les ressources qui y sont liés.',
     author: 'Hugo Delaunay',
     url: 'https://mes-cours-de-maths.fr',
-    apiUrl: 'https://mes-cours-de-maths.vercel.app/api'
+    apiUrl: 'https://vercel.mes-cours-de-maths.fr/api'
   },
   github: {
     username: 'Skyost',
     repository: 'MesCoursDeMaths',
     dataRepository: 'Cours-HD',
     authentication: {
-      clientId: '9b549b66b9ffee93fa55',
+      clientId: process.env.GITHUB_CLIENT_ID,
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
       accessToken: process.env.GITHUB_PERSONAL_ACCESS_TOKEN,
       cookieExpirationDays: process.env.DEBUG_MODE ? 365 : 1
@@ -22,7 +22,7 @@ export default {
     downloadDirectory: process.env.GITHUB_DOWNLOAD_DIRECTORY || __dirname
   },
   encryptionKey: process.env.ENCRYPTION_KEY,
-  debug: process.env.DEBUG_MODE === 'true' || false,
+  debug: process.env.DEBUG_MODE === 'true',
   contentGenerator: {
     pdfDestination: 'pdf',
     imagesDestination: 'images/lessons',

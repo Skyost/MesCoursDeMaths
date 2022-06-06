@@ -2,7 +2,7 @@
   <protected>
     <div class="file-browser">
       <div class="text-end">
-        <ski-button v-if="exception" variant="light" @click.native="(exception = null) && refreshFileList()">
+        <ski-button v-if="exception" variant="light" @click.native="refreshFileList">
           <ski-icon icon="arrow-clockwise" /> Recharger
         </ski-button>
         <ski-button v-if="currentDirectory.length !== 0 && currentFile === null && !loading" variant="light" @click.native="goToParent">
@@ -22,7 +22,7 @@
       <h1>Cours</h1>
       <div v-if="exception" class="p-5 text-center">
         <p v-text="exception" />
-        <ski-button variant="link" @click="(exception = null) && refreshFileList()">
+        <ski-button variant="link" @click="refreshFileList">
           Recharger
         </ski-button>
       </div>
@@ -72,16 +72,10 @@ import CodeEditor from '~/components/Applications/Lessons/CodeEditor'
 import Protected from '~/components/Applications/Protected'
 import Spinner from '~/components/Spinner'
 import FileUploadButton from '~/components/Applications/FileUploadButton'
+import accessTokenUtils from '~/utils/access-token'
 
 export default {
-  components: {
-    FileUploadButton,
-    CodeEditor,
-    Protected,
-    Spinner,
-    SkiIcon,
-    SkiButton
-  },
+  components: { FileUploadButton, CodeEditor, Protected, Spinner, SkiIcon, SkiButton },
   data () {
     return {
       loading: true,
@@ -140,7 +134,8 @@ export default {
             name,
             path: file.path,
             sha: file.sha
-          }
+          },
+          headers: accessTokenUtils.getAuthorizationHeaders(this.$cookies)
         })
       })
       await this.refreshFileList()
@@ -153,6 +148,8 @@ export default {
             sha: file.sha
           }
         })
+      }, {
+        headers: accessTokenUtils.getAuthorizationHeaders(this.$cookies)
       })
     },
     async saveFileContent (path, content, sha) {
@@ -161,15 +158,20 @@ export default {
         data.sha = sha
       }
       await this.request(async () => {
-        await this.$axios.$post(`${this.$config.apiUrl}/lessons/update`, data)
+        await this.$axios.$post(`${this.$config.apiUrl}/lessons/update`, data, {
+          headers: accessTokenUtils.getAuthorizationHeaders(this.$cookies)
+        })
       })
     },
     async refreshFileList () {
+      this.fileList = null
+      this.exception = null
       await this.request(async () => {
         this.fileList = await this.$axios.$get(`${this.$config.apiUrl}/lessons/list`, {
           params: {
             path: this.currentDirectory
-          }
+          },
+          headers: accessTokenUtils.getAuthorizationHeaders(this.$cookies)
         })
       })
     },
@@ -189,7 +191,8 @@ export default {
             this.currentFile = await this.$axios.$get(`${this.$config.apiUrl}/lessons/get`, {
               params: {
                 path: data.path
-              }
+              },
+              headers: accessTokenUtils.getAuthorizationHeaders(this.$cookies)
             })
           })
       }
