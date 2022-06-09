@@ -1,6 +1,7 @@
 <template>
   <div>
     <social-head title="Liste des niveaux" />
+    <levels-navigation-entry />
     <h1>Liste des niveaux</h1>
     <ski-columns v-if="levels && levels.length > 0" class="justify-content-center">
       <ski-column
@@ -30,9 +31,10 @@
 import { SkiColumn, SkiColumns } from 'skimple-components'
 import ImageCard from '~/components/ImageCard'
 import levelUtils from '~/utils/level'
+import LevelsNavigationEntry from '~/components/Page/Navigation/Entries/LevelsNavigationEntry'
 
 export default {
-  components: { SkiColumns, SkiColumn, ImageCard },
+  components: { LevelsNavigationEntry, SkiColumns, SkiColumn, ImageCard },
   data () {
     return {
       levels: null

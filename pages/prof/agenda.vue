@@ -1,5 +1,7 @@
 <template>
   <protected>
+    <teacher-navigation-entry />
+    <page-navigation-entry title="Agenda" to="/prof/agenda/" />
     <h1>Agenda</h1>
     <ski-modal
       id="date-modal"
@@ -54,9 +56,11 @@ import Protected from '~/components/Applications/Protected'
 import Calendar from '~/components/Applications/Agenda/Calendar'
 import Spinner from '~/components/Spinner'
 import accessTokenUtils from '~/utils/access-token'
+import TeacherNavigationEntry from '~/components/Page/Navigation/Entries/TeacherNavigationEntry'
+import PageNavigationEntry from '~/components/Page/Navigation/Entries/PageNavigationEntry'
 
 export default {
-  components: { Calendar, Protected, Spinner, SkiButton, SkiModal },
+  components: { PageNavigationEntry, TeacherNavigationEntry, Calendar, Protected, Spinner, SkiButton, SkiModal },
   data () {
     return {
       currentDate: null,

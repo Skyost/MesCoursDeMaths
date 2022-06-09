@@ -1,5 +1,7 @@
 <template>
   <protected>
+    <teacher-navigation-entry />
+    <page-navigation-entry title="Cours" to="/prof/cours/" />
     <div class="file-browser">
       <div class="text-end">
         <ski-button v-if="exception" variant="light" @click.native="refreshFileList">
@@ -73,9 +75,11 @@ import Protected from '~/components/Applications/Protected'
 import Spinner from '~/components/Spinner'
 import FileUploadButton from '~/components/Applications/FileUploadButton'
 import accessTokenUtils from '~/utils/access-token'
+import TeacherNavigationEntry from '~/components/Page/Navigation/Entries/TeacherNavigationEntry'
+import PageNavigationEntry from '~/components/Page/Navigation/Entries/PageNavigationEntry'
 
 export default {
-  components: { FileUploadButton, CodeEditor, Protected, Spinner, SkiIcon, SkiButton },
+  components: { PageNavigationEntry, TeacherNavigationEntry, FileUploadButton, CodeEditor, Protected, Spinner, SkiIcon, SkiButton },
   data () {
     return {
       loading: true,

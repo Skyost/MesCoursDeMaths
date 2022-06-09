@@ -3,6 +3,8 @@
     <spinner />
   </div>
   <div v-else-if="lessons">
+    <levels-navigation-entry />
+    <lessons-navigation-entry :level="$route.params.level" />
     <social-head :title="title" />
     <div class="text-end">
       <ski-button variant="light" :to="`/cours/`">
@@ -37,9 +39,11 @@
 import { SkiButton, SkiColumn, SkiColumns, SkiIcon } from 'skimple-components'
 import ImageCard from '~/components/ImageCard'
 import levelUtils from '~/utils/level'
+import LevelsNavigationEntry from '~/components/Page/Navigation/Entries/LevelsNavigationEntry'
+import LessonsNavigationEntry from '~/components/Page/Navigation/Entries/LessonsNavigationEntry'
 
 export default {
-  components: { SkiColumns, SkiColumn, SkiButton, SkiIcon, ImageCard },
+  components: { LessonsNavigationEntry, LevelsNavigationEntry, SkiColumns, SkiColumn, SkiButton, SkiIcon, ImageCard },
   data () {
     return {
       lessons: null

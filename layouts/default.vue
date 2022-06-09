@@ -1,7 +1,7 @@
 <template>
   <div>
-    <page-header />
     <page-navbar />
+    <page-header />
     <page-content>
       <nuxt />
     </page-content>

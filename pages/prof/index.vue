@@ -1,5 +1,6 @@
 <template>
   <protected>
+    <teacher-navigation-entry />
     <div class="text-end">
       <ski-button variant="light" @click.native="logout">
         <ski-icon icon="box-arrow-left" /> Déconnexion
@@ -32,9 +33,10 @@ import { SkiButton, SkiColumn, SkiColumns, SkiIcon } from 'skimple-components'
 import Protected from '~/components/Applications/Protected'
 import site from '~/site'
 import accessTokenUtils from '~/utils/access-token'
+import TeacherNavigationEntry from '~/components/Page/Navigation/Entries/TeacherNavigationEntry'
 
 export default {
-  components: { SkiColumns, SkiColumn, SkiButton, SkiIcon, Protected },
+  components: { TeacherNavigationEntry, SkiColumns, SkiColumn, SkiButton, SkiIcon, Protected },
   data () {
     return {
       applications: [

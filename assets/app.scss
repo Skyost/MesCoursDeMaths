@@ -1,0 +1,15 @@
+$primary: darken(#2470b7, 2%);
+$header: #81d4fa;
+
+$enable-rounded: false;
+
+@import '~bootstrap/scss/bootstrap';
+
+html {
+  height: 100%;
+}
+
+body {
+  min-height: 100%;
+  background-color: $primary;
+}

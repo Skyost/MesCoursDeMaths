@@ -1,6 +1,9 @@
 <template>
-  <ski-navbar>
+  <ski-navbar brightness="primary" class="navbar-dark">
     <ski-navbar-collapse>
+      <ski-navbar-brand>
+        <img class="logo" src="/images/logo.svg" alt="Logo">
+      </ski-navbar-brand>
       <ski-navbar-items class="me-auto">
         <ski-navbar-item to="/" :active="$nuxt.$route.path === '/'">
           <ski-icon icon="house-door-fill" /> Accueil
@@ -19,11 +22,18 @@
 </template>
 
 <script>
-import { SkiIcon, SkiNavbar, SkiNavbarCollapse, SkiNavbarItem, SkiNavbarItems } from 'skimple-components'
+import {
+  SkiIcon,
+  SkiNavbar,
+  SkiNavbarBrand,
+  SkiNavbarCollapse,
+  SkiNavbarItem,
+  SkiNavbarItems
+} from 'skimple-components'
 
 export default {
   name: 'PageNavbar',
-  components: { SkiNavbar, SkiNavbarCollapse, SkiNavbarItems, SkiNavbarItem, SkiIcon },
+  components: { SkiNavbar, SkiNavbarBrand, SkiNavbarCollapse, SkiNavbarItems, SkiNavbarItem, SkiIcon },
   data () {
     return {
       request: null
@@ -31,3 +41,9 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+.logo {
+  height: 1.5em;
+}
+</style>

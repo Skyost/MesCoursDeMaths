@@ -4,6 +4,9 @@
   </div>
   <div v-else-if="lesson">
     <social-head :title="title" />
+    <levels-navigation-entry />
+    <lessons-navigation-entry :level="$route.params.level" />
+    <lesson-navigation-entry :level="$route.params.level" :lesson="lesson" />
     <div class="text-end">
       <ski-button variant="light" :to="`/cours/${$route.params.level}/`">
         <ski-icon icon="arrow-left" /> Retourner à la liste des cours
@@ -21,10 +24,13 @@
 
 <script>
 import { SkiButton, SkiIcon } from 'skimple-components'
+import LevelsNavigationEntry from '~/components/Page/Navigation/Entries/LevelsNavigationEntry'
+import LessonsNavigationEntry from '~/components/Page/Navigation/Entries/LessonsNavigationEntry'
+import LessonNavigationEntry from '~/components/Page/Navigation/Entries/LessonNavigationEntry'
 import levelUtils from '~/utils/level'
 
 export default {
-  components: { SkiButton, SkiIcon },
+  components: { LessonNavigationEntry, LessonsNavigationEntry, LevelsNavigationEntry, SkiButton, SkiIcon },
   data () {
     return {
       lesson: null

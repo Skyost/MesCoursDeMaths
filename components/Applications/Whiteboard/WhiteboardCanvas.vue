@@ -37,14 +37,11 @@
 </template>
 
 <script>
-import { SkiIcon, SkiButton } from 'skimple-components'
+import { SkiButton, SkiIcon } from 'skimple-components'
 
 export default {
   name: 'WhiteboardCanvas',
-  components: {
-    SkiIcon,
-    SkiButton
-  },
+  components: { SkiIcon, SkiButton },
   props: {
     enabled: {
       type: Boolean,

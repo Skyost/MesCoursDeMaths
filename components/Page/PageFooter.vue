@@ -1,10 +1,11 @@
 <template>
-  <footer class="page-footer bg-dark">
+  <footer class="page-footer bg-primary">
     <ski-container class="pt-4 pb-4">
       <ski-columns>
         <ski-column>
           <p class="mb-0">
             Copyright &copy; 2022 — <strong v-text="author" />. Tous droits réservés.
+            <br>Merci à <a href="https://www.freepik.com/author/pikisuperstar">FreePik</a> pour les illustrations.
           </p>
         </ski-column>
         <ski-column>
@@ -42,7 +43,7 @@
 </template>
 
 <script>
-import { SkiContainer, SkiColumns, SkiColumn } from 'skimple-components'
+import { SkiColumn, SkiColumns, SkiContainer } from 'skimple-components'
 import site from '~/site'
 
 export default {
@@ -58,7 +59,8 @@ export default {
 
 <style lang="scss" scoped>
 .page-footer {
-  padding: 0.5rem 1rem;
+  position: relative;
+  padding: 1rem 0.5rem;
   color: rgba(white, 0.5);
 
   h2 {

@@ -1,6 +1,7 @@
 <template>
   <div>
     <social-head title="Accueil" />
+    <home-navigation-entry />
     <h1>Bienvenue !</h1>
     <p>
       Bonjour et bienvenue sur ce site où je mettrai en ligne tous mes cours ainsi que les ressources qui y sont rattachées.
@@ -25,24 +26,21 @@
       </li>
     </ul>
     <h2>Licence</h2>
-    <p>
+    <p class="mb-0">
       Les contenus présents sur ce site sont disponibles sous licence
       <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.fr">CC BY-NC-SA 4.0</a>.
       Le site a été créé à l'aide de Github Pages et de Vercel. Il est
       <a :href="githubUrl">totalement open-source</a>.
     </p>
-    <div class="text-center text-black-50 fs-1 pt-4">
-      <ski-icon icon="calculator-fill" />
-    </div>
   </div>
 </template>
 
 <script>
-import { SkiIcon } from 'skimple-components'
 import site from '~/site'
+import HomeNavigationEntry from '~/components/Page/Navigation/Entries/HomeNavigationEntry'
 
 export default {
-  components: { SkiIcon },
+  components: { HomeNavigationEntry },
   head: {
     title: 'Accueil'
   },

@@ -1,43 +1,68 @@
 <template>
   <header class="page-header">
-    <ski-container>
-      <img class="page-header-image" src="/images/header.svg" alt="Header">
-      <h1 class="m-3" v-text="title" />
-      <hr>
-      <p class="mb-0" v-text="tagline" />
-    </ski-container>
+    <h1 class="page-header-title" v-text="title" />
+    <img class="page-header-image main" src="/images/layout/main.svg" alt="Maths">
+    <img class="page-header-image secondary" src="/images/layout/secondary.svg" alt="Maths">
+    <span class="page-header-navigation">
+      <page-navigation />
+    </span>
   </header>
 </template>
 
 <script>
-import { SkiContainer } from 'skimple-components'
 import site from '~/site'
+import PageNavigation from '@/components/Page/Navigation/PageNavigation'
 
 export default {
   name: 'PageHeader',
-  components: { SkiContainer },
+  components: { PageNavigation },
   computed: {
     title () {
       return site.site.title
-    },
-    tagline () {
-      return site.site.tagline
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+@import 'assets/app';
+
 .page-header {
-  position: relative;
-  color: white;
   text-align: center;
-  background-color: var(--bs-gray-dark);
+  position: relative;
+  color: darken($primary, 10%);
+  background-color: $header;
   padding: 40px;
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  .page-header-title {
+    font-size: 3rem;
+  }
 
   .page-header-image {
-    width: 90%;
-    max-width: 400px;
+    position: absolute;
+
+    &.main {
+      top: 10%;
+      left: 20px;
+      height: 110%;
+      max-width: 30%;
+    }
+
+    &.secondary {
+      top: 20%;
+      right: 40px;
+      height: 60%;
+      max-width: 30%;
+    }
+  }
+
+  .page-header-navigation {
+    display: block;
   }
 
   > * {

@@ -1,7 +1,6 @@
 export default {
   site: {
     title: 'Mes cours de maths',
-    tagline: 'Les cours de mathématiques de M. Delaunay, disponibles en ligne.',
     description: 'Petit site web où je mets tous mes cours à disposition ainsi que les ressources qui y sont liés.',
     author: 'Hugo Delaunay',
     url: 'https://mes-cours-de-maths.fr',

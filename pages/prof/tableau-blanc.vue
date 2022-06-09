@@ -1,5 +1,7 @@
 <template>
   <protected>
+    <teacher-navigation-entry />
+    <page-navigation-entry title="Tableau blanc" to="/prof/whiteboard/" />
     <div class="text-end">
       <ski-button variant="light" :class="{active: isDrawing}" @click.native="isDrawing = !isDrawing">
         <ski-icon :icon="isDrawing ? 'pencil-fill' : 'pencil'" /> Crayon
@@ -51,9 +53,11 @@ import WhiteboardCanvas from '~/components/Applications/Whiteboard/WhiteboardCan
 import StopwatchDraggable from '~/components/Applications/Whiteboard/StopwatchDraggable'
 import Protected from '~/components/Applications/Protected'
 import FileUploadButton from '~/components/Applications/FileUploadButton'
+import TeacherNavigationEntry from '~/components/Page/Navigation/Entries/TeacherNavigationEntry'
+import PageNavigationEntry from '~/components/Page/Navigation/Entries/PageNavigationEntry'
 
 export default {
-  components: { FileUploadButton, SkiButton, SkiIcon, Protected, StopwatchDraggable, WhiteboardCanvas, TextDraggable, PdfDraggable, ImageDraggable },
+  components: { PageNavigationEntry, TeacherNavigationEntry, FileUploadButton, SkiButton, SkiIcon, Protected, StopwatchDraggable, WhiteboardCanvas, TextDraggable, PdfDraggable, ImageDraggable },
   data () {
     return {
       textCount: 0,
