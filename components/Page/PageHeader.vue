@@ -6,8 +6,8 @@
       <div class="page-header-text">
         <h1 class="page-header-title" v-text="title" />
         <span class="page-header-navigation">
-        <page-navigation />
-      </span>
+          <page-navigation />
+        </span>
       </div>
     </ski-container>
   </header>
@@ -102,7 +102,7 @@ export default {
       display: block;
     }
 
-    @include media-breakpoint-down(md) {
+    @include media-breakpoint-down(lg) {
       max-width: 100%;
     }
   }

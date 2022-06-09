@@ -1,7 +1,7 @@
 <template>
   <ski-navbar brightness="primary" class="navbar-dark">
     <ski-navbar-collapse>
-      <ski-navbar-brand>
+      <ski-navbar-brand class="d-none d-lg-inline">
         <img class="logo" src="/images/logo.svg" alt="Logo">
       </ski-navbar-brand>
       <ski-navbar-items class="me-auto">
