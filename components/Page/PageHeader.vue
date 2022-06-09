@@ -1,21 +1,26 @@
 <template>
-  <header class="page-header">
-    <h1 class="page-header-title" v-text="title" />
-    <img class="page-header-image main" src="/images/layout/main.svg" alt="Maths">
-    <img class="page-header-image secondary" src="/images/layout/secondary.svg" alt="Maths">
-    <span class="page-header-navigation">
-      <page-navigation />
-    </span>
+  <header class="page-header-parent">
+    <ski-container class="page-header">
+      <img class="page-header-image main" src="/images/layout/main.svg" alt="Maths">
+      <img class="page-header-image secondary" src="/images/layout/secondary.svg" alt="Maths">
+      <div class="page-header-text">
+        <h1 class="page-header-title" v-text="title" />
+        <span class="page-header-navigation">
+        <page-navigation />
+      </span>
+      </div>
+    </ski-container>
   </header>
 </template>
 
 <script>
+import { SkiContainer } from 'skimple-components'
 import site from '~/site'
 import PageNavigation from '@/components/Page/Navigation/PageNavigation'
 
 export default {
   name: 'PageHeader',
-  components: { PageNavigation },
+  components: { PageNavigation, SkiContainer },
   computed: {
     title () {
       return site.site.title
@@ -25,22 +30,29 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import 'bootstrap/scss/_functions';
+@import 'bootstrap/scss/_variables';
 @import 'assets/app';
 
-.page-header {
-  text-align: center;
+.page-header-parent {
   position: relative;
   color: darken($primary, 10%);
   background-color: $header;
-  padding: 40px;
-  min-height: 300px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
 
-  .page-header-title {
-    font-size: 3rem;
+  .page-header {
+    position: relative;
+    text-align: center;
+    padding: 40px;
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    @include media-breakpoint-down(lg) {
+      min-height: 0;
+      padding-bottom: 200px;
+    }
   }
 
   .page-header-image {
@@ -51,6 +63,16 @@ export default {
       left: 20px;
       height: 110%;
       max-width: 30%;
+
+      @include media-breakpoint-down(md) {
+        position: relative;
+        max-width: 90%;
+        margin-bottom: 15px;
+      }
+
+      @include media-breakpoint-down(lg) {
+        top: 30%;
+      }
     }
 
     &.secondary {
@@ -58,11 +80,31 @@ export default {
       right: 40px;
       height: 60%;
       max-width: 30%;
+
+      @include media-breakpoint-down(md) {
+        display: none;
+      }
+
+      @include media-breakpoint-down(lg) {
+        top: 40%;
+      }
     }
   }
 
-  .page-header-navigation {
-    display: block;
+  .page-header-text {
+    max-width: 40%;
+
+    .page-header-title {
+      font-size: 3rem;
+    }
+
+    .page-header-navigation {
+      display: block;
+    }
+
+    @include media-breakpoint-down(md) {
+      max-width: 100%;
+    }
   }
 
   > * {

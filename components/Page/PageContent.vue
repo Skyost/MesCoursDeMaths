@@ -16,6 +16,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import 'bootstrap/scss/_functions';
+@import 'bootstrap/scss/_variables';
 @import 'assets/app';
 
 .page-content-parent {
@@ -27,6 +29,10 @@ export default {
     padding: 100px 60px 80px 60px;
     background-color: white;
     z-index: 1;
+
+    @include media-breakpoint-down(md) {
+      padding: 60px 40px;
+    }
   }
 
   &::before,
