@@ -1,9 +1,7 @@
 import octokitUtils from '../../utils/octokit'
 import site from '../../../site'
-import corsUtils from '../../utils/cors'
 
 export default async function handler (request, response) {
-  corsUtils.allowCors(response)
   const octokit = octokitUtils.createOctokitFromRequest(request, response)
   if (octokit === null) {
     return
