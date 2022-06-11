@@ -24,10 +24,20 @@ export default {
   },
   mounted () {
     this.$nuxt.$on('navigation', (data) => {
-      if (!this.navigationLinks.includes(data)) {
+      if (this.shouldAdd(data)) {
         this.navigationLinks.push(data)
       }
     })
+  },
+  methods: {
+    shouldAdd (data) {
+      for (const navigationLink of this.navigationLinks) {
+        if (navigationLink.to === data.to) {
+          return false
+        }
+      }
+      return true
+    }
   }
 }
 </script>

@@ -96,7 +96,6 @@ Une fois créé, nous allons devoir ajouter deux variables d'environnements (dan
 * `ENCRYPTION_KEY`, qui contient 32 caractères générés de manière aléatoire (majuscules, minuscules et chiffres uniquement).
 
 Dans les paramètres généraux, inscrivez `nuxt ../` en commande de développement et `vercel/` en répertoire racine.
-
 Le domaine spécifié dans _Domains_ doit correspondre avec l'`apiUrl` du fichier `site.js`.
 
 Enfin, [pour éviter des builds inutiles](https://www.codejam.info/2021/09/vercel-without-preview-deployments.html),

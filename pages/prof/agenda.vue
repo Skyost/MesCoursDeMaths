@@ -9,7 +9,7 @@
       :title="currentDate === null ? null : currentDate.toLocaleString('default', { day: 'numeric', month: 'numeric', year: 'numeric' })"
       :close-button="null"
       size="lg"
-      data-bs-backdrop="static"
+      data-bs-backdrop="false"
       data-bs-keyboard="false"
     >
       <div v-if="modalLoading" class="text-center">
@@ -45,6 +45,7 @@
         </ski-button>
       </template>
     </ski-modal>
+    <div id="modal-backdrop" ref="modalBackdrop" />
     <calendar ref="calendar" :dates="dates" @dayclick="onDayClicked" />
   </protected>
 </template>
@@ -87,6 +88,21 @@ export default {
       return this.modalMarkdownContent == null ? null : marked.parse(this.modalMarkdownContent)
     }
   },
+  async mounted () {
+    await this.$nextTick()
+    this.$refs.dateModal.$el.addEventListener('show.bs.modal', async () => {
+      document.querySelector('.page-header').style.zIndex = '1'
+      this.$refs.modalBackdrop.classList.add('d-block')
+      await new Promise(resolve => setTimeout(resolve, 1))
+      this.$refs.modalBackdrop.classList.add('visible')
+    })
+    this.$refs.dateModal.$el.addEventListener('hide.bs.modal', async () => {
+      this.$refs.modalBackdrop.classList.remove('visible')
+      await new Promise(resolve => setTimeout(resolve, 150))
+      document.querySelector('.page-header').style.zIndex = null
+      this.$refs.modalBackdrop.classList.remove('d-block')
+    })
+  },
   methods: {
     async onDayClicked (yyyymmdd) {
       const bootstrap = await import('bootstrap/dist/js/bootstrap.min')
@@ -124,5 +140,21 @@ export default {
 <style lang="scss" scoped>
 #editor {
   min-height: 200px;
+}
+
+#modal-backdrop {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: black;
+  transition: opacity 150ms;
+  opacity: 0;
+
+  &.visible {
+    opacity: 0.5;
+  }
 }
 </style>

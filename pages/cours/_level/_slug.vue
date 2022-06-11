@@ -72,7 +72,7 @@ export default {
 .lesson-control-buttons {
   display: flex;
   flex-direction: row;
-  justify-content: end;
+  justify-content: flex-end;
   column-gap: 8px;
   margin-bottom: 16px;
   flex-wrap: wrap;

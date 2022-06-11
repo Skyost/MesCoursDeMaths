@@ -94,7 +94,7 @@ export default {
   },
 
   loading: {
-    color: '#009688'
+    color: '#85b7e7'
   },
 
   axios: {
