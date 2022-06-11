@@ -99,7 +99,13 @@ Dans les paramètres généraux, inscrivez `nuxt ../` en commande de développem
 Le domaine spécifié dans _Domains_ doit correspondre avec l'`apiUrl` du fichier `site.js`.
 
 Enfin, [pour éviter des builds inutiles](https://www.codejam.info/2021/09/vercel-without-preview-deployments.html),
-écrivez `bash ./ignore.sh` dans la section _Ignored Build Step_ de l'onglet _Git_.
+écrivez par exemple 
+
+```shell
+if [[ "$VERCEL_GIT_COMMIT_REF" == "master" ]] ; then echo "✅ Ref is 'master'. The build can proceed !"; exit 1; else echo "🛑 Ref is not 'master'. Cancelling build..."; exit 0; fi
+```
+
+dans la section _Ignored Build Step_ de l'onglet _Git_.
 
 ## Tests locaux
 
