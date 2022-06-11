@@ -23,7 +23,11 @@ export default {
     }
   },
   mounted () {
-    this.$nuxt.$on('navigation', data => this.navigationLinks.push(data))
+    this.$nuxt.$on('navigation', (data) => {
+      if (!this.navigationLinks.includes(data)) {
+        this.navigationLinks.push(data)
+      }
+    })
   }
 }
 </script>

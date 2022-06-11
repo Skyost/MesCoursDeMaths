@@ -1,7 +1,5 @@
 # Mes cours de maths
 
-_Ce projet est en cours de construction, veuillez repasser plus tard !_
-
 Bienvenue sur la page Github du site web [Mes cours de maths](https://mes-cours-de-maths.fr) !
 Il s'agit d'un petit site web où je dépose tous mes cours de mathématiques ainsi que les ressources
 qui y sont liées.
@@ -10,6 +8,9 @@ Ce site est totalement open-source : vous pouvez tout à fait en exécuter une i
 Pour cela, suivez le guide ci-dessous.
 
 ## Installation
+
+Il est totalement possible pour vous de cloner sur le projet pour l'utiliser vous aussi !
+Pour cela, suivez le guide ci-dessous. Attention, des connaissances particulières du domaine sont requises.
 
 ### Création d'applications et de jetons
 

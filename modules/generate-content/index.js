@@ -23,10 +23,7 @@ module.exports = function () {
 
       const srcDir = this.nuxt.options.srcDir
 
-      const mdDir = path.resolve(srcDir, 'content')
-      const pdfDir = path.resolve(srcDir, 'static', site.contentGenerator.pdfDestination)
       const imagesDestDir = path.resolve(srcDir, 'static', site.contentGenerator.imagesDestination)
-      const imagesDestURL = site.contentGenerator.imagesDestination
 
       const imagesDirectories = Object.fromEntries(Object.entries(site.contentGenerator.imagesDirectories)
         .map(([imagesDir, destDir]) => [path.resolve(downloadDirectory, imagesDir), path.resolve(imagesDestDir, destDir)]))
@@ -42,7 +39,17 @@ module.exports = function () {
       for (const [directory, destination] of Object.entries(imagesDirectories)) {
         await handleImages(directory, destination)
       }
-      await processFiles(lessonsDirectory, mdDir, pdfDir, tikzImagesDir, imagesDestDir, imagesDestURL, pandocRedefinitions, ignored)
+      await processFiles(
+        lessonsDirectory,
+        path.resolve(srcDir, 'content'),
+        path.resolve(srcDir, 'static', site.contentGenerator.pdfDestination),
+        site.contentGenerator.pdfDestination,
+        tikzImagesDir,
+        imagesDestDir,
+        site.contentGenerator.imagesDestination,
+        pandocRedefinitions,
+        ignored
+      )
       await handleImages(tikzImagesDir, imagesDestDir)
     }
   })
@@ -68,7 +75,7 @@ async function downloadRemoteDirectory (lessonsDirectory) {
   fsExtra.removeSync(tempDirectory)
 }
 
-async function processFiles (directory, mdDir, pdfDir, tikzImagesDir, imagesDestDir, imagesDestURL, pandocRedefinitions, ignored) {
+async function processFiles (directory, mdDir, pdfDir, pdfDestURL, tikzImagesDir, imagesDestDir, imagesDestURL, pandocRedefinitions, ignored) {
   const files = fs.readdirSync(directory)
   for (const file of files) {
     const filePath = path.resolve(directory, file)
@@ -76,7 +83,17 @@ async function processFiles (directory, mdDir, pdfDir, tikzImagesDir, imagesDest
       continue
     }
     if (fs.lstatSync(filePath).isDirectory()) {
-      await processFiles(filePath, path.resolve(mdDir, file), path.resolve(pdfDir, file), path.resolve(tikzImagesDir, file), path.resolve(imagesDestDir, file), imagesDestURL + '/' + file, pandocRedefinitions, ignored)
+      await processFiles(
+        filePath,
+        path.resolve(mdDir, file),
+        path.resolve(pdfDir, file),
+        `${pdfDestURL}/${file}`,
+        path.resolve(tikzImagesDir, file),
+        path.resolve(imagesDestDir, file),
+        `${imagesDestURL}/${file}`,
+        pandocRedefinitions,
+        ignored
+      )
     } else if (file.endsWith('.tex')) {
       logger.info(`Processing "${filePath}"...`)
       const fileName = utils.getFileName(file)
@@ -89,12 +106,13 @@ async function processFiles (directory, mdDir, pdfDir, tikzImagesDir, imagesDest
           encoding: 'utf-8'
         })
         const root = parse(htmlContent)
+        const linkedResources = site.contentGenerator.getMarkdownLinkedResources(directory, file, pdfDestURL)
         replaceImages(root, path.resolve(imagesDestDir, fileName), imagesDestURL + '/' + fileName)
         replaceVspaceElements(root)
         adjustColSize(root)
         numberizeTitles(root)
         renderMath(root)
-        fs.writeFileSync(mdFile, toString(site.contentGenerator.fileNameFilter(fileName), root))
+        fs.writeFileSync(mdFile, toString(site.contentGenerator.fileNameFilter(fileName), root, linkedResources))
       }
       if (site.contentGenerator.shouldGeneratePDF(fileName) && latexmk(directory, file)) {
         fs.mkdirSync(pdfDir, { recursive: true })
@@ -106,9 +124,7 @@ async function processFiles (directory, mdDir, pdfDir, tikzImagesDir, imagesDest
 }
 
 function extractImages (filePath, tikzImagesDir) {
-  const originalFileName = utils.getFileName(filePath)
-  const imagesDir = path.resolve(tikzImagesDir, originalFileName)
-  const latexImagesDir = path.posix.join(path.relative(imagesDir, path.dirname(filePath)).split(path.sep).join(path.posix.sep), 'images')
+  const imagesDir = path.resolve(tikzImagesDir, utils.getFileName(filePath))
   const regex = /\\begin{tikzpicture}([\s\S]*?)\\end{tikzpicture}/sg
   const content = fs.readFileSync(filePath, { encoding: 'utf-8' }).toString()
   let match = regex.exec(content)
@@ -119,32 +135,7 @@ function extractImages (filePath, tikzImagesDir) {
   while (match != null) {
     const tikzPicture = match[0]
     const fileName = `tikz-${i}.tex`
-    fs.writeFileSync(path.resolve(imagesDir, fileName), `\\documentclass[tikz]{standalone}
-
-\\usepackage{tikz}
-\\usepackage{fourier-otf}
-\\usepackage{fontspec}
-\\usepackage{tkz-euclide}
-\\usepackage{pgfplots}
-\\usepackage{pgf-pie}
-\\usepackage{graphicx}
-\\usepackage{gensymb}
-
-\\setmathfont{Erewhon Math}
-
-\\usetikzlibrary{angles}
-\\usetikzlibrary{patterns}
-\\usetikzlibrary{intersections}
-\\usetikzlibrary{shadows.blur}
-\\usetikzlibrary{decorations.pathreplacing}
-\\usetikzlibrary{babel}
-
-\\graphicspath{{${latexImagesDir}}{${path.posix.join(latexImagesDir, originalFileName)}}}
-
-\\begin{document}
-  ${tikzPicture}
-\\end{document}
-`)
+    fs.writeFileSync(path.resolve(imagesDir, fileName), site.contentGenerator.createExtractedTikzImageFile(imagesDir, filePath, tikzPicture))
     i++
     match = regex.exec(content)
   }
@@ -266,7 +257,7 @@ async function handleImages (imagesDir, imagesDestDir) {
   }
 }
 
-function toString (slug, root) {
+function toString (slug, root, linkedResources) {
   const header = {}
   const title = root.querySelector('.doctitle p')
   if (title) {
@@ -283,6 +274,7 @@ function toString (slug, root) {
   if (number) {
     header.number = parseInt(number.innerHTML.trim())
   }
+  header['linked-resources'] = linkedResources
   return matter.stringify(root.innerHTML, header)
 }
 

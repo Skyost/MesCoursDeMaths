@@ -7,13 +7,22 @@
     <levels-navigation-entry />
     <lessons-navigation-entry :level="$route.params.level" />
     <lesson-navigation-entry :level="$route.params.level" :lesson="lesson" />
-    <div class="text-end">
-      <ski-button variant="light" :to="`/cours/${$route.params.level}/`">
-        <ski-icon icon="arrow-left" /> Retourner à la liste des cours
-      </ski-button>
-      <ski-button variant="light" :href="`/pdf/${$route.params.level}/${lesson.slug}.pdf`">
-        <ski-icon icon="file-earmark-pdf-fill" /> Télécharger le PDF
-      </ski-button>
+    <div>
+      <div class="lesson-control-buttons">
+        <span class="title"><ski-icon icon="list" /> Navigation</span>
+        <ski-button variant="light" :to="`/cours/${$route.params.level}/`">
+          <ski-icon icon="arrow-left" /> Retourner à la liste des cours
+        </ski-button>
+        <ski-button variant="light" :href="`/pdf/${$route.params.level}/${lesson.slug}.pdf`">
+          <ski-icon icon="file-earmark-pdf-fill" /> Télécharger le PDF
+        </ski-button>
+      </div>
+      <div v-if="lesson['linked-resources'].length > 0" class="lesson-control-buttons">
+        <span class="title"><ski-icon icon="paperclip" /> Ressources associées</span>
+        <ski-button v-for="resource in lesson['linked-resources']" :key="resource.url" :href="resource.url" variant="light">
+          <ski-icon v-if="resource.url.endsWith('.pdf')" icon="file-earmark-pdf-fill" /> {{ resource.title }}
+        </ski-button>
+      </div>
     </div>
     <math-document :document="lesson" :color="documentColor" />
   </div>
@@ -60,6 +69,26 @@ export default {
 </script>
 
 <style lang="scss">
+.lesson-control-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
+  column-gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+
+  .title {
+    flex-basis: 100%;
+    text-align: right;
+    font-size: 0.8em;
+    margin-bottom: 4px;
+  }
+
+  &:last-of-type {
+    margin-bottom: 24px;
+  }
+}
+
 .copyright {
   font-size: 0.75em;
   color: #939393;

@@ -28,7 +28,39 @@ export default {
     imagesDirectories: {
       'latex/sixieme/images': 'sixieme'
     },
-    fileNameFilter: (fileName) => {
+    createExtractedTikzImageFile (imagesDir, filePath, tikzPicture) {
+      const path = require('path')
+      const getFileName = require('./modules/generate-content/utils').default.getFileName
+
+      const latexImagesDir = path.posix.join(path.relative(imagesDir, path.dirname(filePath)).split(path.sep).join(path.posix.sep), 'images')
+      return `\\documentclass[tikz]{standalone}
+
+\\usepackage{tikz}
+\\usepackage{fourier-otf}
+\\usepackage{fontspec}
+\\usepackage{tkz-euclide}
+\\usepackage{pgfplots}
+\\usepackage{pgf-pie}
+\\usepackage{graphicx}
+\\usepackage{gensymb}
+
+\\setmathfont{Erewhon Math}
+
+\\usetikzlibrary{angles}
+\\usetikzlibrary{patterns}
+\\usetikzlibrary{intersections}
+\\usetikzlibrary{shadows.blur}
+\\usetikzlibrary{decorations.pathreplacing}
+\\usetikzlibrary{babel}
+
+\\graphicspath{{${latexImagesDir}}{${path.posix.join(latexImagesDir, getFileName(filePath))}}}
+
+\\begin{document}
+  ${tikzPicture}
+\\end{document}
+`
+    },
+    fileNameFilter (fileName) {
       if (fileName.endsWith('-cours')) {
         return fileName.substring(0, fileName.length - '-cours'.length)
       }
@@ -36,6 +68,35 @@ export default {
     },
     shouldGenerateMarkdown: fileName => fileName.endsWith('-cours'),
     shouldGeneratePDF: () => true,
+    getMarkdownLinkedResources (directory, file, pdfDestURL) {
+      const path = require('path')
+      const fs = require('fs')
+      const getFileName = require('./modules/generate-content/utils').default.getFileName
+
+      const fileName = getFileName(file)
+      if (fileName.endsWith('-cours')) {
+        const result = []
+        const prefix = this.fileNameFilter(fileName)
+        const files = fs.readdirSync(directory)
+        for (const directoryFile of files) {
+          const filePath = path.resolve(directory, directoryFile)
+          if (directoryFile.startsWith(prefix) && directoryFile.endsWith('.tex') && directoryFile !== file && this.shouldGeneratePDF(directoryFile)) {
+            const regex = /\\cours(\[[a-z ]*])?\{[A-Za-zÀ-ÖØ-öø-ÿ\d, ]+}\{([A-Za-zÀ-ÖØ-öø-ÿ\d, ]+)}/
+            const content = fs.readFileSync(filePath, { encoding: 'utf-8' }).toString()
+            const match = regex.exec(content)
+            if (match != null) {
+              const title = match[2]
+              result.push({
+                title,
+                url: `${pdfDestURL}/${this.fileNameFilter(getFileName(directoryFile))}.pdf`
+              })
+            }
+          }
+        }
+        return result
+      }
+      return []
+    },
     ignored: [
       'latex/sixieme/eleve.tex',
       'latex/sixieme/geogebra.tex',
