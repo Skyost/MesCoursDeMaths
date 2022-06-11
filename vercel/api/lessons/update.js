@@ -1,7 +1,9 @@
 import octokitUtils from '../../utils/octokit'
 import site from '../../../site'
+import corsUtils from '../../utils/cors'
 
 export default async function handler (request, response) {
+  corsUtils.allowCors(response)
   const path = request.body.path
   if (!path || !request.body.sha || !request.body.content) {
     response.status(400).send('Il manque au moins un paramètre.')
