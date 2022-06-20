@@ -42,10 +42,10 @@ export default {
       print.innerHTML = '<i class="bi bi-printer-fill"></i> Imprimer'
       exercise.parentNode.insertBefore(print, exercise.nextSibling)
     }
-    const tikzImages = this.$el.getElementsByClassName('tikz-image')
-    for (const tikzImage of tikzImages) {
-      tikzImage.onload = function () {
-        tikzImage.width = tikzImage.naturalWidth * 1.5
+    const extractedImages = this.$el.getElementsByClassName('extracted-image')
+    for (const extractedImage of extractedImages) {
+      extractedImage.onload = function () {
+        extractedImage.width = extractedImage.naturalWidth * 1.5
       }
     }
     const tables = this.$el.querySelectorAll('.math-document table')
@@ -194,6 +194,10 @@ export default {
 
     .table {
       background-color: white;
+
+      td {
+        height: 2.5em;
+      }
     }
 
     .center {

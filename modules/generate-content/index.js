@@ -19,7 +19,7 @@ module.exports = function () {
 
       const lessonsDirectory = path.resolve(downloadDirectory, site.github.lessonsDirectory)
       const pandocRedefinitions = path.resolve(lessonsDirectory, 'pandoc.tex')
-      const tikzImagesDir = path.resolve(lessonsDirectory, 'tikz-images')
+      const extractedImagesDir = path.resolve(lessonsDirectory, '.extracted-images')
 
       const srcDir = this.nuxt.options.srcDir
 
@@ -32,7 +32,7 @@ module.exports = function () {
         .map(file => path.resolve(downloadDirectory, file))
         .concat(Object.keys(imagesDirectories))
 
-      ignored.push(tikzImagesDir)
+      ignored.push(extractedImagesDir)
       ignored.push(pandocRedefinitions)
 
       await downloadRemoteDirectory(lessonsDirectory)
@@ -44,13 +44,13 @@ module.exports = function () {
         path.resolve(srcDir, 'content'),
         path.resolve(srcDir, 'static', site.contentGenerator.pdfDestination),
         site.contentGenerator.pdfDestination,
-        tikzImagesDir,
+        extractedImagesDir,
         imagesDestDir,
         site.contentGenerator.imagesDestination,
         pandocRedefinitions,
         ignored
       )
-      await handleImages(tikzImagesDir, imagesDestDir)
+      await handleImages(extractedImagesDir, imagesDestDir)
     }
   })
 }
@@ -75,7 +75,7 @@ async function downloadRemoteDirectory (lessonsDirectory) {
   fsExtra.removeSync(tempDirectory)
 }
 
-async function processFiles (directory, mdDir, pdfDir, pdfDestURL, tikzImagesDir, imagesDestDir, imagesDestURL, pandocRedefinitions, ignored) {
+async function processFiles (directory, mdDir, pdfDir, pdfDestURL, extractedImagesDir, imagesDestDir, imagesDestURL, pandocRedefinitions, ignored) {
   const files = fs.readdirSync(directory)
   for (const file of files) {
     const filePath = path.resolve(directory, file)
@@ -88,7 +88,7 @@ async function processFiles (directory, mdDir, pdfDir, pdfDestURL, tikzImagesDir
         path.resolve(mdDir, file),
         path.resolve(pdfDir, file),
         `${pdfDestURL}/${file}`,
-        path.resolve(tikzImagesDir, file),
+        path.resolve(extractedImagesDir, file),
         path.resolve(imagesDestDir, file),
         `${imagesDestURL}/${file}`,
         pandocRedefinitions,
@@ -100,7 +100,7 @@ async function processFiles (directory, mdDir, pdfDir, pdfDestURL, tikzImagesDir
       fs.mkdirSync(mdDir, { recursive: true })
       const mdFile = path.resolve(mdDir, site.contentGenerator.fileNameFilter(fileName) + '.md')
       if (site.contentGenerator.shouldGenerateMarkdown(fileName) && (!site.debug || !fs.existsSync(mdFile))) {
-        extractImages(filePath, tikzImagesDir)
+        extractImages(filePath, extractedImagesDir)
         const htmlContent = execSync(`pandoc "${path.relative(directory, pandocRedefinitions)}" "${filePath}" -t html --gladtex --number-sections --shift-heading-level-by=1 --html-q-tags`, {
           cwd: directory,
           encoding: 'utf-8'
@@ -123,21 +123,23 @@ async function processFiles (directory, mdDir, pdfDir, pdfDestURL, tikzImagesDir
   }
 }
 
-function extractImages (filePath, tikzImagesDir) {
-  const imagesDir = path.resolve(tikzImagesDir, utils.getFileName(filePath))
-  const regex = /\\begin{tikzpicture}([\s\S]*?)\\end{tikzpicture}/sg
-  const content = fs.readFileSync(filePath, { encoding: 'utf-8' }).toString()
-  let match = regex.exec(content)
-  if (match != null) {
-    fs.mkdirSync(imagesDir, { recursive: true })
-  }
-  let i = 1
-  while (match != null) {
-    const tikzPicture = match[0]
-    const fileName = `tikz-${i}.tex`
-    fs.writeFileSync(path.resolve(imagesDir, fileName), site.contentGenerator.createExtractedTikzImageFile(imagesDir, filePath, tikzPicture))
-    i++
-    match = regex.exec(content)
+function extractImages (filePath, extractedImagesDir) {
+  const imagesDir = path.resolve(extractedImagesDir, utils.getFileName(filePath))
+  for (const blockType of site.contentGenerator.imagesToExtract) {
+    // const regex = /\\begin{tikzpicture}([\s\S]*?)\\end{tikzpicture}/sg
+    const regex = new RegExp(`\\\\begin{${blockType}}([\\s\\S]*?)\\\\end{${blockType}}`, 'sg')
+    const content = fs.readFileSync(filePath, { encoding: 'utf-8' }).toString()
+    let match = regex.exec(content)
+    if (match != null) {
+      fs.mkdirSync(imagesDir, { recursive: true })
+    }
+    let i = 1
+    while (match != null) {
+      const fileName = `${blockType}-${i}.tex`
+      fs.writeFileSync(path.resolve(imagesDir, fileName), site.contentGenerator.generateExtractedImageFileContent(imagesDir, filePath, blockType, match[0]))
+      i++
+      match = regex.exec(content)
+    }
   }
 }
 
@@ -158,7 +160,11 @@ function replaceImages (root, imagesDestDir, imagesDestURL) {
   }
   const tikzImages = root.querySelectorAll('.tikz-image')
   for (let i = 0; i < tikzImages.length; i++) {
-    tikzImages[i].replaceWith(`<img src="${imagesDestURL}/tikz-${i + 1}.svg" class="tikz-image" alt="Tikz ${i}">`)
+    tikzImages[i].replaceWith(`<img src="${imagesDestURL}/tikz-${i + 1}.svg" class="extracted-image tikz-image" alt="Tikz ${i}">`)
+  }
+  const scratchImages = root.querySelectorAll('.scratch-image')
+  for (let i = 0; i < scratchImages.length; i++) {
+    scratchImages[i].replaceWith(`<img src="${imagesDestURL}/scratch-${i + 1}.svg" class="extracted-image scratch-image" alt="Scratch ${i}">`)
   }
 }
 

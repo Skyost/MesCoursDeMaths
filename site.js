@@ -28,7 +28,19 @@ export default {
     imagesDirectories: {
       'latex/sixieme/images': 'sixieme'
     },
-    createExtractedTikzImageFile (imagesDir, filePath, tikzPicture) {
+    imagesToExtract: ['tikzpicture', 'scratch'],
+    generateExtractedImageFileContent (imagesDir, filePath, blockType, content) {
+      if (blockType === 'scratch') {
+        return `\\documentclass{standalone}
+
+\\usepackage{scratch3}
+
+\\begin{document}
+  ${content}
+\\end{document}
+`
+      }
+
       const path = require('path')
       const getFileName = require('./modules/generate-content/utils').default.getFileName
 
@@ -56,7 +68,7 @@ export default {
 \\graphicspath{{${latexImagesDir}}{${path.posix.join(latexImagesDir, getFileName(filePath))}}}
 
 \\begin{document}
-  ${tikzPicture}
+  ${content}
 \\end{document}
 `
     },
