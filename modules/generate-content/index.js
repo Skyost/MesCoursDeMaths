@@ -160,7 +160,7 @@ function replaceImages (root, imagesDestDir, imagesDestURL) {
   }
   const tikzImages = root.querySelectorAll('.tikz-image')
   for (let i = 0; i < tikzImages.length; i++) {
-    tikzImages[i].replaceWith(`<img src="${imagesDestURL}/tikz-${i + 1}.svg" class="extracted-image tikz-image" alt="Tikz ${i}">`)
+    tikzImages[i].replaceWith(`<img src="${imagesDestURL}/tikzpicture-${i + 1}.svg" class="extracted-image tikz-image" alt="Tikz ${i}">`)
   }
   const scratchImages = root.querySelectorAll('.scratch-image')
   for (let i = 0; i < scratchImages.length; i++) {
