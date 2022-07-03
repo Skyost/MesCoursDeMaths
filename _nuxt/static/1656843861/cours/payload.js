@@ -1,0 +1,1 @@
+__NUXT_JSONP__("/cours", {data:[{}],fetch:{"0":{levels:[{id:"sixieme",title:"Sixième",number:"6",subtitle:"Cours de 6e",color:"red",url:"\u002Fcours\u002Fsixieme\u002F",image:"\u002Fimages\u002Flevels\u002Fsixieme.svg"}]}},mutations:void 0});

@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /api/
+Disallow: /_nuxt/
+Sitemap: https://mes-cours-de-maths.fr/sitemap.xml

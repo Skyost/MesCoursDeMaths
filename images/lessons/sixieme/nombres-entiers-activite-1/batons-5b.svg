@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="30pt" height="30pt" viewBox="0 0 30 30" version="1.2">
+<g id="surface1">
+<path style="fill-rule:nonzero;fill:rgb(0%,0%,0%);fill-opacity:1;stroke-width:0.09375;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M 3 25.988281 C 11 26 19 26 27 25.988281 C 27 25.5 27 24.5 27 24.011719 C 19 24 11 24 3 24.011719 C 3 24.5 3 25.5 3 25.988281 Z M 3 25.988281 " transform="matrix(1,0,0,-1,0,30)"/>
+<path style="fill-rule:nonzero;fill:rgb(0%,0%,0%);fill-opacity:1;stroke-width:0.09375;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M 3 20.988281 C 11 21 19 21 27 20.988281 C 27 20.5 27 19.5 27 19.011719 C 19 19 11 19 3 19.011719 C 3 19.5 3 20.5 3 20.988281 Z M 3 20.988281 " transform="matrix(1,0,0,-1,0,30)"/>
+<path style="fill-rule:nonzero;fill:rgb(0%,0%,0%);fill-opacity:1;stroke-width:0.09375;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M 3 15.988281 C 11 16 19 16 27 15.988281 C 27 15.5 27 14.5 27 14.011719 C 19 14 11 14 3 14.011719 C 3 14.5 3 15.5 3 15.988281 Z M 3 15.988281 " transform="matrix(1,0,0,-1,0,30)"/>
+<path style="fill-rule:nonzero;fill:rgb(0%,0%,0%);fill-opacity:1;stroke-width:0.09375;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M 3 10.988281 C 11 11 19 11 27 10.988281 C 27 10.5 27 9.5 27 9.011719 C 19 9 11 9 3 9.011719 C 3 9.5 3 10.5 3 10.988281 Z M 3 10.988281 " transform="matrix(1,0,0,-1,0,30)"/>
+<path style="fill-rule:nonzero;fill:rgb(0%,0%,0%);fill-opacity:1;stroke-width:0.09375;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M 3 5.988281 C 11 6 19 6 27 5.988281 C 27 5.5 27 4.5 27 4.011719 C 19 4 11 4 3 4.011719 C 3 4.5 3 5.5 3 5.988281 Z M 3 5.988281 " transform="matrix(1,0,0,-1,0,30)"/>
+</g>
+</svg>
