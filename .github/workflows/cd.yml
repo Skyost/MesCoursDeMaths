@@ -65,8 +65,6 @@ jobs:
       #     mpm --update
       #     sudo initexmf --admin --update-fndb
       #     miktex --version
-      - name: Using legacy OpenSSL provider 🪄 # TODO: Should be temporary.
-        run: export NODE_OPTIONS=--openssl-legacy-provider
       - name: Generate ⚙️
         run: npm run generate
         env:
