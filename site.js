@@ -26,7 +26,9 @@ export default {
     pdfDestination: 'pdf',
     imagesDestination: 'images/lessons',
     imagesDirectories: {
-      'latex/sixieme/images': 'sixieme'
+      'latex/sixieme/images': 'sixieme',
+      'latex/cinquieme/images': 'cinquieme',
+      'latex/troisieme/images': 'troisieme'
     },
     imagesToExtract: ['tikzpicture', 'scratch'],
     generateExtractedImageFileContent (imagesDir, filePath, blockType, content) {
@@ -92,7 +94,7 @@ export default {
         const files = fs.readdirSync(directory)
         for (const directoryFile of files) {
           const filePath = path.resolve(directory, directoryFile)
-          if (directoryFile.startsWith(prefix) && directoryFile.endsWith('.tex') && directoryFile !== file && this.shouldGeneratePDF(directoryFile)) {
+          if (directoryFile.startsWith(prefix) && directoryFile.endsWith('.tex') && !directoryFile.includes('interrogation') && directoryFile !== file && this.shouldGeneratePDF(directoryFile)) {
             const regex = /\\cours(\[[a-z ]*])?\{[A-Za-zÀ-ÖØ-öø-ÿ\d, ]+}\{([A-Za-zÀ-ÖØ-öø-ÿ\d, ]+)}/
             const content = fs.readFileSync(filePath, { encoding: 'utf-8' }).toString()
             const match = regex.exec(content)
@@ -110,11 +112,11 @@ export default {
       return []
     },
     ignored: [
-      'latex/sixieme/eleve.tex',
-      'latex/sixieme/geogebra.tex',
-      'latex/sixieme/groupes.tex',
-      'latex/sixieme/impression.tex',
-      'latex/sixieme/scratch.tex'
+      'latex/eleve.tex',
+      'latex/geogebra.tex',
+      'latex/groupes.tex',
+      'latex/impression.tex',
+      'latex/scratch.tex'
     ]
   }
 }
