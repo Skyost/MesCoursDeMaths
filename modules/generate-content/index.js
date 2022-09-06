@@ -2,6 +2,7 @@ import path from 'path'
 import fs from 'fs'
 import { execSync } from 'child_process'
 import { parse } from 'node-html-parser'
+import { ExpireDate, PasteClient, Publicity } from 'pastebin-api'
 import site from '../../site'
 import utils from './utils'
 
@@ -11,6 +12,8 @@ const fsExtra = require('fs-extra')
 const katex = require('katex')
 const matter = require('gray-matter')
 const logger = require('../../utils/logger')
+
+const pasteClient = site.debug.pasteBinApiKey ? new PasteClient(site.debug.pasteBinApiKey) : null
 
 module.exports = function () {
   this.nuxt.hook('build:compile', async ({ name }) => {
@@ -114,7 +117,7 @@ async function processFiles (directory, mdDir, pdfDir, pdfDestURL, extractedImag
         renderMath(root)
         fs.writeFileSync(mdFile, toString(site.contentGenerator.fileNameFilter(fileName), root, linkedResources))
       }
-      if (site.contentGenerator.shouldGeneratePDF(fileName) && latexmk(directory, file)) {
+      if (site.contentGenerator.shouldGeneratePDF(fileName) && await latexmk(directory, file)) {
         fs.mkdirSync(pdfDir, { recursive: true })
         fs.copyFileSync(path.resolve(directory, `${fileName}.pdf`), path.resolve(pdfDir, `${site.contentGenerator.fileNameFilter(fileName)}.pdf`))
         execSync('latexmk -quiet -c', { cwd: directory })
@@ -247,7 +250,7 @@ async function handleImages (imagesDir, imagesDestDir) {
       await handleImages(filePath, path.resolve(imagesDestDir, file))
     } else if (file.endsWith('.tex')) {
       logger.info(`Handling image "${filePath}"...`)
-      if (latexmk(imagesDir, file)) {
+      if (await latexmk(imagesDir, file)) {
         const svgFile = pdftocairo(imagesDir, file)
         fs.mkdirSync(imagesDestDir, { recursive: true })
         fs.copyFileSync(path.resolve(imagesDir, svgFile), path.resolve(imagesDestDir, svgFile))
@@ -284,7 +287,7 @@ function toString (slug, root, linkedResources) {
   return matter.stringify(root.innerHTML, header)
 }
 
-function latexmk (directory, file) {
+async function latexmk (directory, file) {
   try {
     if (site.debug && fs.existsSync(path.resolve(directory, file.replace('.tex', '.pdf')))) {
       return false
@@ -295,8 +298,17 @@ function latexmk (directory, file) {
     logger.error(ex)
     const logFile = file.replace('.tex', '.log')
     if (fs.existsSync(logFile)) {
+      const logString = fs.readFileSync(logFile, { encoding: 'utf-8' }).toString()
       logger.error('Here is the log :')
-      logger.error(fs.readFileSync(logFile, { encoding: 'utf-8' }).toString())
+      logger.error(logString)
+      if (pasteClient) {
+        await pasteClient.createPaste({
+          code: logString,
+          expireDate: ExpireDate.OneDay,
+          name: `${(new Date()).getTime()}-${logFile}`,
+          publicity: Publicity.Public
+        })
+      }
     }
     return false
   }

@@ -16,6 +16,9 @@ export default {
       accessToken: process.env.GITHUB_PERSONAL_ACCESS_TOKEN,
       cookieExpirationDays: process.env.DEBUG_MODE ? 365 : 1
     },
+    debug: {
+      pasteBinApiKey: process.env.PASTEBIN_API_KEY
+    },
     lessonsDirectory: 'latex/',
     calendarFile: 'calendar.json',
     downloadDirectory: process.env.GITHUB_DOWNLOAD_DIRECTORY || __dirname
@@ -28,6 +31,7 @@ export default {
     imagesDirectories: {
       'latex/sixieme/images': 'sixieme',
       'latex/cinquieme/images': 'cinquieme',
+      'latex/quatrieme/images': 'quatrieme',
       'latex/troisieme/images': 'troisieme'
     },
     imagesToExtract: ['tikzpicture', 'scratch'],
