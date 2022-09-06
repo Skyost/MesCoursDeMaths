@@ -2,7 +2,6 @@ import path from 'path'
 import fs from 'fs'
 import { execSync } from 'child_process'
 import { parse } from 'node-html-parser'
-import { ExpireDate, PasteClient, Publicity } from 'pastebin-api'
 import site from '../../site'
 import utils from './utils'
 
@@ -12,9 +11,6 @@ const fsExtra = require('fs-extra')
 const katex = require('katex')
 const matter = require('gray-matter')
 const logger = require('../../utils/logger')
-
-const pasteClient = site.pastebin.apiKey ? new PasteClient(site.pastebin.apiKey) : null
-let pasteApiUserKey
 
 module.exports = function () {
   this.nuxt.hook('build:compile', async ({ name }) => {
@@ -302,20 +298,6 @@ async function latexmk (directory, file) {
       const logString = fs.readFileSync(logFile, { encoding: 'utf-8' }).toString()
       logger.error('Here is the log :')
       logger.error(logString)
-      if (pasteClient) {
-        logger.error('Uploading the log on Pastebin...')
-        if (pasteClient && site.pastebin.username && site.pastebin.password && !pasteApiUserKey) {
-          pasteApiUserKey = await pasteClient.login({ name: site.pastebin.username, password: site.pastebin.password })
-        }
-        const result = await pasteClient.createPaste({
-          code: logString,
-          expireDate: ExpireDate.OneDay,
-          name: logFile,
-          publicity: Publicity.Public,
-          apiUserKey: pasteApiUserKey
-        })
-        logger.error(`Done : ${result}.`)
-      }
     }
     return false
   }

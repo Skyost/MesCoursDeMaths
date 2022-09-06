@@ -48,7 +48,6 @@
     "gray-matter": "^4.0.3",
     "katex": "^0.15.3",
     "node-html-parser": "^5.3.3",
-    "pastebin-api": "^5.1.4",
     "sass": "^1.37.5",
     "sass-loader": "^10.1.1",
     "stylelint": "^13.13.1",
