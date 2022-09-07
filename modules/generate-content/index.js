@@ -114,7 +114,7 @@ async function processFiles (directory, mdDir, pdfDir, pdfDestURL, extractedImag
         renderMath(root)
         fs.writeFileSync(mdFile, toString(site.contentGenerator.fileNameFilter(fileName), root, linkedResources))
       }
-      if (site.contentGenerator.shouldGeneratePDF(fileName) && await latexmk(directory, file)) {
+      if (site.contentGenerator.shouldGeneratePDF(fileName) && latexmk(directory, file)) {
         fs.mkdirSync(pdfDir, { recursive: true })
         fs.copyFileSync(path.resolve(directory, `${fileName}.pdf`), path.resolve(pdfDir, `${site.contentGenerator.fileNameFilter(fileName)}.pdf`))
         execSync('latexmk -quiet -c', { cwd: directory })
@@ -247,7 +247,7 @@ async function handleImages (imagesDir, imagesDestDir) {
       await handleImages(filePath, path.resolve(imagesDestDir, file))
     } else if (file.endsWith('.tex')) {
       logger.info(`Handling image "${filePath}"...`)
-      if (await latexmk(imagesDir, file)) {
+      if (latexmk(imagesDir, file)) {
         const svgFile = pdftocairo(imagesDir, file)
         fs.mkdirSync(imagesDestDir, { recursive: true })
         fs.copyFileSync(path.resolve(imagesDir, svgFile), path.resolve(imagesDestDir, svgFile))
@@ -284,7 +284,7 @@ function toString (slug, root, linkedResources) {
   return matter.stringify(root.innerHTML, header)
 }
 
-async function latexmk (directory, file) {
+function latexmk (directory, file) {
   try {
     if (site.debug && fs.existsSync(path.resolve(directory, file.replace('.tex', '.pdf')))) {
       return false

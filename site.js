@@ -70,6 +70,8 @@ export default {
 
 \\graphicspath{{${latexImagesDir}}{${path.posix.join(latexImagesDir, getFileName(filePath))}}}
 
+\\newcommand{\\dddots}[1]{\\makebox[#1]{\\dotfill}}
+
 \\begin{document}
   ${content}
 \\end{document}
