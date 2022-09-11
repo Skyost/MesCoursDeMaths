@@ -149,6 +149,7 @@ async function processFiles (resolver, contentGenerator, directory, mdDir, pdfDi
       if (contentGenerator.shouldGeneratePDF(fileName)) {
         const checksums = calculateTexFileChecksums(resolver, filePath, imagesDir)
         const pdfUrl = `${siteMeta.url}/${pdfDestURL}/${filteredFileName}.pdf`
+        fs.mkdirSync(pdfDir, { recursive: true })
         fs.writeFileSync(resolver.resolve(pdfDir, `${filteredFileName}.pdf.checksums`), JSON.stringify(checksums))
         if (!debug.debug && await areRemoteChecksumsTheSame(checksums, pdfUrl)) {
           const downloader = new Downloader({
@@ -157,7 +158,6 @@ async function processFiles (resolver, contentGenerator, directory, mdDir, pdfDi
           })
           await downloader.download()
         } else if (latexmk(resolver, directory, file)) {
-          fs.mkdirSync(pdfDir, { recursive: true })
           fs.copyFileSync(resolver.resolve(directory, `${fileName}.pdf`), resolver.resolve(pdfDir, `${filteredFileName}.pdf`))
           execSync('latexmk -quiet -c', { cwd: directory })
         }
