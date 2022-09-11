@@ -9,7 +9,7 @@
           <ski-icon icon="house-door-fill" /> Accueil
         </ski-navbar-item>
         <ski-navbar-item to="/cours/" :active="$route.path.startsWith('/cours')">
-          <ski-icon icon="bookmark-fill" /> Liste des cours
+          <ski-icon icon="bookmark-fill" /> Accéder aux cours
         </ski-navbar-item>
       </ski-navbar-items>
       <ski-navbar-items>

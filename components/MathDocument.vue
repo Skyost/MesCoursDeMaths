@@ -33,13 +33,14 @@ export default {
     window.addEventListener('load', this.resizeDotLines)
     window.addEventListener('resize', this.resizeDotLines)
   },
-  destroyed () {
-    // TODO: Website blocks after load
+  unmounted () {
     if (this.setupTimeout) {
       clearTimeout(this.setupTimeout)
+      this.setupTimeout = null
     }
     if (this.initialDotsTimeout) {
       clearTimeout(this.initialDotsTimeout)
+      this.initialDotsTimeout = null
     }
     window.removeEventListener('load', this.resizeDotLines)
     window.removeEventListener('resize', this.resizeDotLines)

@@ -53,13 +53,24 @@ export default {
       tool: 'pen',
       isDrawing: false,
       canvasContext: null,
-      drawColor: '#e91e63'
+      drawColor: '#e91e63',
+      initialResizeTimeout: null
     }
   },
   async mounted () {
     await this.$nextTick()
     window.addEventListener('resize', this.resizeCanvas, false)
-    this.resizeCanvas()
+    this.initialResizeTimeout = setTimeout(() => {
+      this.resizeCanvas()
+      this.initialResizeTimeout = null
+    }, 1000)
+  },
+  unmounted () {
+    if (this.initialResizeTimeout) {
+      clearTimeout(this.initialResizeTimeout)
+      this.initialResizeTimeout = null
+    }
+    window.removeEventListener('resize', this.resizeCanvas, false)
   },
   methods: {
     toggleEraser () {
