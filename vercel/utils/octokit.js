@@ -1,8 +1,7 @@
 import 'dotenv/config'
+import { Octokit } from '@octokit/core'
 import accessTokenUtils from '../../utils/access-token'
 import cryptoUtils from './crypto'
-
-const { Octokit } = require('@octokit/core')
 
 function createOctokitFromRequest (request, response) {
   const accessToken = accessTokenUtils.readAccessTokenFromHeaders(request.headers)

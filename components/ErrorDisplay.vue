@@ -15,14 +15,30 @@
 export default {
   name: 'ErrorDisplay',
   props: {
-    errorCode: {
-      type: Number,
-      default: 500
+    error: {
+      type: null,
+      required: true
     }
   },
   computed: {
+    errorCode () {
+      if (/^-?\d+$/.test(this.error.toString())) {
+        return parseInt(this.error.toString())
+      }
+      if (Object.prototype.hasOwnProperty.call(this.error, 'statusCode')) {
+        return parseInt(this.error.statusCode)
+      }
+      return null
+    },
     title () {
-      return this.errorCode === 404 ? 'Page non trouvée !' : (`Erreur${this.statusCode ? (' ' + this.statusCode) : ''}`)
+      const errorCode = this.errorCode
+      if (errorCode === 404) {
+        return 'Page non trouvée !'
+      }
+      if (errorCode) {
+        return `Erreur ${errorCode}`
+      }
+      return 'Erreur'
     }
   }
 }

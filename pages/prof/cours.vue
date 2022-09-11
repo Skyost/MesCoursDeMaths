@@ -4,20 +4,20 @@
     <page-navigation-entry title="Cours" to="/prof/cours/" />
     <div class="file-browser">
       <div class="text-end">
-        <ski-button v-if="exception" variant="light" @click.native="refreshFileList">
+        <ski-button v-if="exception" variant="light" @click="refreshFileList">
           <ski-icon icon="arrow-clockwise" /> Recharger
         </ski-button>
-        <ski-button v-if="currentDirectory.length !== 0 && currentFile === null && !loading" variant="light" @click.native="goToParent">
+        <ski-button v-if="currentDirectory.length !== 0 && currentFile === null && !loading" variant="light" @click="goToParent">
           <ski-icon icon="arrow-90deg-up" /> Dossier parent
         </ski-button>
-        <ski-button v-if="currentFile === null && !loading" variant="light" @click.native="createNewFile">
+        <ski-button v-if="currentFile === null && !loading" variant="light" @click="createNewFile">
           <ski-icon icon="file-earmark-plus-fill" /> Nouveau
         </ski-button>
         <file-upload-button v-if="currentFile === null && !loading" icon="cloud-upload-fill" text="Uploader" accept=".tex" @fileloaded="onFileLoaded" />
-        <ski-button v-if="currentFile !== null && !loading" variant="light" @click.native="saveFileContent(currentFile.path, window.btoa($refs.editor.$data.document), currentFile.sha)">
+        <ski-button v-if="currentFile !== null && !loading" variant="light" @click="saveFileContent(currentFile.path, window.btoa($refs.editor.$data.document), currentFile.sha)">
           <ski-icon icon="cloud-download-fill" /> Enregistrer
         </ski-button>
-        <ski-button v-if="currentFile !== null && !loading" variant="light" @click.native="currentFile = null">
+        <ski-button v-if="currentFile !== null && !loading" variant="light" @click="currentFile = null">
           <ski-icon icon="x-lg" /> Fermer
         </ski-button>
       </div>
@@ -74,9 +74,9 @@ import CodeEditor from '~/components/Applications/Lessons/CodeEditor'
 import Protected from '~/components/Applications/Protected'
 import Spinner from '~/components/Spinner'
 import FileUploadButton from '~/components/Applications/FileUploadButton'
-import accessTokenUtils from '~/utils/access-token'
 import TeacherNavigationEntry from '~/components/Page/Navigation/Entries/TeacherNavigationEntry'
 import PageNavigationEntry from '~/components/Page/Navigation/Entries/PageNavigationEntry'
+import accessTokenUtils from '~/utils/access-token'
 
 export default {
   components: { PageNavigationEntry, TeacherNavigationEntry, FileUploadButton, CodeEditor, Protected, Spinner, SkiIcon, SkiButton },
@@ -89,13 +89,6 @@ export default {
       exception: null
     }
   },
-  fetchOnServer: false,
-  async fetch () {
-    await this.refreshFileList()
-  },
-  head: {
-    title: 'Cours'
-  },
   computed: {
     currentPath () {
       return '/' + this.currentDirectory + (this.currentFile === null ? '' : this.currentFile.path)
@@ -106,6 +99,9 @@ export default {
       }
       return this.base64Decode(this.currentFile.content)
     }
+  },
+  async mounted () {
+    await this.refreshFileList()
   },
   methods: {
     async onFileLoaded (data) {
@@ -133,27 +129,27 @@ export default {
         return
       }
       await this.request(async () => {
-        await this.$axios.$get(`${this.$config.apiUrl}/lessons/rename`, {
+        await $fetch(`${this.$config.apiUrl}/lessons/rename`, {
           params: {
             name,
             path: file.path,
             sha: file.sha
           },
-          headers: accessTokenUtils.getAuthorizationHeaders(this.$cookies)
+          headers: accessTokenUtils.getAuthorizationHeaders()
         })
       })
       await this.refreshFileList()
     },
     async deleteFile (file) {
       await this.request(async () => {
-        await this.$axios.$get(`${this.$config.apiUrl}/lessons/delete`, {
+        await $fetch(`${this.$config.apiUrl}/lessons/delete`, {
           params: {
             path: file.path,
             sha: file.sha
           }
         })
       }, {
-        headers: accessTokenUtils.getAuthorizationHeaders(this.$cookies)
+        headers: accessTokenUtils.getAuthorizationHeaders()
       })
     },
     async saveFileContent (path, content, sha) {
@@ -162,8 +158,10 @@ export default {
         data.sha = sha
       }
       await this.request(async () => {
-        await this.$axios.$post(`${this.$config.apiUrl}/lessons/update`, data, {
-          headers: accessTokenUtils.getAuthorizationHeaders(this.$cookies)
+        await $fetch(`${this.$config.apiUrl}/lessons/update`, {
+          method: 'POST',
+          body: data,
+          headers: accessTokenUtils.getAuthorizationHeaders()
         })
       })
     },
@@ -171,11 +169,11 @@ export default {
       this.fileList = null
       this.exception = null
       await this.request(async () => {
-        this.fileList = await this.$axios.$get(`${this.$config.apiUrl}/lessons/list`, {
+        this.fileList = await $fetch(`${this.$config.apiUrl}/lessons/list`, {
           params: {
             path: this.currentDirectory
           },
-          headers: accessTokenUtils.getAuthorizationHeaders(this.$cookies)
+          headers: accessTokenUtils.getAuthorizationHeaders()
         })
       })
     },
@@ -192,11 +190,11 @@ export default {
           break
         case 'file':
           await this.request(async () => {
-            this.currentFile = await this.$axios.$get(`${this.$config.apiUrl}/lessons/get`, {
+            this.currentFile = await $fetch(`${this.$config.apiUrl}/lessons/get`, {
               params: {
                 path: data.path
               },
-              headers: accessTokenUtils.getAuthorizationHeaders(this.$cookies)
+              headers: accessTokenUtils.getAuthorizationHeaders()
             })
           })
       }

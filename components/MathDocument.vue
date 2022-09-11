@@ -1,7 +1,7 @@
 <template>
   <div class="math-document" :class="color">
     <h1 v-html="document.name" />
-    <nuxt-content class="math-document-content" :document="document" />
+    <content-renderer class="math-document-content" :value="document" />
   </div>
 </template>
 
@@ -20,81 +20,88 @@ export default {
       default: 'red'
     }
   },
+  data () {
+    return {
+      setupTimeout: null,
+      initialDotsTimeout: null
+    }
+  },
   async mounted () {
     await this.$nextTick()
-    const exercises = this.$el.getElementsByClassName('bubble-exercice')
-    for (let i = 0; i < exercises.length; i++) {
-      const exercise = exercises[i]
-      exercise.style.setProperty('--number', `'${i + 1}'`)
-      const print = document.createElement('span')
-      print.style.fontSize = '0.8em'
-      print.style.float = 'right'
-      print.style.marginTop = '-1.6em'
-      print.style.cursor = 'pointer'
-      print.style.alignSelf = 'end'
-      print.onclick = async function () {
-        const canvas = await html2canvas(exercise)
-        const newWindow = window.open()
-        newWindow.document.body.appendChild(canvas)
-        newWindow.print()
-        newWindow.close()
-      }
-      print.innerHTML = '<i class="bi bi-printer-fill"></i> Imprimer'
-      exercise.parentNode.insertBefore(print, exercise.nextSibling)
-    }
-    const extractedImages = this.$el.getElementsByClassName('extracted-image')
-    for (const extractedImage of extractedImages) {
-      extractedImage.onload = function () {
-        extractedImage.width = extractedImage.naturalWidth * 1.5
-      }
-    }
-    const tables = this.$el.querySelectorAll('.math-document table')
-    for (const table of tables) {
-      table.classList.add('table')
-      table.classList.add('table-bordered')
-      table.classList.add('table-hover')
-    }
-    const dotLines = this.$el.getElementsByClassName('dots')
-    for (const dotLine of dotLines) {
-      const parent = dotLine.parentNode
-      const base = parent.closest('.base')
-      if (base) {
-        base.style.width = 'initial'
-      }
-      const enclosing = parent.closest('.enclosing')
-      if (enclosing) {
-        enclosing.style.display = 'inline-block'
-        enclosing.style.textAlign = 'center'
-      }
-    }
-    setTimeout(this.resizeDotLines, 1000)
+    this.setupTimeout = setTimeout(this.setupDocument, 1000)
+    this.initialDotsTimeout = setTimeout(this.resizeDotLines, 1000)
     window.addEventListener('load', this.resizeDotLines)
     window.addEventListener('resize', this.resizeDotLines)
   },
   destroyed () {
+    // TODO: Website blocks after load
+    if (this.setupTimeout) {
+      clearTimeout(this.setupTimeout)
+    }
+    if (this.initialDotsTimeout) {
+      clearTimeout(this.initialDotsTimeout)
+    }
     window.removeEventListener('load', this.resizeDotLines)
     window.removeEventListener('resize', this.resizeDotLines)
   },
   methods: {
+    setupDocument () {
+      const exercises = this.$el.getElementsByClassName('bubble-exercice')
+      for (let i = 0; i < exercises.length; i++) {
+        const exercise = exercises[i]
+        exercise.style.setProperty('--number', `'${i + 1}'`)
+        const print = document.createElement('span')
+        print.style.fontSize = '0.8em'
+        print.style.float = 'right'
+        print.style.marginTop = '-1.6em'
+        print.style.cursor = 'pointer'
+        print.style.alignSelf = 'end'
+        print.onclick = async function () {
+          const canvas = await html2canvas(exercise)
+          const newWindow = window.open()
+          newWindow.document.body.appendChild(canvas)
+          newWindow.print()
+          newWindow.close()
+        }
+        print.innerHTML = '<i class="bi bi-printer-fill"></i> Imprimer'
+        exercise.parentNode.insertBefore(print, exercise.nextSibling)
+      }
+      const dotLines = this.$el.getElementsByClassName('dots')
+      for (const dotLine of dotLines) {
+        const parent = dotLine.parentNode
+        const base = parent.closest('.base')
+        if (base) {
+          base.style.width = 'initial'
+        }
+        const enclosing = parent.closest('.enclosing')
+        if (enclosing) {
+          enclosing.style.display = 'inline-block'
+          enclosing.style.textAlign = 'center'
+        }
+      }
+      this.setupTimeout = null
+    },
     resizeDotLines () {
       const dotLines = this.$el.getElementsByClassName('dots')
       for (const dotLine of dotLines) {
         dotLine.innerHTML = '. . . '
         const originalHeight = dotLine.parentElement.offsetHeight
         while (dotLine.parentElement.offsetHeight === originalHeight) {
+          if (!dotLine.parentElement.offsetWidth || dotLine.parentElement.offsetWidth <= 0) {
+            break
+          }
           dotLine.innerHTML += '. '
         }
-        dotLine.innerHTML = dotLine.innerHTML.substring(0, dotLine.innerHTML.length - 2)
+        dotLine.innerHTML = dotLine.innerHTML.substring(0, Math.max(0, dotLine.innerHTML.length - 2))
       }
+      this.initialDotsTimeout = null
     }
   }
 }
 </script>
 
-<style lang="scss" scoped>
-@import 'katex/dist/katex.min.css';
-@import 'bootstrap/scss/_functions';
-@import 'bootstrap/scss/_variables';
+<style lang="scss">
+@import '../assets/colors';
 
 @mixin bubble-style($text, $backgroundColor, $titleColor) {
   position: relative;
@@ -108,8 +115,6 @@ export default {
 
   h4 {
     color: $titleColor;
-    border-bottom: none;
-    margin-bottom: 0;
   }
 
   img {
@@ -142,18 +147,6 @@ export default {
     margin: 10px 0 15px 0;
   }
 
-  h2 {
-    color: #1c567d;
-    padding-bottom: 0.2em;
-    margin-bottom: 0.75em;
-  }
-
-  h3 {
-    color: #2980b9;
-    border-bottom: 1px solid #d7d7d7;
-    margin-bottom: 0.75em;
-  }
-
   .math-document-content {
     .doctitle,
     .docnumber {
@@ -177,27 +170,6 @@ export default {
     ol,
     ul {
       margin-bottom: 1rem;
-    }
-
-    ul li {
-      list-style-type: '— ';
-
-      &:last-child,
-      &:last-child > p {
-        margin-bottom: 0;
-      }
-    }
-
-    ol li::marker {
-      font-weight: bold;
-    }
-
-    .table {
-      background-color: white;
-
-      td {
-        height: 2.5em;
-      }
     }
 
     .center {
@@ -226,42 +198,42 @@ export default {
         max-width: 100%;
       }
     }
+  }
 
-    .bubble-objectifs {
-      @include bubble-style('👌 Objectifs', #fceae9, #e74c3c);
-    }
+  &.red h1::after {
+    background-color: $red;
+  }
 
-    .bubble-retenir {
-      @include bubble-style('👀 À retenir', #ebf3fb, #3583d6);
-    }
+  &.blue h1::after {
+    background-color: $blue;
+  }
 
-    .bubble-exemple {
-      @include bubble-style('💡 Exemple', #dcf3d8, #26a65b);
-    }
+  &.teal h1::after {
+    background-color: $teal;
+  }
 
-    .bubble-exercice {
-      @include bubble-style('📝 Exercice ' var(--number), #e0f2f1, #009688);
-    }
-
-    .bubble-information {
-      @include bubble-style('☝ Information', #fce4ec, #e91e63);
-    }
+  &.amber h1::after {
+    background-color: $yellow;
   }
 }
 
-.math-document.red h1::after {
-  background-color: $red;
+.bubble-objectifs {
+  @include bubble-style('👌 Objectifs', #fceae9, #e74c3c);
 }
 
-.math-document.blue h1::after {
-  background-color: $blue;
+.bubble-retenir {
+  @include bubble-style('👀 À retenir', #ebf3fb, #3583d6);
 }
 
-.math-document.teal h1::after {
-  background-color: $teal;
+.bubble-exemple {
+  @include bubble-style('💡 Exemple', #dcf3d8, #26a65b);
 }
 
-.math-document.amber h1::after {
-  background-color: $yellow;
+.bubble-exercice {
+  @include bubble-style('📝 Exercice ' var(--number), #e0f2f1, #009688);
+}
+
+.bubble-information {
+  @include bubble-style('☝ Information', #fce4ec, #e91e63);
 }
 </style>

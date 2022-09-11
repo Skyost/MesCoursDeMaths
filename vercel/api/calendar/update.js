@@ -1,5 +1,6 @@
 import octokitUtils from '../../utils/octokit'
-import site from '../../../site'
+import siteMeta from '../../../site/meta'
+import directories from '../../../site/directories'
 import corsUtils from '../../utils/cors'
 
 export default async function handler (request, response) {
@@ -15,9 +16,9 @@ export default async function handler (request, response) {
   let githubResponse
   try {
     githubResponse = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
-      owner: site.github.username,
-      repo: site.github.dataRepository,
-      path: site.github.calendarFile
+      owner: siteMeta.github.username,
+      repo: siteMeta.github.dataRepository,
+      path: directories.calendarFile
     })
   } catch (ex) {
     githubResponse = ex
@@ -34,9 +35,9 @@ export default async function handler (request, response) {
     calendar[request.body.date] = request.body.content
   }
   githubResponse = await octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
-    owner: site.github.username,
-    repo: site.github.dataRepository,
-    path: site.github.calendarFile,
+    owner: siteMeta.github.username,
+    repo: siteMeta.github.dataRepository,
+    path: directories.calendarFile,
     message: `Mise à jour d'un événement pour la date \`${request.body.date}\`.`,
     sha,
     content: Buffer.from(JSON.stringify(calendar), 'utf8').toString('base64')

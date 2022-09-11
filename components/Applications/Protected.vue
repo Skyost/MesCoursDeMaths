@@ -1,6 +1,7 @@
 <template>
   <div>
-    <slot v-if="token" />
+    <Title>Espace protégé</Title>
+    <slot v-if="hasToken" />
     <div v-else>
       <div class="text-center">
         <img class="avatar" :src="avatarUrl" alt="Github">
@@ -29,15 +30,15 @@
 <script>
 import { SkiButton, SkiIcon } from 'skimple-components'
 import { oauthAuthorizationUrl } from '@octokit/oauth-authorization-url'
-import site from '~/site'
+import siteMeta from '~/site/meta'
+import accessTokenUtils from '~/utils/access-token'
 
 export default {
   name: 'Protected',
   components: { SkiButton, SkiIcon },
   data () {
     return {
-      token: null,
-      error: null
+      hasToken: false
     }
   },
   computed: {
@@ -46,20 +47,22 @@ export default {
         clientType: 'oauth-app',
         clientId: this.$config.githubClientId,
         redirectUrl: `${this.$config.apiUrl}/user/login`,
-        login: site.github.username,
+        login: siteMeta.github.username,
         scopes: ['repo']
       })
       return url
     },
     avatarUrl () {
-      return `https://github.com/${site.github.username}.png`
+      return `https://github.com/${siteMeta.github.username}.png`
     },
     dataRepository () {
-      return `${site.github.username}/${site.github.dataRepository}`
+      return `${siteMeta.github.username}/${siteMeta.github.dataRepository}`
     }
   },
   mounted () {
-    this.token = this.$cookies.get('access_token')
+    if (process.client) {
+      this.hasToken = accessTokenUtils.isAccessTokenInCookies()
+    }
   }
 }
 </script>

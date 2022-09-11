@@ -44,14 +44,14 @@
 
 <script>
 import { SkiColumn, SkiColumns, SkiContainer } from 'skimple-components'
-import site from '~/site'
+import siteMeta from '~/site/meta'
 
 export default {
   name: 'PageFooter',
   components: { SkiContainer, SkiColumns, SkiColumn },
   computed: {
     author () {
-      return site.site.author
+      return siteMeta.author
     }
   }
 }

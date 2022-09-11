@@ -1,19 +1,19 @@
 <template>
   <ski-navbar brightness="primary" class="navbar-dark">
-    <ski-navbar-collapse>
+    <ski-navbar-collapse id="page-navbar-collapse">
       <ski-navbar-brand class="d-none d-lg-inline">
         <img class="logo" src="/images/logo.svg" alt="Logo">
       </ski-navbar-brand>
       <ski-navbar-items class="me-auto">
-        <ski-navbar-item to="/" :active="$nuxt.$route.path === '/'">
+        <ski-navbar-item to="/" :active="$route.path === '/'">
           <ski-icon icon="house-door-fill" /> Accueil
         </ski-navbar-item>
-        <ski-navbar-item to="/cours/" :active="$nuxt.$route.path.startsWith('/cours')">
+        <ski-navbar-item to="/cours/" :active="$route.path.startsWith('/cours')">
           <ski-icon icon="bookmark-fill" /> Liste des cours
         </ski-navbar-item>
       </ski-navbar-items>
       <ski-navbar-items>
-        <ski-navbar-item to="/prof/" :active="$nuxt.$route.path.startsWith('/prof')">
+        <ski-navbar-item to="/prof/" :active="$route.path.startsWith('/prof')">
           <ski-icon icon="mortarboard-fill" /> Accès enseignant
         </ski-navbar-item>
       </ski-navbar-items>

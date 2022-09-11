@@ -1,9 +1,21 @@
+<script setup>
+import { useLazyAsyncData, useRoute } from '#app'
+
+const route = useRoute()
+
+const { pending, data: lesson } = useLazyAsyncData(
+  route.fullPath,
+  () => queryContent(route.params.level, route.params.slug)
+    .findOne()
+)
+</script>
+
 <template>
-  <div v-if="$fetchState.pending">
+  <div v-if="pending">
     <spinner />
   </div>
   <div v-else-if="lesson">
-    <social-head :title="title" />
+    <page-head :title="title" />
     <levels-navigation-entry />
     <lessons-navigation-entry :level="$route.params.level" />
     <lesson-navigation-entry :level="$route.params.level" :lesson="lesson" />
@@ -27,38 +39,25 @@
     <math-document :document="lesson" :color="documentColor" />
   </div>
   <div v-else>
-    <error-display :error-code="404" />
+    <error-display error="404" />
   </div>
 </template>
 
 <script>
 import { SkiButton, SkiIcon } from 'skimple-components'
+import Spinner from '~/components/Spinner.vue'
 import LevelsNavigationEntry from '~/components/Page/Navigation/Entries/LevelsNavigationEntry'
 import LessonsNavigationEntry from '~/components/Page/Navigation/Entries/LessonsNavigationEntry'
 import LessonNavigationEntry from '~/components/Page/Navigation/Entries/LessonNavigationEntry'
+import ErrorDisplay from '~/components/ErrorDisplay.vue'
 import levelUtils from '~/utils/level'
+import MathDocument from '~/components/MathDocument.vue'
+import PageHead from '~/components/Page/PageHead'
 
 export default {
-  components: { LessonNavigationEntry, LessonsNavigationEntry, LevelsNavigationEntry, SkiButton, SkiIcon },
-  data () {
-    return {
-      lesson: null
-    }
-  },
-  async fetch () {
-    this.lesson = await this.$content(this.$route.params.level, this.$route.params.slug)
-      .fetch()
-  },
-  head () {
-    return {
-      title: this.title
-    }
-  },
+  components: { PageHead, Spinner, LessonNavigationEntry, ErrorDisplay, LessonsNavigationEntry, LevelsNavigationEntry, SkiButton, SkiIcon, MathDocument },
   computed: {
     title () {
-      if (this.$fetchState.pending) {
-        return 'Chargement...'
-      }
       return this.lesson ? `${levelUtils.getLevelName(this.$route.params.level)} > ${this.lesson['page-title']}` : "Affichage d'un cours"
     },
     documentColor () {

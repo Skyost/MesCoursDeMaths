@@ -1,8 +1,9 @@
 <template>
   <protected>
+    <page-head title="Accès enseignant" />
     <teacher-navigation-entry />
     <div class="text-end">
-      <ski-button variant="light" @click.native="logout">
+      <ski-button variant="light" @click="logout">
         <ski-icon icon="box-arrow-left" /> Déconnexion
       </ski-button>
     </div>
@@ -31,12 +32,14 @@
 <script>
 import { SkiButton, SkiColumn, SkiColumns, SkiIcon } from 'skimple-components'
 import Protected from '~/components/Applications/Protected'
-import site from '~/site'
+import PageHead from '~/components/Page/PageHead.vue'
+import cookie from '~/site/cookie'
 import accessTokenUtils from '~/utils/access-token'
 import TeacherNavigationEntry from '~/components/Page/Navigation/Entries/TeacherNavigationEntry'
+import ImageCard from '~/components/ImageCard'
 
 export default {
-  components: { TeacherNavigationEntry, SkiColumns, SkiColumn, SkiButton, SkiIcon, Protected },
+  components: { ImageCard, PageHead, TeacherNavigationEntry, SkiColumns, SkiColumn, SkiButton, SkiIcon, Protected },
   data () {
     return {
       applications: [
@@ -67,25 +70,29 @@ export default {
       ]
     }
   },
-  head: {
-    title: 'Accès enseignant'
-  },
-  mounted () {
+  async mounted () {
+    await this.$nextTick()
     if (Object.prototype.hasOwnProperty.call(this.$route.query, 'access_token')) {
       let expiration
       if (Object.prototype.hasOwnProperty.call(this.$route.query, 'expiration')) {
         expiration = new Date(parseInt(this.$route.query.expiration.toString()))
       } else {
         expiration = new Date()
-        expiration.setDate(expiration.getDate() + site.github.authentication.cookieExpirationDays)
+        expiration.setDate(expiration.getDate() + cookie.cookieExpirationDays)
       }
-      accessTokenUtils.storeAccessTokenInCookies(this.$cookies, this.$route.query.access_token, expiration)
+
+      accessTokenUtils.storeAccessTokenInCookies(this.$route.query.access_token, {
+        path: '/',
+        expires: expiration,
+        sameSite: 'Lax',
+        secure: true
+      })
       window.location.href = '/prof'
     }
   },
   methods: {
     logout () {
-      accessTokenUtils.removeAccessTokenFromCookies(this.$cookies)
+      accessTokenUtils.removeAccessTokenFromCookies()
       window.location.href = '/prof'
     }
   }

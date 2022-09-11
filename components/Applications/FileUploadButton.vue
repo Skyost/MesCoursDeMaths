@@ -1,7 +1,7 @@
 <template>
   <span>
     <input ref="fileInput" type="file" :accept="accept" hidden>
-    <ski-button variant="light" @click.native="promptForFile">
+    <ski-button variant="light" @click="promptForFile">
       <ski-icon :icon="icon" /> {{ text }}
     </ski-button>
   </span>

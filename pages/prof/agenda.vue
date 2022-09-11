@@ -1,8 +1,21 @@
+<script setup>
+import { useLazyFetch, useRuntimeConfig } from '#app'
+// eslint-disable-next-line import/order
+import accessTokenUtils from '~/utils/access-token'
+
+const runtimeConfig = useRuntimeConfig()
+const { pending, data, error } = useLazyFetch(`${runtimeConfig.public.apiUrl}/calendar/dates`, {
+  headers: accessTokenUtils.getAuthorizationHeaders()
+  // server: false
+})
+</script>
+
 <template>
   <protected>
+    <page-head title="Agenda" />
     <teacher-navigation-entry />
     <page-navigation-entry title="Agenda" to="/prof/agenda/" />
-    <h1>Agenda</h1>
+    <h1 v-if="!error">Agenda</h1>
     <ski-modal
       id="date-modal"
       ref="dateModal"
@@ -39,14 +52,18 @@
           v-if="!modalLoading"
           variant="secondary"
           data-bs-dismiss="modal"
-          @click.native="modalEdit = false"
+          @click="modalEdit = false"
         >
           Fermer
         </ski-button>
       </template>
     </ski-modal>
     <div id="modal-backdrop" ref="modalBackdrop" />
-    <calendar ref="calendar" :dates="dates" @dayclick="onDayClicked" />
+    <div v-if="pending">
+      <spinner />
+    </div>
+    <error-display v-else-if="error" :error="error" />
+    <calendar v-else ref="calendar" :dates="data.dates" @dayclick="onDayClicked" />
   </protected>
 </template>
 
@@ -55,33 +72,22 @@ import { SkiButton, SkiModal } from 'skimple-components'
 import { marked } from 'marked'
 import Protected from '~/components/Applications/Protected'
 import Calendar from '~/components/Applications/Agenda/Calendar'
+import PageHead from '~/components/Page/PageHead.vue'
 import Spinner from '~/components/Spinner'
-import accessTokenUtils from '~/utils/access-token'
 import TeacherNavigationEntry from '~/components/Page/Navigation/Entries/TeacherNavigationEntry'
 import PageNavigationEntry from '~/components/Page/Navigation/Entries/PageNavigationEntry'
+import ErrorDisplay from '~/components/ErrorDisplay.vue'
+import CodeEditor from '~/components/Applications/Lessons/CodeEditor'
 
 export default {
-  components: { PageNavigationEntry, TeacherNavigationEntry, Calendar, Protected, Spinner, SkiButton, SkiModal },
+  components: { PageHead, PageNavigationEntry, TeacherNavigationEntry, Calendar, Protected, Spinner, SkiButton, SkiModal, ErrorDisplay, CodeEditor },
   data () {
     return {
       currentDate: null,
       modalLoading: false,
       modalMarkdownContent: null,
-      modalEdit: false,
-      dates: []
+      modalEdit: false
     }
-  },
-  fetchOnServer: false,
-  async fetch () {
-    const response = await this.$axios.$get(`${this.$config.apiUrl}/calendar/dates`, {
-      headers: accessTokenUtils.getAuthorizationHeaders(this.$cookies)
-    })
-    if (response) {
-      this.dates = response.dates
-    }
-  },
-  head: {
-    title: 'Agenda'
   },
   computed: {
     modalHtmlContent () {
@@ -110,12 +116,12 @@ export default {
       const modal = new bootstrap.Modal(this.$refs.dateModal.$el)
       this.modalLoading = true
       modal.show()
-      if (this.dates.includes(yyyymmdd)) {
-        const response = await this.$axios.$get(`${this.$config.apiUrl}/calendar/get`, {
+      if (this.data.dates.includes(yyyymmdd)) {
+        const response = await $fetch(`${this.$config.apiUrl}/calendar/get`, {
           params: {
             date: yyyymmdd
           },
-          headers: accessTokenUtils.getAuthorizationHeaders(this.$cookies)
+          headers: accessTokenUtils.getAuthorizationHeaders()
         })
         this.modalMarkdownContent = response.content
       }
@@ -124,11 +130,13 @@ export default {
     async saveContent () {
       this.modalLoading = true
       this.modalMarkdownContent = this.$refs.editor.$data.document
-      await this.$axios.$post(`${this.$config.apiUrl}/calendar/update`, {
-        date: this.currentDate,
-        content: this.modalMarkdownContent
-      }, {
-        headers: accessTokenUtils.getAuthorizationHeaders(this.$cookies)
+      await $fetch(`${this.$config.apiUrl}/calendar/update`, {
+        method: 'POST',
+        body: {
+          date: this.currentDate,
+          content: this.modalMarkdownContent
+        },
+        headers: accessTokenUtils.getAuthorizationHeaders()
       })
       this.modalEdit = false
       this.modalLoading = false

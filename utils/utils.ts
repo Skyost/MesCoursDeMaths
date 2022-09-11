@@ -1,5 +1,6 @@
-import path from 'path'
-import fs from 'fs'
+import * as path from 'path'
+import * as fs from 'fs'
+import crypto from 'crypto'
 
 function normalizeString (string) {
   return string.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase()
@@ -30,9 +31,17 @@ function getDirectories (path) {
   return fs.readdirSync(path).filter(file => fs.statSync(path + '/' + file).isDirectory())
 }
 
+function generateChecksum (string) {
+  return crypto
+    .createHash('md5')
+    .update(string, 'utf8')
+    .digest('hex')
+}
+
 export default {
   normalizeString,
   romanize,
   getFileName,
-  getDirectories
+  getDirectories,
+  generateChecksum
 }

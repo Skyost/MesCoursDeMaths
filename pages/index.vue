@@ -1,6 +1,6 @@
 <template>
   <div>
-    <social-head title="Accueil" />
+    <page-head title="Accueil" />
     <home-navigation-entry />
     <h1>Bienvenue !</h1>
     <p>
@@ -36,17 +36,15 @@
 </template>
 
 <script>
-import site from '~/site'
 import HomeNavigationEntry from '~/components/Page/Navigation/Entries/HomeNavigationEntry'
+import siteMeta from '~/site/meta'
+import PageHead from '~/components/Page/PageHead'
 
 export default {
-  components: { HomeNavigationEntry },
-  head: {
-    title: 'Accueil'
-  },
+  components: { HomeNavigationEntry, PageHead },
   computed: {
     githubUrl () {
-      return `https://github.com/${site.github.username}/${site.github.repository}`
+      return `https://github.com/${siteMeta.github.username}/${siteMeta.github.repository}`
     }
   }
 }

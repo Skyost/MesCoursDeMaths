@@ -1,17 +1,24 @@
-const consola = require('consola')
+import consola from 'consola'
 
-function warn (message, options = null) {
+function info (prefix, message, options = null) {
+  consola.info({
+    message: `[${prefix}] ${message}`,
+    additional: options ? JSON.stringify(options, null, 2) : null
+  })
+}
+
+function warn (prefix, message, options = null) {
   consola.warn({
-    message: `[sitemap-module] ${message}`,
+    message: `[${prefix}] ${message}`,
     additional: options ? JSON.stringify(options, null, 2) : null
   })
 }
 
-function fatal (message, options = null) {
+function fatal (prefix, message, options = null) {
   consola.fatal({
-    message: `[sitemap-module] ${message}`,
+    message: `[${prefix}] ${message}`,
     additional: options ? JSON.stringify(options, null, 2) : null
   })
 }
 
-module.exports = { ...consola, warn, fatal }
+export default { info, warn, fatal }

@@ -1,16 +1,16 @@
 <template>
   <div>
     <ski-columns>
-      <ski-column width="3" md="5" class="text-end">
-        <ski-button @click.native="goToPreviousMonth">
+      <ski-column width="3" md="2">
+        <ski-button @click="goToPreviousMonth">
           <ski-icon icon="arrow-left" />
         </ski-button>
       </ski-column>
-      <ski-column width="6" md="2" class="col-month">
+      <ski-column width="6" md="8" class="col-month">
         <span class="month" v-text="formattedMonth" />
       </ski-column>
-      <ski-column width="3" md="5">
-        <ski-button @click.native="goToNextMonth">
+      <ski-column width="3" md="2" class="text-end">
+        <ski-button @click="goToNextMonth">
           <ski-icon icon="arrow-right" />
         </ski-button>
       </ski-column>
@@ -20,8 +20,9 @@
         v-for="dayOfWeek in 7"
         :key="`day-of-week-${dayOfWeek}`"
         class="col-weekday d-none d-md-block"
-        v-text="formatDayOfWeek(dayOfWeek)"
-      />
+      >
+        {{ formatDayOfWeek(dayOfWeek) }}
+      </ski-column>
     </ski-columns>
     <ski-columns
       v-for="week in weeks"
@@ -153,9 +154,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'bootstrap/scss/_functions';
-@import 'bootstrap/scss/_variables';
-@import 'bootstrap/scss/mixins/_breakpoints';
+@import 'assets/bootstrap-mixins';
 
 .col-month {
   text-transform: uppercase;

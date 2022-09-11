@@ -1,5 +1,6 @@
 import octokitUtils from '../../utils/octokit'
-import site from '../../../site'
+import siteMeta from '../../../site/meta'
+import directories from '../../../site/directories'
 import corsUtils from '../../utils/cors'
 
 export default async function handler (request, response) {
@@ -14,14 +15,14 @@ export default async function handler (request, response) {
     return
   }
   const githubResponse = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
-    owner: site.github.username,
-    repo: site.github.dataRepository,
-    path: `${site.github.lessonsDirectory}${path}`
+    owner: siteMeta.github.username,
+    repo: siteMeta.github.dataRepository,
+    path: `${directories.lessonsDirectory}${path}`
   })
   const data = githubResponse.data
   response.status(githubResponse.status).json({
     name: data.name,
-    path: data.path.replace(site.github.lessonsDirectory, ''),
+    path: data.path.replace(directories.lessonsDirectory, ''),
     sha: data.sha,
     content: data.content
   })

@@ -44,8 +44,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'bootstrap/scss/_functions';
-@import 'bootstrap/scss/_variables';
+@import 'assets/colors';
 
 .image-card {
   display: block;

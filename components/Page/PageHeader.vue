@@ -15,7 +15,7 @@
 
 <script>
 import { SkiContainer } from 'skimple-components'
-import site from '~/site'
+import siteMeta from '~/site/meta'
 import PageNavigation from '@/components/Page/Navigation/PageNavigation'
 
 export default {
@@ -23,16 +23,15 @@ export default {
   components: { PageNavigation, SkiContainer },
   computed: {
     title () {
-      return site.site.title
+      return siteMeta.title
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-@import 'bootstrap/scss/_functions';
-@import 'bootstrap/scss/_variables';
-@import 'assets/app';
+@import 'assets/bootstrap-mixins';
+@import 'assets/colors';
 
 .page-header-parent {
   position: relative;

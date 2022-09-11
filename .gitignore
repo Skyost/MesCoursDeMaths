@@ -103,9 +103,11 @@ sw.*
 *.out
 *.synctex.gz
 *.run.xml
+.output
 content/
-static/images/lessons/
-static/pdf/
+!components/content/
+public/images/lessons/
+public/pdf/
 static/CNAME
 latex/
 tikz-images/

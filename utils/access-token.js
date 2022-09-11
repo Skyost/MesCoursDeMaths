@@ -1,25 +1,20 @@
-import site from '../site'
+import Cookie from 'cookie-universal'
 
-function readAccessTokenFromCookies (cookies) {
-  return cookies.get('access_token')
+const cookieName = 'access_token'
+
+function isAccessTokenInCookies () {
+  const cookie = Cookie()
+  return Object.prototype.hasOwnProperty.call(cookie.getAll(), cookieName)
 }
 
-function storeAccessTokenInCookies (cookies, accessToken, expiration) {
-  if (!expiration) {
-    expiration = new Date()
-    expiration.setDate(expiration.getDate() + site.github.authentication.cookieExpirationDays)
-  }
-
-  cookies.set('access_token', accessToken, {
-    path: '/',
-    expires: expiration,
-    sameSite: 'Lax',
-    secure: true
-  })
+function storeAccessTokenInCookies (accessToken, options) {
+  const cookie = Cookie()
+  cookie.set(cookieName, accessToken, options)
 }
 
-function removeAccessTokenFromCookies (cookies) {
-  cookies.remove('access_token')
+function removeAccessTokenFromCookies () {
+  const cookie = Cookie()
+  cookie.remove(cookieName)
 }
 
 function readAccessTokenFromHeaders (headers) {
@@ -30,14 +25,16 @@ function readAccessTokenFromHeaders (headers) {
   return authHeader.substring(7, authHeader.length)
 }
 
-function getAuthorizationHeaders (cookies) {
+function getAuthorizationHeaders () {
+  const cookies = Cookie()
   return {
-    Authorization: `Bearer ${readAccessTokenFromCookies(cookies)}`
+    Authorization: `Bearer ${cookies.get(cookieName)}`
   }
 }
 
 export default {
-  readAccessTokenFromCookies,
+  cookieName,
+  isAccessTokenInCookies,
   storeAccessTokenInCookies,
   removeAccessTokenFromCookies,
   readAccessTokenFromHeaders,

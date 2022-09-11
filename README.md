@@ -39,7 +39,7 @@ Dans les paramètres de votre dépôt Github, il va falloir créer deux secrets 
 ### Configuration
 
 Pour configurer le site web (nom, dépôt Github, répertoire des cours, etc.), il vous faut modifier le
-fichier `site.js`. Indiquez votre `Client ID` dans le champ `clientId`
+fichier `site/authentication.js`. Indiquez votre `Client ID` dans le champ `clientId`
 (j'ai personnellement choisi de le laisser dans la variable d'environnement `CLIENT_ID`, mais c'est à vous de voir).
 
 Pour modifier le contenu de la page d'accueil, il faut éditer le fichier `pages/index.vue`.
@@ -48,7 +48,7 @@ Une façon plus rapide (et intuitive...) de modifier les pages sera sûrement aj
 ### Création d'un dépôt de données
 
 Cette étape est optionnelle : vous pouvez parfaitement vous servir du même dépôt que le site web
-pour y stocker vos données LaTeX. Pour cela, dans `site.js`, laissez `dataRepository` à la même valeur que `repository`.
+pour y stocker vos données LaTeX. Pour cela, dans `site/meta.js`, laissez `dataRepository` à la même valeur que `repository`.
 
 Si vous souhaitez utiliser un dépôt séparé (par exemple, afin de garder les sources LaTeX privées ; ou tout
 simplement pour séparer le contenu de sa présentation), créez-en un sur Github et indiquez sa valeur dans
@@ -95,8 +95,8 @@ Une fois créé, nous allons devoir ajouter deux variables d'environnements (dan
 * `GITHUB_CLIENT_SECRET`, qui contient votre `Client secret`.
 * `ENCRYPTION_KEY`, qui contient 32 caractères générés de manière aléatoire (majuscules, minuscules et chiffres uniquement).
 
-Dans les paramètres généraux, inscrivez `nuxt ../` en commande de développement et `vercel/` en répertoire racine.
-Le domaine spécifié dans _Domains_ doit correspondre avec l'`apiUrl` du fichier `site.js`.
+Dans les paramètres généraux, inscrivez `npx nuxi dev ../` en commande de développement et `vercel/` en répertoire racine.
+Le domaine spécifié dans _Domains_ doit correspondre avec l'`apiUrl` du fichier `site/meta.js`.
 
 Enfin, [pour éviter des builds inutiles](https://www.codejam.info/2021/09/vercel-without-preview-deployments.html),
 écrivez par exemple 

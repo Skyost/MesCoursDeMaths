@@ -1,13 +1,14 @@
 import 'dotenv/config'
-import site from '../../site'
+import siteMeta from '../../site/meta'
+import directories from '../../site/directories'
 
 async function loadCalendar (octokit) {
   let githubResponse
   try {
     githubResponse = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
-      owner: site.github.username,
-      repo: site.github.dataRepository,
-      path: site.github.calendarFile
+      owner: siteMeta.github.username,
+      repo: siteMeta.github.dataRepository,
+      path: directories.calendarFile
     })
   } catch (ex) {
     githubResponse = ex

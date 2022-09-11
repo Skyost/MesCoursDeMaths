@@ -1,17 +1,18 @@
 <template>
   <protected>
+    <page-head title="Tableau blanc" />
     <teacher-navigation-entry />
-    <page-navigation-entry title="Tableau blanc" to="/prof/whiteboard/" />
+    <page-navigation-entry title="Tableau blanc" to="/prof/tableau-blanc/" />
     <div class="text-end">
-      <ski-button variant="light" :class="{active: isDrawing}" @click.native="isDrawing = !isDrawing">
+      <ski-button variant="light" :class="{active: isDrawing}" @click="isDrawing = !isDrawing">
         <ski-icon :icon="isDrawing ? 'pencil-fill' : 'pencil'" /> Crayon
       </ski-button>
-      <ski-button variant="light" @click.native="textCount += 1">
+      <ski-button variant="light" @click="textCount += 1">
         <ski-icon icon="card-text" /> Texte
       </ski-button>
       <file-upload-button icon="file-pdf-fill" text="Document PDF" accept="application/pdf" @fileloaded="onPDFLoaded" />
       <file-upload-button icon="card-image" text="Image" accept="image/*" @fileloaded="onImageLoaded" />
-      <ski-button variant="light" @click.native="stopwatchCount += 1">
+      <ski-button variant="light" @click="stopwatchCount += 1">
         <ski-icon icon="stopwatch-fill" /> Chronomètre
       </ski-button>
     </div>
@@ -55,9 +56,10 @@ import Protected from '~/components/Applications/Protected'
 import FileUploadButton from '~/components/Applications/FileUploadButton'
 import TeacherNavigationEntry from '~/components/Page/Navigation/Entries/TeacherNavigationEntry'
 import PageNavigationEntry from '~/components/Page/Navigation/Entries/PageNavigationEntry'
+import PageHead from '~/components/Page/PageHead.vue'
 
 export default {
-  components: { PageNavigationEntry, TeacherNavigationEntry, FileUploadButton, SkiButton, SkiIcon, Protected, StopwatchDraggable, WhiteboardCanvas, TextDraggable, PdfDraggable, ImageDraggable },
+  components: { PageHead, PageNavigationEntry, TeacherNavigationEntry, FileUploadButton, SkiButton, SkiIcon, Protected, StopwatchDraggable, WhiteboardCanvas, TextDraggable, PdfDraggable, ImageDraggable },
   data () {
     return {
       textCount: 0,
@@ -66,9 +68,6 @@ export default {
       imagesData: [],
       isDrawing: false
     }
-  },
-  head: {
-    title: 'Tableau blanc'
   },
   mounted () {
     this.$emit('removespace')

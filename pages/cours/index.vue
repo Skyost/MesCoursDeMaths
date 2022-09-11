@@ -1,6 +1,45 @@
+<script setup>
+import { useLazyAsyncData, useRoute } from '#app'
+import levelUtils from '~/utils/level'
+
+const route = useRoute()
+const { pending, data: levels, error } = useLazyAsyncData(
+  route.fullPath,
+  async () => {
+    const mdFiles = await queryContent('/')
+      .where({ _extension: 'md' })
+      .find()
+    let levels = {}
+    for (const mdFile of mdFiles) {
+      const levelId = mdFile._file.split('/')[0]
+      if (!Object.prototype.hasOwnProperty.call(levels, levelId)) {
+        levels[levelId] = {
+          id: levelId,
+          title: levelUtils.getLevelName(levelId),
+          number: levelUtils.getLevelAsNumber(levelId),
+          subtitle: `Cours de ${levelUtils.getLevelAsNumber(levelId)}e`,
+          color: levelUtils.getLevelColor(levelId),
+          url: `/cours/${levelId}/`,
+          image: `/images/levels/${levelId}.svg`
+        }
+      }
+    }
+    levels = Object.values(levels)
+    levels.sort((a, b) => (a.number < b.number ? 1 : (a.number > b.number ? -1 : 0)))
+    return levels
+  }
+)
+</script>
+
 <template>
-  <div>
-    <social-head title="Liste des niveaux" />
+  <div v-if="pending">
+    <spinner />
+  </div>
+  <div v-else-if="error">
+    <error-display :error="error" />
+  </div>
+  <div v-else>
+    <page-head title="Liste des niveaux" />
     <levels-navigation-entry />
     <h1>Liste des niveaux</h1>
     <ski-columns v-if="levels && levels.length > 0" class="justify-content-center">
@@ -28,44 +67,15 @@
 </template>
 
 <script>
+// eslint-disable-next-line import/order
 import { SkiColumn, SkiColumns } from 'skimple-components'
+import PageHead from '~/components/Page/PageHead'
 import ImageCard from '~/components/ImageCard'
-import levelUtils from '~/utils/level'
 import LevelsNavigationEntry from '~/components/Page/Navigation/Entries/LevelsNavigationEntry'
+import Spinner from '~/components/Spinner.vue'
+import ErrorDisplay from '~/components/ErrorDisplay.vue'
 
 export default {
-  components: { LevelsNavigationEntry, SkiColumns, SkiColumn, ImageCard },
-  data () {
-    return {
-      levels: null
-    }
-  },
-  async fetch () {
-    const fetchedLevels = await this.$content('', { deep: true })
-      .where({ extension: '.md' })
-      .only(['dir'])
-      .fetch()
-    let levels = {}
-    for (const fetchedLevel of fetchedLevels) {
-      const levelId = fetchedLevel.dir.substring(1)
-      if (!Object.prototype.hasOwnProperty.call(levels, levelId)) {
-        levels[levelId] = {
-          id: levelId,
-          title: levelUtils.getLevelName(levelId),
-          number: levelUtils.getLevelAsNumber(levelId),
-          subtitle: `Cours de ${levelUtils.getLevelAsNumber(levelId)}e`,
-          color: levelUtils.getLevelColor(levelId),
-          url: `/cours/${levelId}/`,
-          image: `/images/levels/${levelId}.svg`
-        }
-      }
-    }
-    levels = Object.values(levels)
-    levels.sort((a, b) => (a.number < b.number ? 1 : (a.number > b.number ? -1 : 0)))
-    this.levels = levels
-  },
-  head: {
-    title: 'Liste des niveaux'
-  }
+  components: { PageHead, LevelsNavigationEntry, SkiColumns, SkiColumn, ImageCard, Spinner, ErrorDisplay }
 }
 </script>

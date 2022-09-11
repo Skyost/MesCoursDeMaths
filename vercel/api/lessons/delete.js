@@ -1,5 +1,6 @@
 import octokitUtils from '../../utils/octokit'
-import site from '../../../site'
+import siteMeta from '../../../site/meta'
+import directories from '../../../site/directories'
 import corsUtils from '../../utils/cors'
 
 export default async function handler (request, response) {
@@ -14,9 +15,9 @@ export default async function handler (request, response) {
     return
   }
   const githubResponse = await octokit.request('DELETE /repos/{owner}/{repo}/contents/{path}', {
-    owner: site.github.username,
-    repo: site.github.dataRepository,
-    path: `${site.github.lessonsDirectory}${path}`,
+    owner: siteMeta.github.username,
+    repo: siteMeta.github.dataRepository,
+    path: `${directories.lessonsDirectory}${path}`,
     message: `Suppression de \`${path}\`.`,
     sha: request.query.sha
   })

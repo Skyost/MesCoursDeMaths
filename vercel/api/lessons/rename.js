@@ -1,5 +1,6 @@
 import octokitUtils from '../../utils/octokit'
-import site from '../../../site'
+import siteMeta from '../../../site/meta'
+import directories from '../../../site/directories'
 import corsUtils from '../../utils/cors'
 
 export default async function handler (request, response) {
@@ -18,23 +19,23 @@ export default async function handler (request, response) {
     newPath = path.substring(0, path.lastIndexOf('/')) + '/' + newPath
   }
   let githubResponse = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
-    owner: site.github.username,
-    repo: site.github.dataRepository,
-    path: `${site.github.lessonsDirectory}${path}`
+    owner: siteMeta.github.username,
+    repo: siteMeta.github.dataRepository,
+    path: `${directories.lessonsDirectory}${path}`
   })
   const content = githubResponse.data.content
   githubResponse = await octokit.request('DELETE /repos/{owner}/{repo}/contents/{path}', {
-    owner: site.github.username,
-    repo: site.github.dataRepository,
-    path: `${site.github.lessonsDirectory}${path}`,
+    owner: siteMeta.github.username,
+    repo: siteMeta.github.dataRepository,
+    path: `${directories.lessonsDirectory}${path}`,
     message: `Renommage de \`${path}\` (1/2).`,
     sha: request.query.sha
   })
   const deleteCommit = githubResponse.data.commit
   githubResponse = await octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
-    owner: site.github.username,
-    repo: site.github.dataRepository,
-    path: `${site.github.lessonsDirectory}${newPath}`,
+    owner: siteMeta.github.username,
+    repo: siteMeta.github.dataRepository,
+    path: `${directories.lessonsDirectory}${newPath}`,
     message: `Renommage de \`${path}\` (2/2).`,
     content
   })
@@ -45,7 +46,7 @@ export default async function handler (request, response) {
     deleteCommit,
     createCommit,
     name: file.name,
-    path: file.path.replace(site.github.lessonsDirectory, ''),
+    path: file.path.replace(directories.lessonsDirectory, ''),
     sha: file.sha
   })
 }

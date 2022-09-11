@@ -1,11 +1,37 @@
+<script setup>
+import { useLazyAsyncData, useRoute } from '#app'
+
+const route = useRoute()
+const { pending, data: lessons } = useLazyAsyncData(
+  route.fullPath,
+  async () => {
+    const mdLessons = await queryContent(route.params.level)
+      .sort({ number: 1 })
+      .where({ _extension: 'md' })
+      .find()
+    const lessons = []
+    for (const mdLesson of mdLessons) {
+      lessons.push({
+        id: mdLesson.slug,
+        title: mdLesson.name,
+        subtitle: `Chapitre ${mdLesson.number}`,
+        color: levelUtils.getLevelColor(route.params.level),
+        url: `/cours/${route.params.level}/${mdLesson.slug}/`
+      })
+    }
+    return lessons
+  }
+)
+</script>
+
 <template>
-  <div v-if="$fetchState.pending">
+  <div v-if="pending">
     <spinner />
   </div>
   <div v-else-if="lessons">
     <levels-navigation-entry />
     <lessons-navigation-entry :level="$route.params.level" />
-    <social-head :title="title" />
+    <page-head :title="title" />
     <div class="text-end">
       <ski-button variant="light" :to="`/cours/`">
         <ski-icon icon="arrow-left" /> Retourner à la liste des niveaux
@@ -31,43 +57,22 @@
     </ski-columns>
   </div>
   <div v-else>
-    <error-display :error-code="404" />
+    <error-display error="404" />
   </div>
 </template>
 
 <script>
 import { SkiButton, SkiColumn, SkiColumns, SkiIcon } from 'skimple-components'
+import Spinner from '~/components/Spinner.vue'
 import ImageCard from '~/components/ImageCard'
 import levelUtils from '~/utils/level'
 import LevelsNavigationEntry from '~/components/Page/Navigation/Entries/LevelsNavigationEntry'
 import LessonsNavigationEntry from '~/components/Page/Navigation/Entries/LessonsNavigationEntry'
+import ErrorDisplay from '~/components/ErrorDisplay.vue'
+import PageHead from '~/components/Page/PageHead'
 
 export default {
-  components: { LessonsNavigationEntry, LevelsNavigationEntry, SkiColumns, SkiColumn, SkiButton, SkiIcon, ImageCard },
-  data () {
-    return {
-      lessons: null
-    }
-  },
-  async fetch () {
-    const lessons = await this.$content(this.$route.params.level)
-      .sortBy('number')
-      .fetch()
-    this.lessons = lessons.map((lesson) => {
-      return {
-        id: lesson.slug,
-        title: lesson.name,
-        subtitle: `Chapitre ${lesson.number}`,
-        color: levelUtils.getLevelColor(this.$route.params.level),
-        url: `/cours/${this.$route.params.level}/${lesson.slug}/`
-      }
-    })
-  },
-  head () {
-    return {
-      title: this.title
-    }
-  },
+  components: { PageHead, Spinner, LessonsNavigationEntry, ErrorDisplay, LevelsNavigationEntry, SkiColumns, SkiColumn, SkiButton, SkiIcon, ImageCard },
   computed: {
     title () {
       return `Liste des cours de ${this.levelName}`

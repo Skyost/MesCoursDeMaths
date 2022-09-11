@@ -16,9 +16,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'bootstrap/scss/_functions';
-@import 'bootstrap/scss/_variables';
-@import 'assets/app';
+@import 'assets/bootstrap-mixins';
 
 .page-content-parent {
   position: relative;
@@ -60,27 +58,27 @@ export default {
   }
 }
 
-::v-deep h1,
-::v-deep h2,
-::v-deep h3,
-::v-deep h4,
-::v-deep h5 {
+:deep(h1),
+:deep(h2),
+:deep(h3),
+:deep(h4),
+:deep(h5) {
   border-bottom: 1px solid rgba(black, 0.25);
   padding-bottom: 0.2em;
   margin-bottom: 0.5em;
 }
 
-::v-deep .modal-header h5 {
+:deep(.modal-header h5) {
   border-bottom: none;
   margin-bottom: 0;
   padding-bottom: 0;
 }
 
-::v-deep code {
+:deep(code) {
   font-size: 1em;
 }
 
-::v-deep a:not([role='button']) {
+:deep(a:not([role='button'])) {
   text-decoration: none;
 
   &:hover {

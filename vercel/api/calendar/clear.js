@@ -1,6 +1,7 @@
 import corsUtils from '../../utils/cors'
 import octokitUtils from '../../utils/octokit'
-import site from '../../../site'
+import siteMeta from '../../../site/meta'
+import directories from '../../../site/directories'
 
 export default async function handler (request, response) {
   corsUtils.allowCors(response)
@@ -9,14 +10,14 @@ export default async function handler (request, response) {
     return
   }
   let githubResponse = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
-    owner: site.github.username,
-    repo: site.github.dataRepository,
-    path: site.github.calendarFile
+    owner: siteMeta.github.username,
+    repo: siteMeta.github.dataRepository,
+    path: directories.calendarFile
   })
   githubResponse = await octokit.request('DELETE /repos/{owner}/{repo}/contents/{path}', {
-    owner: site.github.username,
-    repo: site.github.dataRepository,
-    path: site.github.calendarFile,
+    owner: siteMeta.github.username,
+    repo: siteMeta.github.dataRepository,
+    path: directories.calendarFile,
     message: 'Suppression du calendrier.',
     sha: githubResponse.data.sha
   })

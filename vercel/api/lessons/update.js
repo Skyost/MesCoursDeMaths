@@ -1,5 +1,6 @@
 import octokitUtils from '../../utils/octokit'
-import site from '../../../site'
+import siteMeta from '../../../site/meta'
+import directories from '../../../site/directories'
 import corsUtils from '../../utils/cors'
 
 export default async function handler (request, response) {
@@ -14,9 +15,9 @@ export default async function handler (request, response) {
     return
   }
   const githubResponse = await octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
-    owner: site.github.username,
-    repo: site.github.dataRepository,
-    path: `${site.github.lessonsDirectory}${path}`,
+    owner: siteMeta.github.username,
+    repo: siteMeta.github.dataRepository,
+    path: `${directories.lessonsDirectory}${path}`,
     message: `Mise à jour de \`${path}\`.`,
     sha: request.body.sha,
     content: request.body.content
@@ -26,7 +27,7 @@ export default async function handler (request, response) {
   response.status(githubResponse.status).json({
     commit: data.commit,
     name: file.name,
-    path: file.path.replace(site.github.lessonsDirectory, ''),
+    path: file.path.replace(directories.lessonsDirectory, ''),
     sha: file.sha,
     content: file.content
   })
