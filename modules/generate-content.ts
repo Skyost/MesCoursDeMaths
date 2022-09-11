@@ -127,8 +127,9 @@ async function processFiles (resolver, contentGenerator, directory, mdDir, pdfDi
     } else if (file.endsWith('.tex')) {
       logger.info(name, `Processing "${filePath}"...`)
       const fileName = utils.getFileName(file)
+      const filteredFileName = contentGenerator.fileNameFilter(fileName)
       fs.mkdirSync(mdDir, { recursive: true })
-      const mdFile = resolver.resolve(mdDir, contentGenerator.fileNameFilter(fileName) + '.md')
+      const mdFile = resolver.resolve(mdDir, `${filteredFileName}.md`)
       const imagesDir = resolver.resolve(imagesDestDir, fileName)
       if (contentGenerator.shouldGenerateMarkdown(fileName) && (!debug.debug || !fs.existsSync(mdFile))) {
         extractImages(resolver, contentGenerator, filePath, extractedImagesDir)
@@ -143,12 +144,12 @@ async function processFiles (resolver, contentGenerator, directory, mdDir, pdfDi
         adjustColSize(root)
         numberizeTitles(root)
         renderMath(root)
-        fs.writeFileSync(mdFile, toString(contentGenerator.fileNameFilter(fileName), root, linkedResources))
+        fs.writeFileSync(mdFile, toString(filteredFileName, root, linkedResources))
       }
       if (contentGenerator.shouldGeneratePDF(fileName)) {
         const checksums = calculateTexFileChecksums(resolver, filePath, imagesDir)
-        const pdfUrl = `${siteMeta.url}/${pdfDestURL}/${contentGenerator.fileNameFilter(fileName)}.pdf`
-        fs.writeFileSync(resolver.resolve(directory, `${fileName}.pdf.checksums`), JSON.stringify(checksums))
+        const pdfUrl = `${siteMeta.url}/${pdfDestURL}/${filteredFileName}.pdf`
+        fs.writeFileSync(resolver.resolve(pdfDir, `${filteredFileName}.pdf.checksums`), JSON.stringify(checksums))
         if (!debug.debug && await areRemoteChecksumsTheSame(checksums, pdfUrl)) {
           const downloader = new Downloader({
             url: pdfUrl,
@@ -157,7 +158,7 @@ async function processFiles (resolver, contentGenerator, directory, mdDir, pdfDi
           await downloader.download()
         } else if (latexmk(resolver, directory, file)) {
           fs.mkdirSync(pdfDir, { recursive: true })
-          fs.copyFileSync(resolver.resolve(directory, `${fileName}.pdf`), resolver.resolve(pdfDir, `${contentGenerator.fileNameFilter(fileName)}.pdf`))
+          fs.copyFileSync(resolver.resolve(directory, `${fileName}.pdf`), resolver.resolve(pdfDir, `${filteredFileName}.pdf`))
           execSync('latexmk -quiet -c', { cwd: directory })
         }
       }
@@ -375,7 +376,7 @@ async function areRemoteChecksumsTheSame (checksums, pdfUrl) {
 function latexmk (resolver, directory, file) {
   try {
     if (debug.debug && fs.existsSync(resolver.resolve(directory, file.replace('.tex', '.pdf')))) {
-      return false
+      return true
     }
     execSync(`latexmk -lualatex "${file}"`, { cwd: directory })
     return true
