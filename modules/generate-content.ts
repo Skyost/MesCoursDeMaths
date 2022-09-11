@@ -147,11 +147,11 @@ async function processFiles (resolver, contentGenerator, directory, mdDir, pdfDi
         fs.writeFileSync(mdFile, toString(filteredFileName, root, linkedResources))
       }
       if (contentGenerator.shouldGeneratePDF(fileName)) {
-        const checksums = calculateTexFileChecksums(resolver, filePath, imagesDir)
+        const checksums = JSON.stringify(calculateTexFileChecksums(resolver, filePath, imagesDir))
         const pdfUrl = `${siteMeta.url}/${pdfDestURL}/${filteredFileName}.pdf`
         fs.mkdirSync(pdfDir, { recursive: true })
-        fs.writeFileSync(resolver.resolve(pdfDir, `${filteredFileName}.pdf.checksums`), JSON.stringify(checksums))
-        if (!debug.debug && await areRemoteChecksumsTheSame(checksums, pdfUrl)) {
+        fs.writeFileSync(resolver.resolve(pdfDir, `${filteredFileName}.pdf.checksums`), checksums)
+        if (!debug.debug && await isRemoteChecksumsTheSame(checksums, pdfUrl)) {
           const downloader = new Downloader({
             url: pdfUrl,
             directory: pdfDir
@@ -365,9 +365,9 @@ function calculateTexFileChecksums (resolver, file, imagesDir) {
   return checksums
 }
 
-async function areRemoteChecksumsTheSame (checksums, pdfUrl) {
+async function isRemoteChecksumsTheSame (checksums, pdfUrl) {
   try {
-    const remoteChecksums = await $fetch(`${pdfUrl}.checksums`, { parseResponse: JSON.parse })
+    const remoteChecksums = await $fetch(`${pdfUrl}.checksums`, { parseResponse: responseText => responseText })
     return checksums === remoteChecksums
   } catch (ex) {}
   return false
