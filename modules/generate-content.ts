@@ -348,8 +348,8 @@ function calculateTexFileChecksums (resolver, file, imagesDir) {
   const checksums = {}
   checksums[fileName] = utils.generateChecksum(fs.readFileSync(file, { encoding: 'utf-8' }))
   // eslint-disable-next-line prefer-regex-literals
-  const regex = new RegExp('\\\\includegraphics(\\[[A-Za-zÀ-ÖØ-öø-ÿ\\d, =.\\\\]*])?{([A-Za-zÀ-ÖØ-öø-ÿ\\d, .]+)}', 'gs')
-  // TODO: Images with commands inside their name.
+  const regex = new RegExp('\\\\includegraphics(\\[[A-Za-zÀ-ÖØ-öø-ÿ\\d, =.\\\\-]*])?{([A-Za-zÀ-ÖØ-öø-ÿ\\d, .-]+)}', 'gs')
+  // TODO: Images with commands inside their name : maybe analyze images folder instead of \includegraphics.
   // TODO: \input, \include, ...
   const content = fs.readFileSync(file, { encoding: 'utf-8' }).toString()
   let match = regex.exec(content)
