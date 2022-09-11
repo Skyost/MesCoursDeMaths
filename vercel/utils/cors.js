@@ -1,6 +1,8 @@
+import siteMeta from '../../site/meta'
+
 function allowCors (response) {
   response.setHeader('Access-Control-Allow-Credentials', true)
-  response.setHeader('Access-Control-Allow-Origin', '*')
+  response.setHeader('Access-Control-Allow-Origin', siteMeta.url)
   response.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS, PATCH, DELETE, POST, PUT')
   response.setHeader(
     'Access-Control-Allow-Headers',
