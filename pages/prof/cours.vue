@@ -1,5 +1,6 @@
 <template>
   <protected>
+    <page-head title="Agenda" />
     <teacher-navigation-entry />
     <page-navigation-entry title="Cours" to="/prof/cours/" />
     <div class="file-browser">
@@ -77,9 +78,10 @@ import FileUploadButton from '~/components/Applications/FileUploadButton'
 import TeacherNavigationEntry from '~/components/Page/Navigation/Entries/TeacherNavigationEntry'
 import PageNavigationEntry from '~/components/Page/Navigation/Entries/PageNavigationEntry'
 import accessTokenUtils from '~/utils/access-token'
+import PageHead from '~/components/Page/PageHead.vue'
 
 export default {
-  components: { PageNavigationEntry, TeacherNavigationEntry, FileUploadButton, CodeEditor, Protected, Spinner, SkiIcon, SkiButton },
+  components: { PageHead, PageNavigationEntry, TeacherNavigationEntry, FileUploadButton, CodeEditor, Protected, Spinner, SkiIcon, SkiButton },
   data () {
     return {
       loading: true,

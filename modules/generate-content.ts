@@ -147,18 +147,22 @@ async function processFiles (resolver, contentGenerator, directory, mdDir, pdfDi
         fs.writeFileSync(mdFile, toString(filteredFileName, root, linkedResources))
       }
       if (contentGenerator.shouldGeneratePDF(fileName)) {
+        const destPdf = resolver.resolve(pdfDir, `${filteredFileName}.pdf`)
+        if (debug.debug && fs.existsSync(destPdf)) {
+          continue
+        }
         const checksums = JSON.stringify(calculateTexFileChecksums(resolver, filePath, imagesDir))
         const pdfUrl = `${siteMeta.url}/${pdfDestURL}/${filteredFileName}.pdf`
         fs.mkdirSync(pdfDir, { recursive: true })
         fs.writeFileSync(resolver.resolve(pdfDir, `${filteredFileName}.pdf.checksums`), checksums)
-        if (!debug.debug && await isRemoteChecksumsTheSame(checksums, pdfUrl)) {
+        if (await isRemoteChecksumsTheSame(checksums, pdfUrl)) {
           const downloader = new Downloader({
             url: pdfUrl,
             directory: pdfDir
           })
           await downloader.download()
         } else if (latexmk(resolver, directory, file)) {
-          fs.copyFileSync(resolver.resolve(directory, `${fileName}.pdf`), resolver.resolve(pdfDir, `${filteredFileName}.pdf`))
+          fs.copyFileSync(resolver.resolve(directory, `${fileName}.pdf`), destPdf)
           execSync('latexmk -quiet -c', { cwd: directory })
         }
       }
@@ -290,6 +294,9 @@ async function handleImages (resolver, imagesDir, imagesDestDir) {
       await handleImages(resolver, filePath, resolver.resolve(imagesDestDir, file))
     } else if (file.endsWith('.tex')) {
       logger.info(name, `Handling image "${filePath}"...`)
+      if (debug.debug && fs.existsSync(resolver.resolve(imagesDestDir, `${utils.getFileName(file)}.svg`))) {
+        continue
+      }
       if (latexmk(resolver, imagesDir, file)) {
         const svgFile = pdftocairo(resolver, imagesDir, file)
         fs.mkdirSync(imagesDestDir, { recursive: true })
@@ -375,9 +382,6 @@ async function isRemoteChecksumsTheSame (checksums, pdfUrl) {
 
 function latexmk (resolver, directory, file) {
   try {
-    if (debug.debug && fs.existsSync(resolver.resolve(directory, file.replace('.tex', '.pdf')))) {
-      return true
-    }
     execSync(`latexmk -lualatex "${file}"`, { cwd: directory })
     return true
   } catch (ex) {

@@ -36,7 +36,7 @@ export default {
     },
     openGraphImage: {
       type: String,
-      default: `${siteMeta.host}/images/social/open-graph.png`
+      default: `${siteMeta.url}/images/social/open-graph.png`
     },
     twitterCard: {
       type: String,
@@ -44,12 +44,12 @@ export default {
     },
     twitterImage: {
       type: String,
-      default: `${siteMeta.host}/images/social/twitter.png`
+      default: `${siteMeta.url}/images/social/twitter.png`
     }
   },
   computed: {
     siteName () {
-      return siteMeta.name
+      return siteMeta.title
     },
     currentAddress () {
       return `${this.$config.url}${this.$route.path}`
