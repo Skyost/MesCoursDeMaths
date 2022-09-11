@@ -1,5 +1,5 @@
 import * as fs from 'fs'
-import {createResolver, defineNuxtModule, extendPages} from '@nuxt/kit'
+import { createResolver, defineNuxtModule, extendPages } from '@nuxt/kit'
 
 export default defineNuxtModule({
   meta: {

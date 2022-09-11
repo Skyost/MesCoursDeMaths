@@ -1,9 +1,9 @@
-import {writeFileSync} from 'fs'
-import {Readable} from 'stream'
-import {dirname} from 'path'
+import { writeFileSync } from 'fs'
+import { Readable } from 'stream'
+import { dirname } from 'path'
 import mkdirp from 'mkdirp'
-import {SitemapStream, streamToPromise} from 'sitemap'
-import {createResolver, defineNuxtModule} from '@nuxt/kit'
+import { SitemapStream, streamToPromise } from 'sitemap'
+import { createResolver, defineNuxtModule } from '@nuxt/kit'
 
 export default defineNuxtModule({
   meta: {

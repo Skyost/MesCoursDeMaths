@@ -1,7 +1,7 @@
-import {dirname} from 'path'
+import { dirname } from 'path'
 import * as fs from 'fs'
 import mkdirp from 'mkdirp'
-import {createResolver, defineNuxtModule} from '@nuxt/kit'
+import { createResolver, defineNuxtModule } from '@nuxt/kit'
 
 export default defineNuxtModule({
   meta: {

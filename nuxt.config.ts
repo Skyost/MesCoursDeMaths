@@ -1,4 +1,4 @@
-import {defineNuxtConfig} from 'nuxt'
+import { defineNuxtConfig } from 'nuxt'
 import eslintPlugin from 'vite-plugin-eslint'
 import 'dotenv/config'
 import siteMeta from './site/meta'
