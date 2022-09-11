@@ -148,19 +148,17 @@ async function processFiles (resolver, contentGenerator, directory, mdDir, pdfDi
       if (contentGenerator.shouldGeneratePDF(fileName)) {
         const checksums = calculateTexFileChecksums(resolver, filePath, imagesDir)
         const pdfUrl = `${siteMeta.url}/${pdfDestURL}/${contentGenerator.fileNameFilter(fileName)}.pdf`
+        fs.writeFileSync(resolver.resolve(directory, `${fileName}.pdf.checksums`), JSON.stringify(checksums))
         if (!debug.debug && await areRemoteChecksumsTheSame(checksums, pdfUrl)) {
           const downloader = new Downloader({
             url: pdfUrl,
             directory: pdfDir
           })
           await downloader.download()
-        } else {
-          fs.writeFileSync(resolver.resolve(directory, `${fileName}.pdf.checksums`), JSON.stringify(checksums))
-          if (latexmk(resolver, directory, file)) {
-            fs.mkdirSync(pdfDir, { recursive: true })
-            fs.copyFileSync(resolver.resolve(directory, `${fileName}.pdf`), resolver.resolve(pdfDir, `${contentGenerator.fileNameFilter(fileName)}.pdf`))
-            execSync('latexmk -quiet -c', { cwd: directory })
-          }
+        } else if (latexmk(resolver, directory, file)) {
+          fs.mkdirSync(pdfDir, { recursive: true })
+          fs.copyFileSync(resolver.resolve(directory, `${fileName}.pdf`), resolver.resolve(pdfDir, `${contentGenerator.fileNameFilter(fileName)}.pdf`))
+          execSync('latexmk -quiet -c', { cwd: directory })
         }
       }
     }
