@@ -367,7 +367,7 @@ function calculateTexFileChecksums (resolver, file, imagesDir) {
 
 async function areRemoteChecksumsTheSame (checksums, pdfUrl) {
   try {
-    const remoteChecksums = await $fetch(`${pdfUrl}.checksums`)
+    const remoteChecksums = await $fetch(`${pdfUrl}.checksums`, { parseResponse: JSON.parse })
     return checksums === remoteChecksums
   } catch (ex) {}
   return false
