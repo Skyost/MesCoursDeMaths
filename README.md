@@ -1,4 +1,4 @@
-# Mes cours de maths
+# Sen cours de maths
 
 Bienvenue sur la page Github du site web [Sen cours de maths](https://sencoursdemaths.com) !
 Il s'agit d'un petit site web où je dépose tous mes cours de mathématiques ainsi que les ressources
