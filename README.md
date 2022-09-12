@@ -118,6 +118,6 @@ doivent l'être en développement).
 
 Il faut également ajouter une variable d'environnement de développement intitulée `DEBUG_MODE` et contenant la valeur `true`.
 
-Voici un aperçu des mes variables d'environnement :
+Voici un aperçu de variables d'environnement tiré du site originel de Skyost:
 
 ![Variables d'environnement](https://user-images.githubusercontent.com/3882599/172180030-ad6c6f70-094b-49a8-88fd-69328c6fdb60.png)
