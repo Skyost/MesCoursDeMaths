@@ -147,24 +147,14 @@ async function processFiles (resolver, contentGenerator, directory, mdDir, pdfDi
         fs.writeFileSync(mdFile, toString(filteredFileName, root, linkedResources))
       }
       if (contentGenerator.shouldGeneratePDF(fileName)) {
-        const destPdf = resolver.resolve(pdfDir, `${filteredFileName}.pdf`)
-        if (debug.debug && fs.existsSync(destPdf)) {
-          continue
+        const content = fs.readFileSync(filePath, { encoding: 'utf-8' }).toString()
+        const printVariant = contentGenerator.generatePrintVariant(fileName, content)
+        if (printVariant) {
+          fs.writeFileSync(filePath, printVariant)
+          await generatePdf(resolver, directory, file, imagesDir, pdfDir, pdfDestURL, `${filteredFileName}-impression.pdf`)
+          fs.writeFileSync(filePath, content)
         }
-        const checksums = JSON.stringify(calculateTexFileChecksums(resolver, filePath, imagesDir))
-        const pdfUrl = `${siteMeta.url}/${pdfDestURL}/${filteredFileName}.pdf`
-        fs.mkdirSync(pdfDir, { recursive: true })
-        fs.writeFileSync(resolver.resolve(pdfDir, `${filteredFileName}.pdf.checksums`), checksums)
-        if (await isRemoteChecksumsTheSame(checksums, pdfUrl)) {
-          const downloader = new Downloader({
-            url: pdfUrl,
-            directory: pdfDir
-          })
-          await downloader.download()
-        } else if (latexmk(resolver, directory, file)) {
-          fs.copyFileSync(resolver.resolve(directory, `${fileName}.pdf`), destPdf)
-          execSync('latexmk -quiet -c', { cwd: directory })
-        }
+        await generatePdf(resolver, directory, file, imagesDir, pdfDir, pdfDestURL, `${filteredFileName}.pdf`)
       }
     }
   }
@@ -343,34 +333,74 @@ function toString (slug, root, linkedResources) {
   return matter.stringify(root.innerHTML, header)
 }
 
+async function generatePdf (resolver, directory, file, imagesDir, pdfDir, pdfDestUrl, pdfFilename) {
+  const filePath = resolver.resolve(directory, file)
+  const destPdf = resolver.resolve(pdfDir, pdfFilename)
+  if (debug.debug && fs.existsSync(destPdf)) {
+    return
+  }
+  const checksums = JSON.stringify(calculateTexFileChecksums(resolver, filePath, imagesDir))
+  const pdfUrl = `${siteMeta.url}/${pdfDestUrl}/${pdfFilename}`
+  fs.mkdirSync(pdfDir, { recursive: true })
+  fs.writeFileSync(resolver.resolve(pdfDir, `${pdfFilename}.checksums`), checksums)
+  if (await isRemoteChecksumsTheSame(checksums, pdfUrl)) {
+    const downloader = new Downloader({
+      url: pdfUrl,
+      directory: pdfDir
+    })
+    await downloader.download()
+  } else if (latexmk(resolver, directory, file)) {
+    fs.copyFileSync(resolver.resolve(directory, `${utils.getFileName(file)}.pdf`), destPdf)
+    execSync('latexmk -quiet -c', { cwd: directory })
+  }
+}
+
 function calculateTexFileChecksums (resolver, file, imagesDir) {
+  const latexIncludeCommands = [
+    {
+      command: 'includegraphics',
+      directory: imagesDir,
+      extensions: ['.png', '.jpeg', '.jpg', '.svg']
+    },
+    {
+      command: 'documentclass',
+      directory: path.dirname(file),
+      extensions: ['.cls']
+    },
+    {
+      command: 'include',
+      directory: path.dirname(file),
+      extensions: ['.tex']
+    }
+  ]
   const fileName = utils.getFileName(file)
   const checksums = {}
   checksums[fileName] = utils.generateChecksum(fs.readFileSync(file, { encoding: 'utf-8' }))
-  // eslint-disable-next-line prefer-regex-literals
-  const regex = new RegExp('\\\\includegraphics(\\[[A-Za-zÀ-ÖØ-öø-ÿ\\d, =.\\\\-]*])?{([A-Za-zÀ-ÖØ-öø-ÿ\\d, .-]+)}', 'gs')
-  // TODO: Images with commands inside their name : maybe analyze images folder instead of \includegraphics.
-  // TODO: \input, \include, ...
-  const content = fs.readFileSync(file, { encoding: 'utf-8' }).toString()
-  let match = regex.exec(content)
-  while (match != null) {
-    const image = match[2]
-    let imageFile = resolver.resolve(imagesDir, match[2])
-    if (!fs.existsSync(imageFile)) {
-      for (const extension of ['.png', '.jpeg', '.jpg', '.svg']) {
-        if (fs.existsSync(`${imageFile}${extension}`)) {
-          imageFile = `${imageFile}${extension}`
-          break
+  for (const latexIncludeCommand of latexIncludeCommands) {
+    const regex = new RegExp(`\\\\${latexIncludeCommand.command}(\\[[A-Za-zÀ-ÖØ-öø-ÿ\\d, =.\\\\-]*])?{([A-Za-zÀ-ÖØ-öø-ÿ\\d/, .-]+)}`, 'gs')
+    const content = fs.readFileSync(file, { encoding: 'utf-8' }).toString()
+    let match = regex.exec(content)
+    while (match != null) {
+      const fileName = match[2]
+      if (!Object.prototype.hasOwnProperty.call(checksums, fileName)) {
+        const extensions = ['', ...latexIncludeCommand.extensions]
+        let includeFile = resolver.resolve(latexIncludeCommand.directory, fileName)
+        for (const extension of extensions) {
+          const includeFileWithExtension = `${includeFile}${extension}`
+          if (fs.existsSync(includeFileWithExtension)) {
+            includeFile = includeFileWithExtension
+            break
+          }
         }
+        if (!fs.existsSync(includeFile)) {
+          logger.warn(name, `Unable to find file "${fileName}".`)
+          match = regex.exec(content)
+          continue
+        }
+        checksums[fileName] = utils.generateChecksum(fs.readFileSync(includeFile, { encoding: 'utf-8' }))
       }
-      if (!fs.existsSync(imageFile)) {
-        logger.warn(name, `Unable to find image "${image}".`)
-        match = regex.exec(content)
-        continue
-      }
+      match = regex.exec(content)
     }
-    checksums[image] = utils.generateChecksum(fs.readFileSync(imageFile, { encoding: 'utf-8' }))
-    match = regex.exec(content)
   }
   return checksums
 }

@@ -63,6 +63,13 @@ export default {
   shouldGenerateMarkdown: fileName => fileName.endsWith('-cours'),
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   shouldGeneratePDF: fileName => true,
+  generatePrintVariant: (fileName, fileContent) => {
+    if (fileName === 'questions-flash') {
+      return null
+    }
+    const regex = /\\documentclass(\[[A-Za-zÀ-ÖØ-öø-ÿ\d, =.\\-]*])?{([A-Za-zÀ-ÖØ-öø-ÿ\d/, .-]+)}/gs
+    return fileContent.replace(regex, '\\documentclass[$1]{$2}\n\n\\include{../impression}')
+  },
   getMarkdownLinkedResources (directory, file, pdfDestURL) {
     const fileName = utils.getFileName(file)
     if (fileName.endsWith('-cours')) {
