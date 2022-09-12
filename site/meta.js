@@ -1,12 +1,12 @@
 export default {
-  title: 'Mes cours de maths',
+  title: 'Sen cours de maths',
   description: 'Petit site web où je mets tous mes cours à disposition ainsi que les ressources qui y sont liés.',
-  author: 'Hugo Delaunay',
-  url: 'https://mes-cours-de-maths.fr',
-  apiUrl: 'https://vercel.mes-cours-de-maths.fr/api',
+  author: 'Ismaila Mbodji',
+  url: 'https://sen-cours-de-maths.com',
+  apiUrl: 'https://sen-cours-de-maths.vercel.app',
   github: {
-    username: 'Skyost',
-    repository: 'MesCoursDeMaths',
+    username: 'imbodji',
+    repository: 'SenCoursDeMaths',
     dataRepository: 'Cours-HD'
-  }
+  
 }
