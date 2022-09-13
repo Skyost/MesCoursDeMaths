@@ -9,8 +9,8 @@ Pour cela, suivez le guide ci-dessous.
 
 ## Installation
 
-Il est totalement possible pour vous de cloner sur le projet pour l'utiliser vous aussi !
-Pour cela, suivez le guide ci-dessous. Attention, des connaissances particulières du domaine sont requises.
+Il est totalement possible pour vous de cloner le projet pour l'utiliser vous aussi !
+Pour cela, suivez le guide ci-dessous. Attention, des connaissances en NodeJS (notamment) sont requises.
 
 ### Création d'applications et de jetons
 
@@ -106,6 +106,8 @@ if [[ "$VERCEL_GIT_COMMIT_REF" == "master" ]] ; then echo "✅ Ref is 'master'. 
 ```
 
 dans la section _Ignored Build Step_ de l'onglet _Git_.
+
+N'oubliez pas de modifier également le fichier `vercel/index.html`.
 
 ## Tests locaux
 
