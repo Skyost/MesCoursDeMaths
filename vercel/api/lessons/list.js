@@ -4,7 +4,9 @@ import directories from '../../../site/directories'
 import corsUtils from '../../utils/cors'
 
 export default async function handler (request, response) {
-  corsUtils.allowCors(response)
+  if (!corsUtils.allowCors(request, response)) {
+    return
+  }
   const octokit = octokitUtils.createOctokitFromRequest(request, response)
   if (octokit === null) {
     return

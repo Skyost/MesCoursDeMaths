@@ -3,7 +3,9 @@ import calendarUtils from '../../utils/calendar'
 import corsUtils from '../../utils/cors'
 
 export default async function handler (request, response) {
-  corsUtils.allowCors(response)
+  if (!corsUtils.allowCors(request, response)) {
+    return
+  }
   if (!request.query.date) {
     response.status(400).send('Il manque au moins un paramètre.')
     return
