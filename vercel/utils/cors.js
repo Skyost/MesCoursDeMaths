@@ -9,7 +9,7 @@ function allowCors (request, response) {
     'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization, Origin'
   )
   if (request.method.toUpperCase() === 'OPTIONS') {
-    response.status(200)
+    response.sendStatus(200)
     return false
   }
   return true
