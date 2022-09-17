@@ -1,4 +1,5 @@
-import { defineNuxtConfig } from 'nuxt'
+import { defineNuxtConfig } from 'nuxt/config'
+import StylelintPlugin from 'vite-plugin-stylelint'
 import eslintPlugin from 'vite-plugin-eslint'
 import 'dotenv/config'
 import siteMeta from './site/meta'
@@ -40,6 +41,7 @@ export default defineNuxtConfig({
 
   vite: {
     plugins: [
+      StylelintPlugin(),
       eslintPlugin()
     ]
   },

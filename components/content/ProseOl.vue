@@ -5,7 +5,7 @@
 </template>
 
 <style lang="scss" scoped>
-ol li::marker {
+ol :deep(li::marker) {
   font-weight: bold;
 }
 </style>

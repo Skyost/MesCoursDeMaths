@@ -17,7 +17,6 @@
     "@octokit/auth-oauth-app": "^5.0.2",
     "@octokit/core": "^4.0.5",
     "@octokit/oauth-authorization-url": "^5.0.0",
-    "ace-builds": "^1.10.1",
     "cookie-universal": "^2.2.2",
     "dotenv": "^16.0.2",
     "html2canvas": "^1.4.1",
@@ -51,6 +50,7 @@
     "stylelint-config-standard": "^28.0.0",
     "stylelint-scss": "^4.3.0",
     "typescript": "^4.8.2",
-    "vite-plugin-eslint": "^1.8.1"
+    "vite-plugin-eslint": "^1.8.1",
+    "vite-plugin-stylelint": "^3.0.7"
   }
 }
