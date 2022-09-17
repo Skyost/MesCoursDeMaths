@@ -84,6 +84,7 @@ export default defineNuxtConfig({
   sitemap: {
     hostname: url,
     exclude: [
+      '/erreur-404.html',
       '/404.html',
       '/:catchAll(.*)*',
       '/cours/:level/:slug',

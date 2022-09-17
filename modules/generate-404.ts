@@ -9,15 +9,19 @@ export default defineNuxtModule({
   },
   setup: (_, nuxt) => {
     const resolver = createResolver(import.meta.url)
-    const filePath = resolver.resolve(nuxt.options.srcDir, 'pages/404.vue')
+    const filePath = resolver.resolve(nuxt.options.srcDir, 'pages/erreur-404.vue')
     if (fs.existsSync(filePath)) {
       // nuxt.options.generate.fallback = '404.html'
       extendPages((pages) => {
         pages.push({
-          name: '404',
-          path: '/404.html',
+          name: 'erreur-404',
+          path: '/erreur-404.html',
           file: filePath
         })
+      })
+
+      nuxt.hook('close', (nuxt) => {
+        fs.renameSync(resolver.resolve(nuxt.options.srcDir, 'dist', 'erreur-404.html'), resolver.resolve(nuxt.options.srcDir, 'dist', '404.html'))
       })
     }
   }
