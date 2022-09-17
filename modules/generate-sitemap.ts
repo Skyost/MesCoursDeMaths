@@ -47,6 +47,7 @@ export default defineNuxtModule({
       dir: dirname(filePath)
     })
 
+    // TODO: Replace by generate:extendRoutes when implemented.
     nuxt.hook('pages:extend', async (pages) => {
       const sitemap = await generateSitemap(pages)
       createSitemapFile(sitemap, filePath)

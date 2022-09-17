@@ -49,11 +49,11 @@ export default defineNuxtConfig({
   modules: [
     '~/modules/generate-content',
     '~/modules/generate-cname',
-    '~/modules/generate-sitemap',
     'skimple-components/nuxt',
     '@nuxt/content',
     '@nuxtjs/google-fonts',
-    '~/modules/generate-404'
+    '~/modules/generate-404',
+    '~/modules/generate-sitemap'
   ],
 
   runtimeConfig: {
@@ -83,7 +83,15 @@ export default defineNuxtConfig({
 
   sitemap: {
     hostname: url,
-    exclude: ['/404.html', '/:catchAll(.*)*']
+    exclude: [
+      '/404.html',
+      '/:catchAll(.*)*',
+      '/cours/:level/:slug',
+      '/cours/:level',
+      '/prof/agenda',
+      '/prof/cours',
+      '/prof/tableau-blanc'
+    ]
   },
 
   cname: {
