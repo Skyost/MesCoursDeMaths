@@ -11,6 +11,7 @@ export default defineNuxtModule({
     const resolver = createResolver(import.meta.url)
     const filePath = resolver.resolve(nuxt.options.srcDir, 'pages/404.vue')
     if (fs.existsSync(filePath)) {
+      // nuxt.options.generate.fallback = '404.html'
       extendPages((pages) => {
         pages.push({
           name: '404',
