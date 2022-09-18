@@ -1,7 +1,7 @@
 <template>
   <div>
    
-    <h1>Bienvenue !</h1>
+    <h1>Bienvenu !</h1>
    
   </div>
 </template>
