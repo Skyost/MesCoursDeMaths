@@ -86,7 +86,7 @@ export default {
             const title = match[2]
             result.push({
               title,
-              url: `${pdfDestURL}/${this.fileNameFilter(utils.getFileName(directoryFile))}.pdf`
+              url: `/${pdfDestURL}/${this.fileNameFilter(utils.getFileName(directoryFile))}.pdf`
             })
           }
         }
