@@ -5,8 +5,8 @@ import accessTokenUtils from '~/utils/access-token'
 
 const runtimeConfig = useRuntimeConfig()
 const { pending, data, error } = useLazyFetch(`${runtimeConfig.public.apiUrl}/calendar/dates`, {
-  headers: accessTokenUtils.getAuthorizationHeaders()
-  // server: false
+  headers: accessTokenUtils.getAuthorizationHeaders(),
+  server: false
 })
 </script>
 
