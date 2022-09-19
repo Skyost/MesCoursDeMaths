@@ -32,3 +32,9 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+img.tikz-image {
+  max-width: 100%;
+}
+</style>

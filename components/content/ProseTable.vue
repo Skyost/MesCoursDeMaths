@@ -1,7 +1,9 @@
 <template>
-  <table class="table table-bordered table-hover">
-    <slot />
-  </table>
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover">
+      <slot />
+    </table>
+  </div>
 </template>
 
 <script>

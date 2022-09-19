@@ -50,7 +50,6 @@ export default {
 
     @include media-breakpoint-down(lg) {
       min-height: 0;
-      padding-bottom: 200px;
     }
   }
 
@@ -64,13 +63,13 @@ export default {
       max-width: 30%;
 
       @include media-breakpoint-down(md) {
-        position: relative;
         max-width: 90%;
-        margin-bottom: 15px;
       }
 
       @include media-breakpoint-down(lg) {
-        top: 30%;
+        position: relative;
+        max-width: 50%;
+        margin-bottom: 15px;
       }
     }
 
@@ -80,12 +79,8 @@ export default {
       height: 60%;
       max-width: 30%;
 
-      @include media-breakpoint-down(md) {
-        display: none;
-      }
-
       @include media-breakpoint-down(lg) {
-        top: 40%;
+        display: none;
       }
     }
   }

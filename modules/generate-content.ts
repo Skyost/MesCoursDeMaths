@@ -225,7 +225,11 @@ function adjustColSize (root) {
     const columns = row.querySelectorAll('.col')
     if (sizeElement && sizeElement.text.trim().length > 0 && columns.length === 2) {
       const size = parseFloat(sizeElement.text.trim())
+      columns[0].classList.remove('col')
+      columns[0].classList.add('col-6')
       columns[0].setAttribute('style', `--column-size: ${size};`)
+      columns[1].classList.remove('col')
+      columns[1].classList.add('col-6')
       columns[1].setAttribute('style', `--column-size: ${1 - size};`)
     }
     sizeElement.remove()
