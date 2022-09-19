@@ -221,16 +221,21 @@ function replaceVspaceElements (root) {
 function adjustColSize (root) {
   const rows = root.querySelectorAll('.row')
   for (const row of rows) {
-    const sizeElement = row.querySelector('.first-col-size')
     const columns = row.querySelectorAll('.col')
-    if (sizeElement && sizeElement.text.trim().length > 0 && columns.length === 2) {
-      const size = parseFloat(sizeElement.text.trim())
-      columns[0].classList.remove('col')
-      columns[0].classList.add('col-6')
-      columns[0].setAttribute('style', `--column-size: ${size};`)
-      columns[1].classList.remove('col')
-      columns[1].classList.add('col-6')
-      columns[1].setAttribute('style', `--column-size: ${1 - size};`)
+    const sizeElement = row.querySelector('.first-col-size')
+    if (columns.length === 2) {
+      if (sizeElement && sizeElement.text.trim().length > 0) {
+        const size = parseFloat(sizeElement.text.trim())
+        columns[0].setAttribute('style', `--column-size: ${size};`)
+        columns[1].setAttribute('style', `--column-size: ${1 - size};`)
+      } else {
+        columns[0].classList.remove('col')
+        columns[1].classList.remove('col')
+        columns[0].classList.add('col-12')
+        columns[1].classList.add('col-12')
+        columns[0].classList.add('col-lg-6')
+        columns[1].classList.add('col-lg-6')
+      }
     }
     sizeElement.remove()
   }
