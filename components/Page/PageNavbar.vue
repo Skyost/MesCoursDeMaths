@@ -9,9 +9,6 @@
         <ski-navbar-item to="/cours/" :active="$route.path.startsWith('/cours')">
           <ski-icon icon="bookmark-fill" /> Accéder aux cours
         </ski-navbar-item>
-        <ski-navbar-item to="/maths-et-culture/" :active="$route.path === '/maths-et-culture/'">
-          <ski-icon icon="info-circle-fill" /> Maths et culture
-        </ski-navbar-item>
       </ski-navbar-items>
     </ski-navbar-collapse>
     <page-navbar-brand class="mobile-navbar-brand" />
