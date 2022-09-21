@@ -7,6 +7,7 @@
       <ski-column :width="image ? '9' : '12'">
         <span v-if="subtitle" class="subtitle" v-text="subtitle" />
         <h2 class="title" v-text="title" />
+        <slot />
       </ski-column>
     </ski-columns>
   </nuxt-link>
@@ -21,7 +22,7 @@ export default {
   props: {
     color: {
       type: String,
-      default: 'red'
+      default: 'blue'
     },
     to: {
       type: String,

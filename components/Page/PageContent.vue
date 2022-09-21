@@ -17,10 +17,10 @@ export default {
 
 <style lang="scss" scoped>
 @import 'assets/bootstrap-mixins';
+@import 'assets/colors';
 
 .page-content-parent {
   position: relative;
-  background-color: #f8f8f8;
 
   .page-content {
     position: relative;
@@ -31,30 +31,48 @@ export default {
     @include media-breakpoint-down(md) {
       padding: 60px 40px;
     }
+
+    @include media-breakpoint-down(sm) {
+      padding: 60px 12px;
+    }
   }
 
-  &::before,
-  &::after {
+  &::before {
     position: absolute;
     content: '';
+    top: 0;
     right: 0;
-    // bottom: 0;
-    height: calc(2 * 100vw / 9);
+    height: 100px;
     left: 0;
     background-size: cover;
     background-repeat: no-repeat;
+    background-color: $primary;
+  }
+}
+
+:deep(h1.centered),
+:deep(h2.centered) {
+  text-align: center;
+  border-bottom: none;
+
+  &:before,
+  &:after {
+    $size: 0.2em;
+    content: '';
+    display: inline-block;
+    height: $size;
+    width: $size;
+    background-color: $primary;
+    vertical-align: $size;
+    border-radius: 100%;
   }
 
-  // Thanks to https://getwaves.io/
-  // and https://yoksel.github.io/url-encoder/
-  &::before {
-    top: 0;
-    background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"%3E%3Cpath fill="%2381d4fa" fill-opacity="1" d="M0,224L80,213.3C160,203,320,181,480,160C640,139,800,117,960,106.7C1120,96,1280,96,1360,96L1440,96L1440,0L1360,0C1280,0,1120,0,960,0C800,0,640,0,480,0C320,0,160,0,80,0L0,0Z"%3E%3C/path%3E%3C/svg%3E');
+  &:before {
+    margin-right: 0.75em;
   }
 
-  &::after {
-    bottom: 0;
-    background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"%3E%3Cpath fill="%23226bae" fill-opacity="1" d="M0,288L120,282.7C240,277,480,267,720,250.7C960,235,1200,213,1320,202.7L1440,192L1440,320L1320,320C1200,320,960,320,720,320C480,320,240,320,120,320L0,320Z"%3E%3C/path%3E%3C/svg%3E');
+  &:after {
+    margin-left: 0.75em;
   }
 }
 

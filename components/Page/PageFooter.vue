@@ -1,11 +1,12 @@
 <template>
-  <footer class="page-footer bg-primary">
-    <ski-container class="pt-4 pb-4">
+  <footer class="page-footer">
+    <ski-container class="pb-5">
       <ski-columns>
         <ski-column>
           <p class="mb-0">
             Copyright &copy; 2022 — <strong v-text="author" />. Tous droits réservés.
-            <br>Merci à <a href="https://www.freepik.com/author/pikisuperstar">FreePik</a> pour les illustrations.
+            Voir les <nuxt-link to="/#licence">licences</nuxt-link>.
+            <br>Accéder à l'<nuxt-link to="/prof/">espace enseignant</nuxt-link>.
           </p>
         </ski-column>
         <ski-column>
@@ -61,20 +62,7 @@ export default {
 .page-footer {
   position: relative;
   padding: 1rem 0.5rem;
-  color: rgba(white, 0.5);
-
-  h2 {
-    font-size: 1.5em;
-    color: rgba(white, 0.75);
-    border-bottom: 1px solid rgba(white, 0.75);
-    padding-bottom: 0.15em;
-    margin-bottom: 0.5em;
-  }
-
-  strong,
-  a {
-    color: rgba(white, 0.75);
-  }
+  font-size: 0.8em;
 
   a {
     text-decoration: underline;

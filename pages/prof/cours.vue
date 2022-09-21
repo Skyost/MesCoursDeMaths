@@ -1,72 +1,75 @@
 <template>
-  <protected>
-    <page-head title="Agenda" />
+  <div>
     <teacher-navigation-entry />
-    <page-navigation-entry title="Cours" to="/prof/cours/" />
-    <div class="file-browser">
-      <div class="text-end">
-        <ski-button v-if="exception" variant="light" @click="refreshFileList">
-          <ski-icon icon="arrow-clockwise" /> Recharger
-        </ski-button>
-        <ski-button v-if="currentDirectory.length !== 0 && currentFile === null && !loading" variant="light" @click="goToParent">
-          <ski-icon icon="arrow-90deg-up" /> Dossier parent
-        </ski-button>
-        <ski-button v-if="currentFile === null && !loading" variant="light" @click="createNewFile">
-          <ski-icon icon="file-earmark-plus-fill" /> Nouveau
-        </ski-button>
-        <file-upload-button v-if="currentFile === null && !loading" icon="cloud-upload-fill" text="Uploader" accept=".tex" @fileloaded="onFileLoaded" />
-        <ski-button v-if="currentFile !== null && !loading" variant="light" @click="saveFileContent(currentFile.path, window.btoa($refs.editor.$data.document), currentFile.sha)">
-          <ski-icon icon="cloud-download-fill" /> Enregistrer
-        </ski-button>
-        <ski-button v-if="currentFile !== null && !loading" variant="light" @click="currentFile = null">
-          <ski-icon icon="x-lg" /> Fermer
-        </ski-button>
-      </div>
-      <h1>Cours</h1>
-      <div v-if="exception" class="p-5 text-center">
-        <p v-text="exception" />
-        <ski-button variant="link" @click="refreshFileList">
-          Recharger
-        </ski-button>
-      </div>
-      <div v-else-if="loading" class="mt-5 mb-5 text-center">
-        <spinner />
-      </div>
-      <div
-        v-else-if="currentFile != null"
-        class="code-editor-parent"
-      >
-        <code-editor
-          ref="editor"
-          class="code-editor"
-          :source-document="currentFileContent"
-        />
-      </div>
-      <div v-else>
+    <protected>
+      <page-head title="Agenda" />
+      <lessons-navigation-entry />
+      <page-navigation-entry title="Cours" to="/prof/cours/" />
+      <div class="file-browser">
+        <div class="text-end">
+          <ski-button v-if="exception" variant="light" @click="refreshFileList">
+            <ski-icon icon="arrow-clockwise" /> Recharger
+          </ski-button>
+          <ski-button v-if="currentDirectory.length !== 0 && currentFile === null && !loading" variant="light" @click="goToParent">
+            <ski-icon icon="arrow-90deg-up" /> Dossier parent
+          </ski-button>
+          <ski-button v-if="currentFile === null && !loading" variant="light" @click="createNewFile">
+            <ski-icon icon="file-earmark-plus-fill" /> Nouveau
+          </ski-button>
+          <file-upload-button v-if="currentFile === null && !loading" icon="cloud-upload-fill" text="Uploader" accept=".tex" @fileloaded="onFileLoaded" />
+          <ski-button v-if="currentFile !== null && !loading" variant="light" @click="saveFileContent(currentFile.path, window.btoa($refs.editor.$data.document), currentFile.sha)">
+            <ski-icon icon="cloud-download-fill" /> Enregistrer
+          </ski-button>
+          <ski-button v-if="currentFile !== null && !loading" variant="light" @click="currentFile = null">
+            <ski-icon icon="x-lg" /> Fermer
+          </ski-button>
+        </div>
+        <h1>Cours</h1>
+        <div v-if="exception" class="p-5 text-center">
+          <p v-text="exception" />
+          <ski-button variant="link" @click="refreshFileList">
+            Recharger
+          </ski-button>
+        </div>
+        <div v-else-if="loading" class="mt-5 mb-5 text-center">
+          <spinner />
+        </div>
         <div
-          v-if="currentDirectory.length !== 0"
-          class="item"
-          @click="goToParent"
+          v-else-if="currentFile != null"
+          class="code-editor-parent"
         >
-          <ski-icon icon="arrow-90deg-up" />
-          Dossier parent
+          <code-editor
+            ref="editor"
+            class="code-editor"
+            :source-document="currentFileContent"
+          />
         </div>
-        <div v-for="(file, index) in fileList" :key="index" class="d-flex">
-          <div class="item flex-grow-1" @click="onFileClicked(file)">
-            <ski-icon :icon="file.type === 'dir' ? 'folder-fill' : 'file-earmark-fill'" />
-            {{ file.name }}
+        <div v-else>
+          <div
+            v-if="currentDirectory.length !== 0"
+            class="item"
+            @click="goToParent"
+          >
+            <ski-icon icon="arrow-90deg-up" />
+            Dossier parent
           </div>
-          <ski-button variant="success" @click="renameFile(file)">
-            <ski-icon icon="cursor-text" />
-          </ski-button>
-          <ski-button variant="danger" @click="deleteFile(file)">
-            <ski-icon icon="trash-fill" />
-          </ski-button>
+          <div v-for="(file, index) in fileList" :key="index" class="d-flex">
+            <div class="item flex-grow-1" @click="onFileClicked(file)">
+              <ski-icon :icon="file.type === 'dir' ? 'folder-fill' : 'file-earmark-fill'" />
+              {{ file.name }}
+            </div>
+            <ski-button variant="success" @click="renameFile(file)">
+              <ski-icon icon="cursor-text" />
+            </ski-button>
+            <ski-button variant="danger" @click="deleteFile(file)">
+              <ski-icon icon="trash-fill" />
+            </ski-button>
+          </div>
+          <span class="d-block text-end text-muted p-3" v-text="currentPath" />
         </div>
-        <span class="d-block text-end text-muted p-3" v-text="currentPath" />
       </div>
-    </div>
-  </protected>
+    </protected>
+  </div>
 </template>
 
 <script>
@@ -79,9 +82,10 @@ import TeacherNavigationEntry from '~/components/Page/Navigation/Entries/Teacher
 import PageNavigationEntry from '~/components/Page/Navigation/Entries/PageNavigationEntry'
 import accessTokenUtils from '~/utils/access-token'
 import PageHead from '~/components/Page/PageHead.vue'
+import LessonsNavigationEntry from '~/components/Page/Navigation/Entries/LessonsNavigationEntry'
 
 export default {
-  components: { PageHead, PageNavigationEntry, TeacherNavigationEntry, FileUploadButton, CodeEditor, Protected, Spinner, SkiIcon, SkiButton },
+  components: { LessonsNavigationEntry, PageHead, PageNavigationEntry, TeacherNavigationEntry, FileUploadButton, CodeEditor, Protected, Spinner, SkiIcon, SkiButton },
   data () {
     return {
       loading: true,

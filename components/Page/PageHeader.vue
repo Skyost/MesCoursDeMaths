@@ -1,14 +1,10 @@
 <template>
   <header class="page-header-parent">
     <ski-container class="page-header">
-      <img class="page-header-image main" src="/images/layout/main.svg" alt="Maths">
-      <img class="page-header-image secondary" src="/images/layout/secondary.svg" alt="Maths">
-      <div class="page-header-text">
-        <h1 class="page-header-title" v-text="title" />
-        <span class="page-header-navigation">
-          <page-navigation />
-        </span>
-      </div>
+      <img class="page-header-image main" src="/images/main.svg" :alt="title">
+      <span class="page-header-navigation">
+        <ski-icon icon="geo-alt-fill" /> <page-navigation />
+      </span>
     </ski-container>
   </header>
 </template>
@@ -35,18 +31,13 @@ export default {
 
 .page-header-parent {
   position: relative;
-  color: darken($primary, 10%);
-  background-color: $header;
+  color: $light;
+  background-color: $primary;
 
   .page-header {
     position: relative;
     text-align: center;
-    padding: 40px;
     min-height: 300px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
 
     @include media-breakpoint-down(lg) {
       min-height: 0;
@@ -57,9 +48,9 @@ export default {
     position: absolute;
 
     &.main {
-      top: 10%;
+      top: 0;
       left: 20px;
-      height: 110%;
+      height: 120%;
       max-width: 30%;
 
       @include media-breakpoint-down(md) {
@@ -69,35 +60,20 @@ export default {
       @include media-breakpoint-down(lg) {
         position: relative;
         max-width: 50%;
-        margin-bottom: 15px;
-      }
-    }
-
-    &.secondary {
-      top: 20%;
-      right: 40px;
-      height: 60%;
-      max-width: 30%;
-
-      @include media-breakpoint-down(lg) {
-        display: none;
+        margin-bottom: 40px;
       }
     }
   }
 
-  .page-header-text {
-    max-width: 40%;
+  .page-header-navigation {
+    position: absolute;
+    bottom: 0.5rem;
+    right: calc(var(--bs-gutter-x) * 0.5);
+    font-size: 0.6em;
 
-    .page-header-title {
-      font-size: 3rem;
-    }
-
-    .page-header-navigation {
-      display: block;
-    }
-
-    @include media-breakpoint-down(lg) {
-      max-width: 100%;
+    &:deep(a) {
+      color: white !important;
+      text-decoration: none !important;
     }
   }
 

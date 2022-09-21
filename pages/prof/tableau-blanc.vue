@@ -1,48 +1,51 @@
 <template>
-  <protected>
-    <page-head title="Tableau blanc" />
+  <div>
     <teacher-navigation-entry />
-    <page-navigation-entry title="Tableau blanc" to="/prof/tableau-blanc/" />
-    <div class="text-end">
-      <ski-button variant="light" :class="{active: isDrawing}" @click="isDrawing = !isDrawing">
-        <ski-icon :icon="isDrawing ? 'pencil-fill' : 'pencil'" /> Crayon
-      </ski-button>
-      <ski-button variant="light" @click="textCount += 1">
-        <ski-icon icon="card-text" /> Texte
-      </ski-button>
-      <file-upload-button icon="file-pdf-fill" text="Document PDF" accept="application/pdf" @fileloaded="onPDFLoaded" />
-      <file-upload-button icon="card-image" text="Image" accept="image/*" @fileloaded="onImageLoaded" />
-      <ski-button variant="light" @click="stopwatchCount += 1">
-        <ski-icon icon="stopwatch-fill" /> Chronomètre
-      </ski-button>
-    </div>
-    <whiteboard-canvas class="whiteboard-canvas" :enabled="isDrawing" />
-    <input ref="fileInput" type="file" hidden>
-    <text-draggable
-      v-for="i in textCount"
-      :key="`text-${i}`"
-      :index="i"
-    />
-    <pdf-draggable
-      v-for="(data, index) in pdfsData"
-      :key="`pdf-${index}`"
-      :index="index"
-      :data="data"
-      @close="pdfsData.splice(index, 1)"
-    />
-    <image-draggable
-      v-for="(data, index) in imagesData"
-      :key="`image-${index}`"
-      :index="index"
-      :data="data"
-      @close="imagesData.splice(index, 1)"
-    />
-    <stopwatch-draggable
-      v-for="i in stopwatchCount"
-      :key="`stopwatch-${i}`"
-      :index="i"
-    />
-  </protected>
+    <protected>
+      <page-head title="Tableau blanc" />
+      <whiteboard-application-navigation-entry />
+      <page-navigation-entry title="Tableau blanc" to="/prof/tableau-blanc/" />
+      <div class="text-end">
+        <ski-button variant="light" :class="{active: isDrawing}" @click="isDrawing = !isDrawing">
+          <ski-icon :icon="isDrawing ? 'pencil-fill' : 'pencil'" /> Crayon
+        </ski-button>
+        <ski-button variant="light" @click="textCount += 1">
+          <ski-icon icon="card-text" /> Texte
+        </ski-button>
+        <file-upload-button icon="file-pdf-fill" text="Document PDF" accept="application/pdf" @fileloaded="onPDFLoaded" />
+        <file-upload-button icon="card-image" text="Image" accept="image/*" @fileloaded="onImageLoaded" />
+        <ski-button variant="light" @click="stopwatchCount += 1">
+          <ski-icon icon="stopwatch-fill" /> Chronomètre
+        </ski-button>
+      </div>
+      <whiteboard-canvas class="whiteboard-canvas" :enabled="isDrawing" />
+      <input ref="fileInput" type="file" hidden>
+      <text-draggable
+        v-for="i in textCount"
+        :key="`text-${i}`"
+        :index="i"
+      />
+      <pdf-draggable
+        v-for="(data, index) in pdfsData"
+        :key="`pdf-${index}`"
+        :index="index"
+        :data="data"
+        @close="pdfsData.splice(index, 1)"
+      />
+      <image-draggable
+        v-for="(data, index) in imagesData"
+        :key="`image-${index}`"
+        :index="index"
+        :data="data"
+        @close="imagesData.splice(index, 1)"
+      />
+      <stopwatch-draggable
+        v-for="i in stopwatchCount"
+        :key="`stopwatch-${i}`"
+        :index="i"
+      />
+    </protected>
+  </div>
 </template>
 
 <script>
@@ -57,9 +60,11 @@ import FileUploadButton from '~/components/Applications/FileUploadButton'
 import TeacherNavigationEntry from '~/components/Page/Navigation/Entries/TeacherNavigationEntry'
 import PageNavigationEntry from '~/components/Page/Navigation/Entries/PageNavigationEntry'
 import PageHead from '~/components/Page/PageHead.vue'
+import WhiteboardApplicationNavigationEntry
+  from '~/components/Page/Navigation/Entries/WhiteboardApplicationNavigationEntry'
 
 export default {
-  components: { PageHead, PageNavigationEntry, TeacherNavigationEntry, FileUploadButton, SkiButton, SkiIcon, Protected, StopwatchDraggable, WhiteboardCanvas, TextDraggable, PdfDraggable, ImageDraggable },
+  components: { WhiteboardApplicationNavigationEntry, PageHead, PageNavigationEntry, TeacherNavigationEntry, FileUploadButton, SkiButton, SkiIcon, Protected, StopwatchDraggable, WhiteboardCanvas, TextDraggable, PdfDraggable, ImageDraggable },
   data () {
     return {
       textCount: 0,

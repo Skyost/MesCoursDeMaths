@@ -1,32 +1,34 @@
 <template>
-  <protected>
-    <page-head title="Accès enseignant" />
+  <div>
     <teacher-navigation-entry />
-    <div class="text-end">
-      <ski-button variant="light" @click="logout">
-        <ski-icon icon="box-arrow-left" /> Déconnexion
-      </ski-button>
-    </div>
-    <h1>Accès enseignant</h1>
-    <ski-columns class="justify-content-center">
-      <ski-column
-        v-for="application in applications"
-        :key="application.id"
-        xs="12"
-        md="6"
-        lg="4"
-        class="mt-3"
-      >
-        <image-card
-          :title="application.title"
-          :color="application.color"
-          :subtitle="application.subtitle"
-          :to="application.url"
-          :image="application.image"
-        />
-      </ski-column>
-    </ski-columns>
-  </protected>
+    <protected>
+      <page-head title="Accès enseignant" />
+      <div class="text-end">
+        <ski-button variant="light" @click="logout">
+          <ski-icon icon="box-arrow-left" /> Déconnexion
+        </ski-button>
+      </div>
+      <h1>Accès enseignant</h1>
+      <ski-columns class="justify-content-center">
+        <ski-column
+          v-for="application in applications"
+          :key="application.id"
+          xs="12"
+          md="6"
+          lg="4"
+          class="mt-3"
+        >
+          <image-card
+            :title="application.title"
+            :color="application.color"
+            :subtitle="application.subtitle"
+            :to="application.url"
+            :image="application.image"
+          />
+        </ski-column>
+      </ski-columns>
+    </protected>
+  </div>
 </template>
 
 <script>
@@ -60,7 +62,7 @@ export default {
           image: '/images/applications/agenda.svg'
         },
         {
-          id: 'cours',
+          id: 'lessons',
           title: 'Cours',
           subtitle: 'Application',
           color: 'teal',
