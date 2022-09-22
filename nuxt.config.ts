@@ -1,4 +1,4 @@
-import { defineNuxtConfig } from 'nuxt/config'
+import {defineNuxtConfig} from 'nuxt/config'
 import StylelintPlugin from 'vite-plugin-stylelint'
 import eslintPlugin from 'vite-plugin-eslint'
 import 'dotenv/config'
@@ -26,7 +26,7 @@ export default defineNuxtConfig({
       },
       meta: [
         { name: 'description', content: siteMeta.description },
-        { name: 'theme-color', content: '#343a40' }
+        { name: 'theme-color', content: '#0d47a1' }
       ],
       link: [
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
