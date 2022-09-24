@@ -109,7 +109,7 @@ export default {
           to: 'https://www.monclasseurdemaths.fr/',
           name: 'Mon classeur de maths',
           image: '/images/index/monclasseurdemaths.png',
-          text: 'Contient également pas mal de cours intégralement consultables en ligne.'
+          text: 'Ce petit site contient tout un tas de cours et de vidéos explicatives.'
         },
         {
           id: 'desmaths',
