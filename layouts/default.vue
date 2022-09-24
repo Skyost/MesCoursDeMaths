@@ -6,6 +6,7 @@
       <slot />
     </page-content>
     <page-footer />
+   
   </div>
 </template>
 

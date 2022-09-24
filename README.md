@@ -1,6 +1,6 @@
-# Mes cours de maths
+# Sen cours de maths
 
-Bienvenue sur la page Github du site web [Mes cours de maths](https://mes-cours-de-maths.fr) !
+Bienvenue sur la page Github du site web [Sen cours de maths](https://sencoursdemaths.com) !
 Il s'agit d'un petit site web où je dépose tous mes cours de mathématiques ainsi que les ressources
 qui y sont liées.
 
@@ -120,6 +120,6 @@ doivent l'être en développement).
 
 Il faut également ajouter une variable d'environnement de développement intitulée `DEBUG_MODE` et contenant la valeur `true`.
 
-Voici un aperçu des mes variables d'environnement :
+Voici un aperçu de variables d'environnement tiré du site originel de Skyost:
 
 ![Variables d'environnement](https://user-images.githubusercontent.com/3882599/172180030-ad6c6f70-094b-49a8-88fd-69328c6fdb60.png)
