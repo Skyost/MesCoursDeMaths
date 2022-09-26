@@ -84,7 +84,7 @@
           </p>
           <p class="mb-0">
             Quelques contenus sont tirés des manuels
-            <a href="https://www.enseignants.hachette-education.com/collections/mission-indigo-mathematiques">Mission indigo</a>,
+            <a href="https://www.enseignants.hachette-education.com/collections/mission-indigo-mathematiques">Mission Indigo</a>,
             que je trouve de grande qualité. Les illustrations du site et des cours proviennent de
             <a href="https://www.freepik.com">FreePik</a> et de <a href="https://www.flaticon.com/">FlatIcon</a>.
           </p>

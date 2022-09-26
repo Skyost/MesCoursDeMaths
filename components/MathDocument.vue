@@ -67,6 +67,10 @@ export default {
         print.innerHTML = '<i class="bi bi-printer-fill"></i> Imprimer'
         exercise.parentNode.insertBefore(print, exercise.nextSibling)
       }
+      const flexGrows = this.$el.getElementsByClassName('flex-grow')
+      for (const flexGrow of flexGrows) {
+        flexGrow.parentElement.classList.add('d-flex')
+      }
       const dotLines = this.$el.getElementsByClassName('dots')
       for (const dotLine of dotLines) {
         const parent = dotLine.parentNode
@@ -130,12 +134,12 @@ export default {
     content: $text;
     position: absolute;
     top: 0;
-    left: 0;
+    left: -6px;
     background-color: $titleColor;
     color: white;
     font-size: 0.6em;
     text-transform: uppercase;
-    padding: 2px 8px 2px 2px;
+    padding: 2px 8px;
   }
 }
 
@@ -175,6 +179,10 @@ export default {
 
     .center {
       text-align: center;
+    }
+
+    .flex-grow {
+      flex-grow: 1;
     }
 
     .col {
