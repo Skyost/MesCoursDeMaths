@@ -14,7 +14,7 @@
     "lint": "npm run lint:js && npm run lint:style"
   },
   "dependencies": {
-    "@nuxt/kit": "^3.0.0-rc.9",
+    "@nuxt/kit": "^3.0.0-rc.11",
     "@octokit/auth-oauth-app": "^5.0.2",
     "@octokit/core": "^4.0.5",
     "@octokit/oauth-authorization-url": "^5.0.0",
@@ -41,7 +41,7 @@
     "eslint-plugin-vue": "^9.4.0",
     "fs-extra": "^10.1.0",
     "gray-matter": "^4.0.3",
-    "node-html-parser": "^5.4.2",
+    "node-html-parser": "^6.1.1",
     "nodejs-file-downloader": "^4.10.2",
     "nuxt": "^3.0.0-rc.11",
     "sass": "^1.54.9",

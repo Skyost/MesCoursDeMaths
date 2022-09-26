@@ -8,4 +8,8 @@
 ol :deep(li::marker) {
   font-weight: bold;
 }
+
+ol :deep(> li > ol) {
+  list-style-type: lower-alpha;
+}
 </style>
