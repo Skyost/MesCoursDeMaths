@@ -1,5 +1,5 @@
 <template>
-  <page-navigation-entry title="Page d'accueil" to="/" />
+  <page-navigation-entry title="Page d'accueil" to="/" :depth="0" />
 </template>
 
 <script>

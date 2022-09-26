@@ -2,11 +2,11 @@
   <nuxt-link class="image-card" :class="color" :to="to">
     <ski-columns>
       <ski-column v-if="image" width="3">
-        <img class="image" :src="image" :alt="title">
+        <img class="image" :src="image" :alt="title || subtitle">
       </ski-column>
       <ski-column :width="image ? '9' : '12'">
         <span v-if="subtitle" class="subtitle" v-text="subtitle" />
-        <h2 class="title" v-text="title" />
+        <h2 v-if="title" class="title" v-text="title" />
         <slot />
       </ski-column>
     </ski-columns>

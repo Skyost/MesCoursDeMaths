@@ -32,7 +32,7 @@ const { pending, data: lessons } = useLazyAsyncData(
     <levels-navigation-entry />
     <lessons-navigation-entry :level="$route.params.level" />
     <page-head :title="title" />
-    <div class="text-end">
+    <div class="text-end mb-3">
       <ski-button variant="light" :to="`/cours/`">
         <ski-icon icon="arrow-left" /> Retourner à la liste des niveaux
       </ski-button>

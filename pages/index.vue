@@ -55,7 +55,7 @@
             :subtitle="link.name"
             :image="link.image"
           >
-            {{ link.text }}
+            <p class="mt-1 mb-0" v-text="link.text" />
           </image-card>
         </ski-column>
       </ski-columns>

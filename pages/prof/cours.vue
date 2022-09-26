@@ -3,10 +3,9 @@
     <teacher-navigation-entry />
     <protected>
       <page-head title="Agenda" />
-      <lessons-navigation-entry />
-      <page-navigation-entry title="Cours" to="/prof/cours/" />
+      <lessons-application-navigation-entry />
       <div class="file-browser">
-        <div class="text-end">
+        <div class="text-end mb-3">
           <ski-button v-if="exception" variant="light" @click="refreshFileList">
             <ski-icon icon="arrow-clockwise" /> Recharger
           </ski-button>
@@ -79,13 +78,12 @@ import Protected from '~/components/Applications/Protected'
 import Spinner from '~/components/Spinner'
 import FileUploadButton from '~/components/Applications/FileUploadButton'
 import TeacherNavigationEntry from '~/components/Page/Navigation/Entries/TeacherNavigationEntry'
-import PageNavigationEntry from '~/components/Page/Navigation/Entries/PageNavigationEntry'
 import accessTokenUtils from '~/utils/access-token'
 import PageHead from '~/components/Page/PageHead.vue'
-import LessonsNavigationEntry from '~/components/Page/Navigation/Entries/LessonsNavigationEntry'
+import LessonsApplicationNavigationEntry from '~/components/Page/Navigation/Entries/LessonsApplicationNavigationEntry'
 
 export default {
-  components: { LessonsNavigationEntry, PageHead, PageNavigationEntry, TeacherNavigationEntry, FileUploadButton, CodeEditor, Protected, Spinner, SkiIcon, SkiButton },
+  components: { LessonsApplicationNavigationEntry, PageHead, TeacherNavigationEntry, FileUploadButton, CodeEditor, Protected, Spinner, SkiIcon, SkiButton },
   data () {
     return {
       loading: true,

@@ -1,5 +1,5 @@
 <template>
-  <page-navigation-entry title="Accès enseignant" to="/prof/" />
+  <page-navigation-entry title="Accès enseignant" to="/prof/" :depth="0" />
 </template>
 
 <script>

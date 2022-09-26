@@ -1,5 +1,5 @@
 <template>
-  <page-navigation-entry title="Tableau blanc" to="/prof/tableau-blanc/" />
+  <page-navigation-entry title="Tableau blanc" to="/prof/tableau-blanc/" :depth="1" />
 </template>
 
 <script>

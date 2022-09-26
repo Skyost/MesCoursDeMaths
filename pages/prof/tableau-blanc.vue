@@ -4,7 +4,6 @@
     <protected>
       <page-head title="Tableau blanc" />
       <whiteboard-application-navigation-entry />
-      <page-navigation-entry title="Tableau blanc" to="/prof/tableau-blanc/" />
       <div class="text-end">
         <ski-button variant="light" :class="{active: isDrawing}" @click="isDrawing = !isDrawing">
           <ski-icon :icon="isDrawing ? 'pencil-fill' : 'pencil'" /> Crayon
@@ -58,13 +57,12 @@ import StopwatchDraggable from '~/components/Applications/Whiteboard/StopwatchDr
 import Protected from '~/components/Applications/Protected'
 import FileUploadButton from '~/components/Applications/FileUploadButton'
 import TeacherNavigationEntry from '~/components/Page/Navigation/Entries/TeacherNavigationEntry'
-import PageNavigationEntry from '~/components/Page/Navigation/Entries/PageNavigationEntry'
 import PageHead from '~/components/Page/PageHead.vue'
 import WhiteboardApplicationNavigationEntry
   from '~/components/Page/Navigation/Entries/WhiteboardApplicationNavigationEntry'
 
 export default {
-  components: { WhiteboardApplicationNavigationEntry, PageHead, PageNavigationEntry, TeacherNavigationEntry, FileUploadButton, SkiButton, SkiIcon, Protected, StopwatchDraggable, WhiteboardCanvas, TextDraggable, PdfDraggable, ImageDraggable },
+  components: { WhiteboardApplicationNavigationEntry, PageHead, TeacherNavigationEntry, FileUploadButton, SkiButton, SkiIcon, Protected, StopwatchDraggable, WhiteboardCanvas, TextDraggable, PdfDraggable, ImageDraggable },
   data () {
     return {
       textCount: 0,

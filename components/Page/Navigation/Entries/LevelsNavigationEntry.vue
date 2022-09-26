@@ -1,5 +1,5 @@
 <template>
-  <page-navigation-entry title="Liste des niveaux" to="/cours/" />
+  <page-navigation-entry title="Liste des niveaux" to="/cours/" :depth="0" />
 </template>
 
 <script>

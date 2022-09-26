@@ -1,5 +1,5 @@
 <template>
-  <page-navigation-entry title="Cours" to="/prof/cours/" />
+  <page-navigation-entry title="Cours" to="/prof/cours/" :depth="1" />
 </template>
 
 <script>

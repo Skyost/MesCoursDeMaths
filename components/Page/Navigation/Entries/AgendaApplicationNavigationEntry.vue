@@ -1,5 +1,5 @@
 <template>
-  <page-navigation-entry title="Agenda" to="/prof/agenda/" />
+  <page-navigation-entry title="Agenda" to="/prof/agenda/" :depth="1" />
 </template>
 
 <script>

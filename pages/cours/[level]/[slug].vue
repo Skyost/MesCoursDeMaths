@@ -73,7 +73,8 @@ export default {
   flex-direction: row;
   justify-content: flex-end;
   column-gap: 8px;
-  margin-bottom: 16px;
+  row-gap: 8px;
+  margin-bottom: 1rem;
   flex-wrap: wrap;
 
   .title {

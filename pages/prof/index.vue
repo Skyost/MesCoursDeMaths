@@ -3,7 +3,7 @@
     <teacher-navigation-entry />
     <protected>
       <page-head title="Accès enseignant" />
-      <div class="text-end">
+      <div class="text-end mb-3">
         <ski-button variant="light" @click="logout">
           <ski-icon icon="box-arrow-left" /> Déconnexion
         </ski-button>

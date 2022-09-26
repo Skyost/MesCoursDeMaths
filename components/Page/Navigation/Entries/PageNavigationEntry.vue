@@ -3,7 +3,6 @@ import { nextTick, onBeforeMount, onMounted } from 'vue'
 import { toRefs } from '@vue/reactivity'
 import { useNuxtApp } from '#app'
 
-// eslint-disable-next-line vue/valid-define-props
 const props = defineProps({
   title: {
     type: String,
@@ -12,10 +11,14 @@ const props = defineProps({
   to: {
     type: String,
     required: true
+  },
+  depth: {
+    type: Number,
+    default: 0
   }
 })
 
-const { title, to } = toRefs(props)
+const { title, to, depth } = toRefs(props)
 
 const { $bus } = useNuxtApp()
 onBeforeMount(() => {
@@ -23,7 +26,7 @@ onBeforeMount(() => {
 })
 onMounted(async () => {
   await nextTick()
-  $bus.$emit('navigation', { title, to })
+  $bus.$emit('navigation', { title, to, depth })
 })
 </script>
 

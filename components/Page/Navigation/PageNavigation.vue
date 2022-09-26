@@ -25,17 +25,17 @@ export default {
       return true
     }
 
-    /*
-    const route = useRoute()
-    watch(route, () => {
-      navigationLinks.value = []
-    })
-    */
+    const compareFunction = (a, b) => {
+      return a.depth - b.depth
+    }
 
     const { $bus } = useNuxtApp()
     $bus.$on('navigation', (data) => {
       if (shouldAdd(data)) {
-        navigationLinks.value.push(data)
+        const links = navigationLinks.value
+        links.push(data)
+        links.sort(compareFunction)
+        navigationLinks.value = links
       }
     })
 
