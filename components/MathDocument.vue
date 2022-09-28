@@ -69,7 +69,9 @@ export default {
       }
       const flexGrows = this.$el.getElementsByClassName('flex-grow')
       for (const flexGrow of flexGrows) {
-        flexGrow.parentElement.classList.add('d-flex flex-column flex-lg-row align-items-center')
+        for (const cssClass of ['d-flex', 'flex-column', 'flex-lg-row', 'align-items-center']) {
+          flexGrow.parentElement.classList.add(cssClass)
+        }
       }
       const dotLines = this.$el.getElementsByClassName('dots')
       for (const dotLine of dotLines) {
