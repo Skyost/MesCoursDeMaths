@@ -1,15 +1,13 @@
 import fs from 'fs'
-import { execSync } from 'child_process'
+import {execSync} from 'child_process'
 import * as path from 'path'
-import { parse } from 'node-html-parser'
+import {parse} from 'node-html-parser'
 import AdmZip from 'adm-zip'
-import { Octokit } from '@octokit/core'
+import {Octokit} from '@octokit/core'
 import fsExtra from 'fs-extra'
 import katex from 'katex'
 import matter from 'gray-matter'
-import { $fetch } from 'ohmyfetch'
-import { createResolver, defineNuxtModule } from '@nuxt/kit'
-import Downloader from 'nodejs-file-downloader'
+import {createResolver, defineNuxtModule} from '@nuxt/kit'
 import authentication from '../site/authentication'
 import siteMeta from '../site/meta'
 import debug from '../site/debug'
@@ -40,14 +38,25 @@ export default defineNuxtModule({
     const github = options.github
 
     const resolver = createResolver(import.meta.url)
+    const srcDir = nuxt.options.srcDir
+
+    const tempDirs = []
+    const downloadPreviousBuildResult = await downloadPreviousBuild(resolver, srcDir, github, contentGenerator)
+    let previousBuildDir
+    let previousImagesBuildDir
+    if (downloadPreviousBuildResult) {
+      previousBuildDir = downloadPreviousBuildResult.previousBuildDir
+      tempDirs.push(previousBuildDir)
+
+      previousImagesBuildDir = downloadPreviousBuildResult.previousImagesBuildDir
+      tempDirs.push(previousImagesBuildDir)
+    }
 
     const downloadDirectory = directories.downloadDirectory || nuxt.options.srcDir
 
     const lessonsDirectory = resolver.resolve(downloadDirectory, directories.lessonsDirectory)
     const pandocRedefinitions = resolver.resolve(lessonsDirectory, 'pandoc.tex')
     const extractedImagesDir = resolver.resolve(lessonsDirectory, '.extracted-images')
-
-    const srcDir = nuxt.options.srcDir
 
     const imagesDestDir = resolver.resolve(nuxt.options.vite.publicDir.toString(), contentGenerator.imagesDestination)
 
@@ -61,15 +70,20 @@ export default defineNuxtModule({
     ignored.push(extractedImagesDir)
     ignored.push(pandocRedefinitions)
 
-    await downloadRemoteDirectory(resolver, github, directories, lessonsDirectory)
+    const tempDir = await downloadRemoteDirectory(resolver, github, directories, lessonsDirectory)
+    if (tempDir) {
+      tempDirs.push(tempDir)
+    }
+
     for (const [directory, destination] of Object.entries(imagesDirectories)) {
-      await handleImages(resolver, directory, destination)
+      await handleImages(resolver, directory, previousImagesBuildDir, destination)
     }
 
     await processFiles(
       resolver,
       contentGenerator,
       lessonsDirectory,
+      previousBuildDir,
       resolver.resolve(srcDir, 'content'),
       resolver.resolve(nuxt.options.vite.publicDir.toString(), contentGenerator.pdfDestination),
       contentGenerator.pdfDestination,
@@ -79,13 +93,42 @@ export default defineNuxtModule({
       pandocRedefinitions,
       ignored
     )
-    await handleImages(resolver, extractedImagesDir, imagesDestDir)
+    await handleImages(resolver, extractedImagesDir, previousImagesBuildDir, imagesDestDir)
+    cleanTempDirs(tempDirs)
   }
 })
 
+async function downloadPreviousBuild (resolver, srcDir, github, contentGenerator) {
+  try {
+    logger.info(name, `Downloading and unzipping the previous build at ${github.username}/${github.repository}@gh-pages...`)
+    const octokit = new Octokit({ auth: github.accessToken })
+    const response = await octokit.request('GET /repos/{owner}/{repo}/zipball/{ref}', {
+      owner: github.username,
+      repo: github.repository,
+      ref: 'gh-pages'
+    })
+    const zip = new AdmZip(Buffer.from(response.data))
+    const zipRootDir = zip.getEntries()[0].entryName
+    const tempDirectory = resolver.resolve(srcDir, 'temp')
+    if (!fs.existsSync(tempDirectory)) {
+      fs.mkdirSync(tempDirectory, { recursive: true })
+    }
+    zip.extractEntryTo(`${zipRootDir}${contentGenerator.pdfDestination}/`, tempDirectory)
+    zip.extractEntryTo(`${zipRootDir}${contentGenerator.imagesDestination}/`, tempDirectory)
+    return {
+      tempDirectory,
+      previousBuildDir: resolver.resolve(tempDirectory, zipRootDir, contentGenerator.pdfDestination),
+      previousImagesBuildDir: resolver.resolve(tempDirectory, zipRootDir, contentGenerator.imagesDestination)
+    }
+  } catch (exception) {
+    logger.warn(name, exception)
+  }
+  return null
+}
+
 async function downloadRemoteDirectory (resolver, github, directories, lessonsDirectory) {
   if (github.repository === github.dataRepository || fs.existsSync(lessonsDirectory)) {
-    return
+    return null
   }
   logger.info(name, `Downloading and unzipping ${github.username}/${github.dataRepository}...`)
   const octokit = new Octokit({ auth: github.accessToken })
@@ -96,14 +139,36 @@ async function downloadRemoteDirectory (resolver, github, directories, lessonsDi
   })
   const zip = new AdmZip(Buffer.from(response.data))
   const tempDirectory = resolver.resolve(directories.downloadDirectory, 'temp')
-  fs.mkdirSync(tempDirectory)
+  if (!fs.existsSync(tempDirectory)) {
+    fs.mkdirSync(tempDirectory, { recursive: true })
+  }
   zip.extractAllTo(tempDirectory, true)
   const repoDirectory = utils.getDirectories(tempDirectory)[0]
   fsExtra.copySync(resolver.resolve(tempDirectory, repoDirectory, directories.lessonsDirectory), lessonsDirectory, {})
-  fsExtra.removeSync(tempDirectory)
+  return tempDirectory
 }
 
-async function processFiles (resolver, contentGenerator, directory, mdDir, pdfDir, pdfDestURL, extractedImagesDir, imagesDestDir, imagesDestURL, pandocRedefinitions, ignored) {
+function cleanTempDirs (tempDirs) {
+  logger.info(name, 'Cleaning temporary directories...')
+  for (const tempDir of tempDirs) {
+    fsExtra.removeSync(tempDir)
+  }
+}
+
+async function processFiles (
+  resolver,
+  contentGenerator,
+  directory,
+  previousBuildDir,
+  mdDir,
+  pdfDir,
+  pdfDestUrl,
+  extractedImagesDir,
+  imagesDestDir,
+  imagesDestUrl,
+  pandocRedefinitions,
+  ignored
+) {
   const files = fs.readdirSync(directory)
   for (const file of files) {
     const filePath = resolver.resolve(directory, file)
@@ -115,12 +180,13 @@ async function processFiles (resolver, contentGenerator, directory, mdDir, pdfDi
         resolver,
         contentGenerator,
         filePath,
+        resolver.resolve(previousBuildDir, file),
         resolver.resolve(mdDir, file),
         resolver.resolve(pdfDir, file),
-        `${pdfDestURL}/${file}`,
+        `${pdfDestUrl}/${file}`,
         resolver.resolve(extractedImagesDir, file),
         resolver.resolve(imagesDestDir, file),
-        `${imagesDestURL}/${file}`,
+        `${imagesDestUrl}/${file}`,
         pandocRedefinitions,
         ignored
       )
@@ -138,8 +204,8 @@ async function processFiles (resolver, contentGenerator, directory, mdDir, pdfDi
           encoding: 'utf-8'
         })
         const root = parse(htmlContent)
-        const linkedResources = contentGenerator.getMarkdownLinkedResources(directory, file, pdfDestURL)
-        replaceImages(resolver, root, imagesDir, imagesDestURL + '/' + fileName)
+        const linkedResources = contentGenerator.getMarkdownLinkedResources(directory, file, pdfDestUrl)
+        replaceImages(resolver, root, imagesDir, imagesDestUrl + '/' + fileName)
         replaceVspaceElements(root)
         adjustColSize(root)
         numberizeTitles(root)
@@ -151,10 +217,10 @@ async function processFiles (resolver, contentGenerator, directory, mdDir, pdfDi
         const printVariant = contentGenerator.generatePrintVariant(fileName, content)
         if (printVariant) {
           fs.writeFileSync(filePath, printVariant)
-          await generatePdf(resolver, directory, file, imagesDir, pdfDir, pdfDestURL, `${filteredFileName}-impression.pdf`)
+          generatePdf(resolver, directory, previousBuildDir, file, imagesDir, pdfDir, `${filteredFileName}-impression.pdf`)
           fs.writeFileSync(filePath, content)
         }
-        await generatePdf(resolver, directory, file, imagesDir, pdfDir, pdfDestURL, `${filteredFileName}.pdf`)
+        generatePdf(resolver, directory, previousBuildDir, file, imagesDir, pdfDir, `${filteredFileName}.pdf`)
       }
     }
   }
@@ -282,7 +348,7 @@ function renderMath (root) {
   }
 }
 
-async function handleImages (resolver, imagesDir, imagesDestDir) {
+async function handleImages (resolver, imagesDir, previousImagesBuildDir, imagesDestDir) {
   if (!fs.existsSync(imagesDir)) {
     return
   }
@@ -290,16 +356,19 @@ async function handleImages (resolver, imagesDir, imagesDestDir) {
   for (const file of files) {
     const filePath = resolver.resolve(imagesDir, file)
     if (fs.lstatSync(filePath).isDirectory()) {
-      await handleImages(resolver, filePath, resolver.resolve(imagesDestDir, file))
+      await handleImages(resolver, filePath, previousImagesBuildDir, resolver.resolve(imagesDestDir, file))
     } else if (file.endsWith('.tex')) {
       logger.info(name, `Handling image "${filePath}"...`)
-      if (debug.debug && fs.existsSync(resolver.resolve(imagesDestDir, `${utils.getFileName(file)}.svg`))) {
+      const fileName = utils.getFileName(file)
+      if (debug.debug && fs.existsSync(resolver.resolve(imagesDestDir, `${fileName}.svg`))) {
         continue
       }
-      if (latexmk(resolver, imagesDir, file)) {
+      const pdfFileName = generatePdf(resolver, imagesDir, previousImagesBuildDir, file, imagesDir, imagesDir, `${fileName}.pdf`)
+      if (pdfFileName) {
         const svgFile = pdftocairo(resolver, imagesDir, file)
         fs.mkdirSync(imagesDestDir, { recursive: true })
         fs.copyFileSync(resolver.resolve(imagesDir, svgFile), resolver.resolve(imagesDestDir, svgFile))
+        fs.copyFileSync(resolver.resolve(imagesDir, `${pdfFileName}.checksums`), resolver.resolve(imagesDestDir, `${pdfFileName}.checksums`))
       }
     } else if (file.endsWith('.pdf')) {
       const svgFile = pdftocairo(resolver, imagesDir, file)
@@ -342,26 +411,24 @@ function toString (slug, root, linkedResources) {
   return matter.stringify(root.innerHTML, header)
 }
 
-async function generatePdf (resolver, directory, file, imagesDir, pdfDir, pdfDestUrl, pdfFilename) {
+function generatePdf (resolver, directory, previousBuildDir, file, imagesDir, pdfDir, pdfFilename) {
   const filePath = resolver.resolve(directory, file)
   const destPdf = resolver.resolve(pdfDir, pdfFilename)
   if (debug.debug && fs.existsSync(destPdf)) {
-    return
+    return null
   }
   const checksums = JSON.stringify(calculateTexFileChecksums(resolver, filePath, imagesDir))
-  const pdfUrl = `${siteMeta.url}/${pdfDestUrl}/${pdfFilename}`
+  const previousChecksumsFile = resolver.resolve(previousBuildDir, `${pdfFilename}.checksums`)
   fs.mkdirSync(pdfDir, { recursive: true })
   fs.writeFileSync(resolver.resolve(pdfDir, `${pdfFilename}.checksums`), checksums)
-  if (await isRemoteChecksumsTheSame(checksums, pdfUrl)) {
-    const downloader = new Downloader({
-      url: pdfUrl,
-      directory: pdfDir
-    })
-    await downloader.download()
+  if (fs.existsSync(previousChecksumsFile) && checksums === fs.readFileSync(previousChecksumsFile, { encoding: 'utf-8' })) {
+    fs.copyFileSync(resolver.resolve(previousBuildDir, `${pdfFilename}.pdf`), destPdf)
   } else if (latexmk(resolver, directory, file)) {
-    fs.copyFileSync(resolver.resolve(directory, `${utils.getFileName(file)}.pdf`), destPdf)
+    pdfFilename = `${utils.getFileName(file)}.pdf`
+    fs.copyFileSync(resolver.resolve(directory, pdfFilename), destPdf)
     execSync('latexmk -quiet -c', { cwd: directory })
   }
+  return pdfFilename
 }
 
 function calculateTexFileChecksums (resolver, file, imagesDir) {
@@ -414,25 +481,17 @@ function calculateTexFileChecksums (resolver, file, imagesDir) {
   return checksums
 }
 
-async function isRemoteChecksumsTheSame (checksums, pdfUrl) {
-  try {
-    const remoteChecksums = await $fetch(`${pdfUrl}.checksums`, { parseResponse: responseText => responseText })
-    return checksums === remoteChecksums
-  } catch (ex) {}
-  return false
-}
-
 function latexmk (resolver, directory, file) {
   try {
     execSync(`latexmk -lualatex "${file}"`, { cwd: directory })
     return true
   } catch (ex) {
-    logger.error(name, ex)
+    logger.fatal(name, ex)
     const logFile = resolver.resolve(directory, file.replace('.tex', '.log'))
     if (fs.existsSync(logFile)) {
       const logString = fs.readFileSync(logFile, { encoding: 'utf-8' }).toString()
-      logger.error(name, 'Here is the log :')
-      logger.error(name, logString)
+      logger.fatal(name, 'Here is the log :')
+      logger.fatal(name, logString)
     }
     return false
   }
