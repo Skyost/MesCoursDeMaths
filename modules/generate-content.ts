@@ -1,13 +1,13 @@
 import fs from 'fs'
-import {execSync} from 'child_process'
+import { execSync } from 'child_process'
 import * as path from 'path'
-import {parse} from 'node-html-parser'
+import { parse } from 'node-html-parser'
 import AdmZip from 'adm-zip'
-import {Octokit} from '@octokit/core'
+import { Octokit } from '@octokit/core'
 import fsExtra from 'fs-extra'
 import katex from 'katex'
 import matter from 'gray-matter'
-import {createResolver, defineNuxtModule} from '@nuxt/kit'
+import { createResolver, defineNuxtModule } from '@nuxt/kit'
 import authentication from '../site/authentication'
 import siteMeta from '../site/meta'
 import debug from '../site/debug'
@@ -422,7 +422,7 @@ function generatePdf (resolver, directory, previousBuildDir, file, imagesDir, pd
   fs.mkdirSync(pdfDir, { recursive: true })
   fs.writeFileSync(resolver.resolve(pdfDir, `${pdfFilename}.checksums`), checksums)
   if (fs.existsSync(previousChecksumsFile) && checksums === fs.readFileSync(previousChecksumsFile, { encoding: 'utf-8' })) {
-    fs.copyFileSync(resolver.resolve(previousBuildDir, `${pdfFilename}.pdf`), destPdf)
+    fs.copyFileSync(resolver.resolve(previousBuildDir, pdfFilename), destPdf)
   } else if (latexmk(resolver, directory, file)) {
     pdfFilename = `${utils.getFileName(file)}.pdf`
     fs.copyFileSync(resolver.resolve(directory, pdfFilename), destPdf)
