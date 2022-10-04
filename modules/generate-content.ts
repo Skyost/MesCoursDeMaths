@@ -216,14 +216,15 @@ async function processFiles (
         fs.writeFileSync(mdFile, toString(filteredFileName, root, linkedResources))
       }
       if (contentGenerator.shouldGeneratePdf(fileName)) {
+        const includedImagesDir = resolver.resolve(extractedImagesDir, contentGenerator.getLatexRelativeIncludedImagesDir(extractedImagesDir, filePath))
         const content = fs.readFileSync(filePath, { encoding: 'utf-8' })
         const printVariant = contentGenerator.generatePrintVariant(fileName, content)
         if (printVariant) {
           fs.writeFileSync(filePath, printVariant)
-          generatePdf(resolver, directory, previousBuildDir, file, imagesDir, pdfDir, `${filteredFileName}-impression.pdf`)
+          generatePdf(resolver, directory, file, previousBuildDir, includedImagesDir, pdfDir, `${filteredFileName}-impression.pdf`)
           fs.writeFileSync(filePath, content)
         }
-        generatePdf(resolver, directory, previousBuildDir, file, imagesDir, pdfDir, `${filteredFileName}.pdf`)
+        generatePdf(resolver, directory, file, previousBuildDir, includedImagesDir, pdfDir, `${filteredFileName}.pdf`)
       }
       logger.success(name, 'Done.')
     }
@@ -239,7 +240,7 @@ function extractImages (resolver, contentGenerator, filePath, extractedImagesDir
     let match = regex.exec(content)
     if (match != null) {
       fs.mkdirSync(fileExtractedImagesDir, { recursive: true })
-      const includedImagesDir = resolver.resolve(fileExtractedImagesDir, contentGenerator.getIncludedImagesDir(fileExtractedImagesDir, filePath))
+      const includedImagesDir = resolver.resolve(fileExtractedImagesDir, contentGenerator.getLatexRelativeIncludedImagesDir(fileExtractedImagesDir, filePath))
       fs.writeFileSync(resolver.resolve(fileExtractedImagesDir, includedImagesDirFileName), includedImagesDir)
     }
     let i = 1
@@ -384,7 +385,7 @@ async function handleImages (resolver, contentGenerator, imagesDir, previousImag
         if (fs.existsSync(resolver.resolve(imagesDir, includedImagesDirFileName))) {
           includedImagesDir = fs.readFileSync(resolver.resolve(imagesDir, includedImagesDirFileName), { encoding: 'utf-8' })
         }
-        const pdfFileName = generatePdf(resolver, imagesDir, previousImagesBuildDir, file, includedImagesDir, imagesDir, `${fileName}.pdf`)
+        const pdfFileName = generatePdf(resolver, imagesDir, file, previousImagesBuildDir, includedImagesDir, imagesDir, `${fileName}.pdf`)
         if (pdfFileName) {
           const svgFile = pdftocairo(resolver, imagesDir, file)
           fs.mkdirSync(imagesDestDir, { recursive: true })
@@ -434,13 +435,13 @@ function toString (slug, root, linkedResources) {
   return matter.stringify(root.innerHTML, header)
 }
 
-function generatePdf (resolver, directory, previousBuildDir, file, includedImagesDir, pdfDir, pdfFilename) {
+function generatePdf (resolver, directory, file, previousBuildDir, includedImagesDir, pdfDir, pdfFilename) {
   const filePath = resolver.resolve(directory, file)
   const destPdf = resolver.resolve(pdfDir, pdfFilename)
   if (debug.debug && fs.existsSync(destPdf)) {
-    return null
+   return null
   }
-  const checksums = JSON.stringify(calculateTexFileChecksums(resolver, filePath, includedImagesDir))
+  const checksums = JSON.stringify(calculateTexFileChecksums(resolver, includedImagesDir, filePath))
   const previousChecksumsFile = resolver.resolve(previousBuildDir, `${pdfFilename}.checksums`)
   fs.mkdirSync(pdfDir, { recursive: true })
   fs.writeFileSync(resolver.resolve(pdfDir, `${pdfFilename}.checksums`), checksums)
@@ -455,12 +456,12 @@ function generatePdf (resolver, directory, previousBuildDir, file, includedImage
   return pdfFilename
 }
 
-function calculateTexFileChecksums (resolver, file, includedImagesDir) {
+function calculateTexFileChecksums (resolver, includedImagesDir, file) {
   const latexIncludeCommands = [
     {
       command: 'includegraphics',
       directory: includedImagesDir,
-      extensions: ['.png', '.jpeg', '.jpg', '.svg'],
+      extensions: ['.svg', '.png', '.jpeg', '.jpg'],
       excludes: []
     },
     {

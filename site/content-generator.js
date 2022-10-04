@@ -12,7 +12,7 @@ export default {
     'latex/troisieme/images': 'troisieme'
   },
   imagesToExtract: ['tikzpicture', 'scratch'],
-  getIncludedImagesDir (fileExtractedImagesDir, filePath) {
+  getLatexRelativeIncludedImagesDir (fileExtractedImagesDir, filePath) {
     return path.posix.join(path.relative(fileExtractedImagesDir, path.dirname(filePath)).split(path.sep).join(path.posix.sep), 'images', utils.getFileName(filePath))
   },
   generateExtractedImageFileContent (fileExtractedImagesDir, filePath, blockType, content) {
@@ -27,7 +27,7 @@ export default {
 `
     }
 
-    const latexImagesDir = this.getIncludedImagesDir(fileExtractedImagesDir, filePath)
+    const latexImagesDir = this.getLatexRelativeIncludedImagesDir(fileExtractedImagesDir, filePath)
     return `\\documentclass[tikz]{standalone}
 
 \\usepackage{tikz}
@@ -72,7 +72,7 @@ export default {
       return null
     }
     const regex = /\\documentclass(\[[A-Za-zÀ-ÖØ-öø-ÿ\d, =.\\-]*])?{([A-Za-zÀ-ÖØ-öø-ÿ\d/, .-]+)}/gs
-    return fileContent.replace(regex, '\\documentclass[$1]{$2}\n\n\\include{../impression}')
+    return fileContent.replace(regex, '\\documentclass$1{$2}\n\n\\include{../impression}')
   },
   getMarkdownLinkedResources (directory, file, pdfDestURL) {
     const fileName = utils.getFileName(file)
