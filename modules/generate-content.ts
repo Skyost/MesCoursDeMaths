@@ -16,6 +16,7 @@ import contentGenerator from '../site/content-generator'
 import logger from '../utils/logger'
 import utils from '../utils/utils'
 
+const includedImagesDirFileName = '.includedimages'
 const name = 'generate-content'
 export default defineNuxtModule({
   meta: {
@@ -41,15 +42,16 @@ export default defineNuxtModule({
     const srcDir = nuxt.options.srcDir
 
     const tempDirs = []
-    const downloadPreviousBuildResult = await downloadPreviousBuild(resolver, srcDir, github, contentGenerator)
+    let downloadPreviousBuildResult
+    if (!debug.debug) {
+      downloadPreviousBuildResult = await downloadPreviousBuild(resolver, srcDir, github, contentGenerator)
+    }
     let previousBuildDir
     let previousImagesBuildDir
     if (downloadPreviousBuildResult) {
       previousBuildDir = downloadPreviousBuildResult.previousBuildDir
-      tempDirs.push(previousBuildDir)
-
       previousImagesBuildDir = downloadPreviousBuildResult.previousImagesBuildDir
-      tempDirs.push(previousImagesBuildDir)
+      tempDirs.push(downloadPreviousBuildResult.tempDirectory)
     }
 
     const downloadDirectory = directories.downloadDirectory || nuxt.options.srcDir
@@ -76,7 +78,7 @@ export default defineNuxtModule({
     }
 
     for (const [directory, destination] of Object.entries(imagesDirectories)) {
-      await handleImages(resolver, directory, previousImagesBuildDir, destination)
+      await handleImages(resolver, contentGenerator, directory, previousImagesBuildDir, destination)
     }
 
     await processFiles(
@@ -93,7 +95,7 @@ export default defineNuxtModule({
       pandocRedefinitions,
       ignored
     )
-    await handleImages(resolver, extractedImagesDir, previousImagesBuildDir, imagesDestDir)
+    await handleImages(resolver, contentGenerator, extractedImagesDir, previousImagesBuildDir, imagesDestDir)
     cleanTempDirs(tempDirs)
   }
 })
@@ -149,10 +151,11 @@ async function downloadRemoteDirectory (resolver, github, directories, lessonsDi
 }
 
 function cleanTempDirs (tempDirs) {
-  logger.info(name, 'Cleaning temporary directories...')
+  logger.info(name, 'Removing temporary directories...')
   for (const tempDir of tempDirs) {
     fsExtra.removeSync(tempDir)
   }
+  logger.success(name, 'Done.')
 }
 
 async function processFiles (
@@ -212,8 +215,8 @@ async function processFiles (
         renderMath(root)
         fs.writeFileSync(mdFile, toString(filteredFileName, root, linkedResources))
       }
-      if (contentGenerator.shouldGeneratePDF(fileName)) {
-        const content = fs.readFileSync(filePath, { encoding: 'utf-8' }).toString()
+      if (contentGenerator.shouldGeneratePdf(fileName)) {
+        const content = fs.readFileSync(filePath, { encoding: 'utf-8' })
         const printVariant = contentGenerator.generatePrintVariant(fileName, content)
         if (printVariant) {
           fs.writeFileSync(filePath, printVariant)
@@ -222,24 +225,27 @@ async function processFiles (
         }
         generatePdf(resolver, directory, previousBuildDir, file, imagesDir, pdfDir, `${filteredFileName}.pdf`)
       }
+      logger.success(name, 'Done.')
     }
   }
 }
 
 function extractImages (resolver, contentGenerator, filePath, extractedImagesDir) {
-  const imagesDir = resolver.resolve(extractedImagesDir, utils.getFileName(filePath))
+  const fileExtractedImagesDir = resolver.resolve(extractedImagesDir, utils.getFileName(filePath))
   for (const blockType of contentGenerator.imagesToExtract) {
     // const regex = /\\begin{tikzpicture}([\s\S]*?)\\end{tikzpicture}/sg
     const regex = new RegExp(`\\\\begin{${blockType}}([\\s\\S]*?)\\\\end{${blockType}}`, 'sg')
-    const content = fs.readFileSync(filePath, { encoding: 'utf-8' }).toString()
+    const content = fs.readFileSync(filePath, { encoding: 'utf-8' })
     let match = regex.exec(content)
     if (match != null) {
-      fs.mkdirSync(imagesDir, { recursive: true })
+      fs.mkdirSync(fileExtractedImagesDir, { recursive: true })
+      const includedImagesDir = resolver.resolve(fileExtractedImagesDir, contentGenerator.getIncludedImagesDir(fileExtractedImagesDir, filePath))
+      fs.writeFileSync(resolver.resolve(fileExtractedImagesDir, includedImagesDirFileName), includedImagesDir)
     }
     let i = 1
     while (match != null) {
       const fileName = `${blockType}-${i}.tex`
-      fs.writeFileSync(resolver.resolve(imagesDir, fileName), contentGenerator.generateExtractedImageFileContent(imagesDir, filePath, blockType, match[0]))
+      fs.writeFileSync(resolver.resolve(fileExtractedImagesDir, fileName), contentGenerator.generateExtractedImageFileContent(fileExtractedImagesDir, filePath, blockType, match[0]))
       i++
       match = regex.exec(content)
     }
@@ -348,7 +354,7 @@ function renderMath (root) {
   }
 }
 
-async function handleImages (resolver, imagesDir, previousImagesBuildDir, imagesDestDir) {
+async function handleImages (resolver, contentGenerator, imagesDir, previousImagesBuildDir, imagesDestDir) {
   if (!fs.existsSync(imagesDir)) {
     return
   }
@@ -356,20 +362,37 @@ async function handleImages (resolver, imagesDir, previousImagesBuildDir, images
   for (const file of files) {
     const filePath = resolver.resolve(imagesDir, file)
     if (fs.lstatSync(filePath).isDirectory()) {
-      await handleImages(resolver, filePath, previousImagesBuildDir, resolver.resolve(imagesDestDir, file))
-    } else if (file.endsWith('.tex')) {
-      logger.info(name, `Handling image "${filePath}"...`)
+      await handleImages(
+        resolver,
+        contentGenerator,
+        filePath,
+        previousImagesBuildDir,
+        resolver.resolve(imagesDestDir, file)
+      )
+      continue
+    }
+
+    if (!contentGenerator.shouldHandleImagesOfDirectory(imagesDir)) {
+      continue
+    }
+
+    if (file.endsWith('.tex')) {
+      logger.info(name, `Compiling LaTeX image "${filePath}"...`)
       const fileName = utils.getFileName(file)
-      if (debug.debug && fs.existsSync(resolver.resolve(imagesDestDir, `${fileName}.svg`))) {
-        continue
+      if (!debug.debug || !fs.existsSync(resolver.resolve(imagesDestDir, `${fileName}.svg`))) {
+        let includedImagesDir = imagesDir
+        if (fs.existsSync(resolver.resolve(imagesDir, includedImagesDirFileName))) {
+          includedImagesDir = fs.readFileSync(resolver.resolve(imagesDir, includedImagesDirFileName), { encoding: 'utf-8' })
+        }
+        const pdfFileName = generatePdf(resolver, imagesDir, previousImagesBuildDir, file, includedImagesDir, imagesDir, `${fileName}.pdf`)
+        if (pdfFileName) {
+          const svgFile = pdftocairo(resolver, imagesDir, file)
+          fs.mkdirSync(imagesDestDir, { recursive: true })
+          fs.copyFileSync(resolver.resolve(imagesDir, svgFile), resolver.resolve(imagesDestDir, svgFile))
+          fs.copyFileSync(resolver.resolve(imagesDir, `${pdfFileName}.checksums`), resolver.resolve(imagesDestDir, `${pdfFileName}.checksums`))
+        }
       }
-      const pdfFileName = generatePdf(resolver, imagesDir, previousImagesBuildDir, file, imagesDir, imagesDir, `${fileName}.pdf`)
-      if (pdfFileName) {
-        const svgFile = pdftocairo(resolver, imagesDir, file)
-        fs.mkdirSync(imagesDestDir, { recursive: true })
-        fs.copyFileSync(resolver.resolve(imagesDir, svgFile), resolver.resolve(imagesDestDir, svgFile))
-        fs.copyFileSync(resolver.resolve(imagesDir, `${pdfFileName}.checksums`), resolver.resolve(imagesDestDir, `${pdfFileName}.checksums`))
-      }
+      logger.success(name, 'Done.')
     } else if (file.endsWith('.pdf')) {
       const svgFile = pdftocairo(resolver, imagesDir, file)
       fs.mkdirSync(imagesDestDir, { recursive: true })
@@ -411,17 +434,18 @@ function toString (slug, root, linkedResources) {
   return matter.stringify(root.innerHTML, header)
 }
 
-function generatePdf (resolver, directory, previousBuildDir, file, imagesDir, pdfDir, pdfFilename) {
+function generatePdf (resolver, directory, previousBuildDir, file, includedImagesDir, pdfDir, pdfFilename) {
   const filePath = resolver.resolve(directory, file)
   const destPdf = resolver.resolve(pdfDir, pdfFilename)
   if (debug.debug && fs.existsSync(destPdf)) {
     return null
   }
-  const checksums = JSON.stringify(calculateTexFileChecksums(resolver, filePath, imagesDir))
+  const checksums = JSON.stringify(calculateTexFileChecksums(resolver, filePath, includedImagesDir))
   const previousChecksumsFile = resolver.resolve(previousBuildDir, `${pdfFilename}.checksums`)
   fs.mkdirSync(pdfDir, { recursive: true })
   fs.writeFileSync(resolver.resolve(pdfDir, `${pdfFilename}.checksums`), checksums)
   if (fs.existsSync(previousChecksumsFile) && checksums === fs.readFileSync(previousChecksumsFile, { encoding: 'utf-8' })) {
+    logger.info(name, 'Fully cached PDF found.')
     fs.copyFileSync(resolver.resolve(previousBuildDir, pdfFilename), destPdf)
   } else if (latexmk(resolver, directory, file)) {
     pdfFilename = `${utils.getFileName(file)}.pdf`
@@ -431,22 +455,25 @@ function generatePdf (resolver, directory, previousBuildDir, file, imagesDir, pd
   return pdfFilename
 }
 
-function calculateTexFileChecksums (resolver, file, imagesDir) {
+function calculateTexFileChecksums (resolver, file, includedImagesDir) {
   const latexIncludeCommands = [
     {
       command: 'includegraphics',
-      directory: imagesDir,
-      extensions: ['.png', '.jpeg', '.jpg', '.svg']
+      directory: includedImagesDir,
+      extensions: ['.png', '.jpeg', '.jpg', '.svg'],
+      excludes: []
     },
     {
       command: 'documentclass',
       directory: path.dirname(file),
-      extensions: ['.cls']
+      extensions: ['.cls'],
+      excludes: ['standalone']
     },
     {
       command: 'include',
       directory: path.dirname(file),
-      extensions: ['.tex']
+      extensions: ['.tex'],
+      excludes: []
     }
   ]
   const fileName = utils.getFileName(file)
@@ -454,11 +481,11 @@ function calculateTexFileChecksums (resolver, file, imagesDir) {
   checksums[fileName] = utils.generateChecksum(fs.readFileSync(file, { encoding: 'utf-8' }))
   for (const latexIncludeCommand of latexIncludeCommands) {
     const regex = new RegExp(`\\\\${latexIncludeCommand.command}(\\[[A-Za-zÀ-ÖØ-öø-ÿ\\d, =.\\\\-]*])?{([A-Za-zÀ-ÖØ-öø-ÿ\\d/, .-]+)}`, 'gs')
-    const content = fs.readFileSync(file, { encoding: 'utf-8' }).toString()
+    const content = fs.readFileSync(file, { encoding: 'utf-8' })
     let match = regex.exec(content)
     while (match != null) {
       const fileName = match[2]
-      if (!Object.prototype.hasOwnProperty.call(checksums, fileName)) {
+      if (!latexIncludeCommand.excludes.includes(fileName) && !Object.prototype.hasOwnProperty.call(checksums, fileName)) {
         const extensions = ['', ...latexIncludeCommand.extensions]
         let includeFile = resolver.resolve(latexIncludeCommand.directory, fileName)
         for (const extension of extensions) {
@@ -489,7 +516,7 @@ function latexmk (resolver, directory, file) {
     logger.fatal(name, ex)
     const logFile = resolver.resolve(directory, file.replace('.tex', '.log'))
     if (fs.existsSync(logFile)) {
-      const logString = fs.readFileSync(logFile, { encoding: 'utf-8' }).toString()
+      const logString = fs.readFileSync(logFile, { encoding: 'utf-8' })
       logger.fatal(name, 'Here is the log :')
       logger.fatal(name, logString)
     }

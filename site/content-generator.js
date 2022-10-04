@@ -12,7 +12,10 @@ export default {
     'latex/troisieme/images': 'troisieme'
   },
   imagesToExtract: ['tikzpicture', 'scratch'],
-  generateExtractedImageFileContent (imagesDir, filePath, blockType, content) {
+  getIncludedImagesDir (fileExtractedImagesDir, filePath) {
+    return path.posix.join(path.relative(fileExtractedImagesDir, path.dirname(filePath)).split(path.sep).join(path.posix.sep), 'images', utils.getFileName(filePath))
+  },
+  generateExtractedImageFileContent (fileExtractedImagesDir, filePath, blockType, content) {
     if (blockType === 'scratch') {
       return `\\documentclass{standalone}
 
@@ -24,7 +27,7 @@ export default {
 `
     }
 
-    const latexImagesDir = path.posix.join(path.relative(imagesDir, path.dirname(filePath)).split(path.sep).join(path.posix.sep), 'images')
+    const latexImagesDir = this.getIncludedImagesDir(fileExtractedImagesDir, filePath)
     return `\\documentclass[tikz]{standalone}
 
 \\usepackage{tikz}
@@ -45,7 +48,7 @@ export default {
 \\usetikzlibrary{decorations.pathreplacing}
 \\usetikzlibrary{babel}
 
-\\graphicspath{{${latexImagesDir}}{${path.posix.join(latexImagesDir, utils.getFileName(filePath))}}}
+\\graphicspath{{${latexImagesDir}}}
 
 \\newcommand{\\dddots}[1]{\\makebox[#1]{\\dotfill}}
 
@@ -61,8 +64,9 @@ export default {
     return fileName
   },
   shouldGenerateMarkdown: fileName => fileName.endsWith('-cours'),
+  shouldHandleImagesOfDirectory: directory => directory.endsWith('-cours'),
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  shouldGeneratePDF: fileName => true,
+  shouldGeneratePdf: fileName => true,
   generatePrintVariant: (fileName, fileContent) => {
     if (fileName === 'questions-flash') {
       return null
@@ -78,9 +82,9 @@ export default {
       const files = fs.readdirSync(directory)
       for (const directoryFile of files) {
         const filePath = path.resolve(directory, directoryFile)
-        if (directoryFile.startsWith(prefix) && directoryFile.endsWith('.tex') && !directoryFile.includes('interrogation') && directoryFile !== file && this.shouldGeneratePDF(directoryFile)) {
+        if (directoryFile.startsWith(prefix) && directoryFile.endsWith('.tex') && !directoryFile.includes('interrogation') && directoryFile !== file && this.shouldGeneratePdf(directoryFile)) {
           const regex = /\\cours(\[[a-z ]*])?\{[A-Za-zÀ-ÖØ-öø-ÿ\d, ]+}\{([A-Za-zÀ-ÖØ-öø-ÿ\d, ]+)}/
-          const content = fs.readFileSync(filePath, { encoding: 'utf-8' }).toString()
+          const content = fs.readFileSync(filePath, { encoding: 'utf-8' })
           const match = regex.exec(content)
           if (match != null) {
             const title = match[2]

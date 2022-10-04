@@ -1,16 +1,16 @@
 <template>
   <footer class="page-footer">
-    <ski-container class="pb-5">
+    <ski-container class="pb-md-5">
       <ski-columns>
-        <ski-column>
+        <ski-column width="12" md="8" lg="6">
           <p class="mb-0">
             Copyright &copy; 2022 — <strong v-text="author" />. Tous droits réservés.
             Voir les <nuxt-link to="/#licence">licences</nuxt-link>.
             <br>Accéder à l'<nuxt-link to="/prof/">espace enseignant</nuxt-link>.
           </p>
         </ski-column>
-        <ski-column>
-          <ul class="logos">
+        <ski-column width="12" md="4" lg="6" class="mt-3 mt-md-0 text-md-end">
+          <ul class="logos flex-md-row-reverse">
             <li>
               <a href="https://www.latex-project.org/">
                 <img src="/images/technologies/latex.svg" alt="LaTeX" title="LaTeX">
@@ -37,6 +37,7 @@
               </a>
             </li>
           </ul>
+          <current-commit-sha />
         </ski-column>
       </ski-columns>
     </ski-container>
@@ -46,10 +47,11 @@
 <script>
 import { SkiColumn, SkiColumns, SkiContainer } from 'skimple-components'
 import siteMeta from '~/site/meta'
+import CurrentCommitSha from '~/components/CurrentCommitSha'
 
 export default {
   name: 'PageFooter',
-  components: { SkiContainer, SkiColumns, SkiColumn },
+  components: { CurrentCommitSha, SkiContainer, SkiColumns, SkiColumn },
   computed: {
     author () {
       return siteMeta.author
@@ -70,7 +72,7 @@ export default {
 
   .logos {
     display: flex;
-    flex-direction: row-reverse;
+    flex-direction: row;
     list-style-type: none;
     padding-left: 0;
     margin-bottom: 0;

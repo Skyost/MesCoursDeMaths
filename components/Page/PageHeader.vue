@@ -12,7 +12,7 @@
 <script>
 import { SkiContainer } from 'skimple-components'
 import siteMeta from '~/site/meta'
-import PageNavigation from '@/components/Page/Navigation/PageNavigation'
+import PageNavigation from '~/components/Page/Navigation/PageNavigation'
 
 export default {
   name: 'PageHeader',

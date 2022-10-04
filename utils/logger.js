@@ -21,4 +21,11 @@ function fatal (prefix, message, options = null) {
   })
 }
 
-export default { info, warn, fatal }
+function success (prefix, message, options = null) {
+  consola.success({
+    message: `[${prefix}] ${message}`,
+    additional: options ? JSON.stringify(options, null, 2) : null
+  })
+}
+
+export default { info, warn, fatal, success }

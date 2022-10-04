@@ -1,4 +1,4 @@
-import {defineNuxtConfig} from 'nuxt/config'
+import { defineNuxtConfig } from 'nuxt/config'
 import StylelintPlugin from 'vite-plugin-stylelint'
 import eslintPlugin from 'vite-plugin-eslint'
 import 'dotenv/config'
@@ -48,6 +48,7 @@ export default defineNuxtConfig({
 
   modules: [
     '~/modules/generate-content',
+    '~/modules/generate-commit-sha-file',
     '~/modules/generate-cname',
     'skimple-components/nuxt',
     '@nuxt/content',
