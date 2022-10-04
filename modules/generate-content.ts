@@ -461,7 +461,7 @@ function calculateTexFileChecksums (resolver, includedImagesDir, file) {
     {
       command: 'includegraphics',
       directory: includedImagesDir,
-      extensions: ['.svg', '.png', '.jpeg', '.jpg'],
+      extensions: ['.pdf', '.svg', '.png', '.jpeg', '.jpg'],
       excludes: []
     },
     {
