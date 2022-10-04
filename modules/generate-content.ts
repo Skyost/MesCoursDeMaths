@@ -439,7 +439,7 @@ function generatePdf (resolver, directory, file, previousBuildDir, includedImage
   const filePath = resolver.resolve(directory, file)
   const destPdf = resolver.resolve(pdfDir, pdfFilename)
   if (debug.debug && fs.existsSync(destPdf)) {
-   return null
+    return null
   }
   const checksums = JSON.stringify(calculateTexFileChecksums(resolver, includedImagesDir, filePath))
   const previousChecksumsFile = resolver.resolve(previousBuildDir, `${pdfFilename}.checksums`)
@@ -497,7 +497,7 @@ function calculateTexFileChecksums (resolver, includedImagesDir, file) {
           }
         }
         if (!fs.existsSync(includeFile)) {
-          logger.warn(name, `Unable to find file "${fileName}".`)
+          logger.warn(name, `Unable to find file "${includeFile}[${latexIncludeCommand.extensions.join(' | ')}]".`)
           match = regex.exec(content)
           continue
         }
