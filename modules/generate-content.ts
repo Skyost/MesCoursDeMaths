@@ -59,6 +59,7 @@ export default defineNuxtModule({
     const lessonsDirectory = resolver.resolve(downloadDirectory, directories.lessonsDirectory)
     const pandocRedefinitions = resolver.resolve(lessonsDirectory, 'pandoc.tex')
     const extractedImagesDir = resolver.resolve(lessonsDirectory, '.extracted-images')
+    tempDirs.push(extractedImagesDir)
 
     const imagesDestDir = resolver.resolve(nuxt.options.vite.publicDir.toString(), contentGenerator.imagesDestination)
 
@@ -111,7 +112,7 @@ async function downloadPreviousBuild (resolver, srcDir, github, contentGenerator
     })
     const zip = new AdmZip(Buffer.from(response.data))
     const zipRootDir = zip.getEntries()[0].entryName
-    const tempDirectory = resolver.resolve(srcDir, 'temp')
+    const tempDirectory = resolver.resolve(srcDir, '.previous-build')
     if (!fs.existsSync(tempDirectory)) {
       fs.mkdirSync(tempDirectory, { recursive: true })
     }
@@ -140,7 +141,7 @@ async function downloadRemoteDirectory (resolver, github, directories, lessonsDi
     ref: 'main'
   })
   const zip = new AdmZip(Buffer.from(response.data))
-  const tempDirectory = resolver.resolve(directories.downloadDirectory, 'temp')
+  const tempDirectory = resolver.resolve(directories.downloadDirectory, '.temp')
   if (!fs.existsSync(tempDirectory)) {
     fs.mkdirSync(tempDirectory, { recursive: true })
   }
@@ -367,7 +368,7 @@ async function handleImages (resolver, contentGenerator, imagesDir, previousImag
         resolver,
         contentGenerator,
         filePath,
-        previousImagesBuildDir,
+        resolver.resolve(previousImagesBuildDir, file),
         resolver.resolve(imagesDestDir, file)
       )
       continue
@@ -385,11 +386,17 @@ async function handleImages (resolver, contentGenerator, imagesDir, previousImag
         if (fs.existsSync(resolver.resolve(imagesDir, includedImagesDirFileName))) {
           includedImagesDir = fs.readFileSync(resolver.resolve(imagesDir, includedImagesDirFileName), { encoding: 'utf-8' })
         }
-        const pdfFileName = generatePdf(resolver, imagesDir, file, previousImagesBuildDir, includedImagesDir, imagesDir, `${fileName}.pdf`)
+        const { pdfFileName, wasCached } = generatePdf(resolver, imagesDir, file, previousImagesBuildDir, includedImagesDir, imagesDir, `${fileName}.pdf`)
         if (pdfFileName) {
-          const svgFile = pdftocairo(resolver, imagesDir, file)
+          let svgFile = `${fileName}.svg`
+          let svgPath = resolver.resolve(previousImagesBuildDir, svgFile)
+          if (!wasCached || !fs.existsSync(svgPath)) {
+            svgFile = pdftocairo(resolver, imagesDir, file)
+            svgPath = resolver.resolve(imagesDir, svgFile)
+          }
           fs.mkdirSync(imagesDestDir, { recursive: true })
-          fs.copyFileSync(resolver.resolve(imagesDir, svgFile), resolver.resolve(imagesDestDir, svgFile))
+          fs.copyFileSync(svgPath, resolver.resolve(imagesDestDir, svgFile))
+          fs.copyFileSync(resolver.resolve(imagesDir, pdfFileName), resolver.resolve(imagesDestDir, pdfFileName))
           fs.copyFileSync(resolver.resolve(imagesDir, `${pdfFileName}.checksums`), resolver.resolve(imagesDestDir, `${pdfFileName}.checksums`))
         }
       }
@@ -442,18 +449,25 @@ function generatePdf (resolver, directory, file, previousBuildDir, includedImage
     return null
   }
   const checksums = JSON.stringify(calculateTexFileChecksums(resolver, includedImagesDir, filePath))
+  const previousPdfFile = resolver.resolve(previousBuildDir, pdfFilename)
   const previousChecksumsFile = resolver.resolve(previousBuildDir, `${pdfFilename}.checksums`)
   fs.mkdirSync(pdfDir, { recursive: true })
   fs.writeFileSync(resolver.resolve(pdfDir, `${pdfFilename}.checksums`), checksums)
-  if (fs.existsSync(previousChecksumsFile) && checksums === fs.readFileSync(previousChecksumsFile, { encoding: 'utf-8' })) {
+  if (fs.existsSync(previousChecksumsFile) && checksums === fs.readFileSync(previousChecksumsFile, { encoding: 'utf-8' }) && fs.existsSync(previousPdfFile)) {
     logger.info(name, 'Fully cached PDF found.')
     fs.copyFileSync(resolver.resolve(previousBuildDir, pdfFilename), destPdf)
+    return {
+      pdfFileName: `${utils.getFileName(file)}.pdf`,
+      wasCached: true
+    }
   } else if (latexmk(resolver, directory, file)) {
-    pdfFilename = `${utils.getFileName(file)}.pdf`
     fs.copyFileSync(resolver.resolve(directory, pdfFilename), destPdf)
     execSync('latexmk -quiet -c', { cwd: directory })
+    return {
+      pdfFileName: `${utils.getFileName(file)}.pdf`,
+      wasCached: false
+    }
   }
-  return pdfFilename
 }
 
 function calculateTexFileChecksums (resolver, includedImagesDir, file) {

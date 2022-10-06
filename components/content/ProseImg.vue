@@ -21,14 +21,6 @@ export default {
       type: [String, Number],
       default: undefined
     }
-  },
-  async mounted () {
-    await this.$nextTick()
-    if (this.$el.classList.contains('extracted-image')) {
-      this.$el.onload = () => {
-        this.$el.width = this.$el.naturalWidth * 1.5
-      }
-    }
   }
 }
 </script>

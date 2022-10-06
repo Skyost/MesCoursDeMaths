@@ -52,6 +52,15 @@ export default {
 
 \\newcommand{\\dddots}[1]{\\makebox[#1]{\\dotfill}}
 
+\\tikzset{
+  every node/.style={
+    scale=1.5
+  },
+  every path/.style={
+    scale=1.5
+  }
+}
+
 \\begin{document}
   ${content}
 \\end{document}
