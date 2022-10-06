@@ -21,6 +21,8 @@ export default {
 
 \\usepackage{scratch3}
 
+\\setscratch{scale=1.5}
+
 \\begin{document}
   ${content}
 \\end{document}
