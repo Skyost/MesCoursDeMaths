@@ -381,23 +381,23 @@ async function handleImages (resolver, contentGenerator, imagesDir, previousImag
     if (file.endsWith('.tex')) {
       logger.info(name, `Compiling LaTeX image "${filePath}"...`)
       const fileName = utils.getFileName(file)
-      if (!debug.debug || !fs.existsSync(resolver.resolve(imagesDestDir, `${fileName}.svg`))) {
+      let svgFile = `${fileName}.svg`
+      if (!debug.debug || !fs.existsSync(resolver.resolve(imagesDestDir, svgFile))) {
         let includedImagesDir = imagesDir
         if (fs.existsSync(resolver.resolve(imagesDir, includedImagesDirFileName))) {
           includedImagesDir = fs.readFileSync(resolver.resolve(imagesDir, includedImagesDirFileName), { encoding: 'utf-8' })
         }
-        const { pdfFileName, wasCached } = generatePdf(resolver, imagesDir, file, previousImagesBuildDir, includedImagesDir, imagesDir, `${fileName}.pdf`)
-        if (pdfFileName) {
-          let svgFile = `${fileName}.svg`
+        const { builtPdf, wasCached } = generatePdf(resolver, imagesDir, file, previousImagesBuildDir, includedImagesDir, imagesDir, `${fileName}.pdf`)
+        if (builtPdf) {
           let svgPath = resolver.resolve(previousImagesBuildDir, svgFile)
           if (!wasCached || !fs.existsSync(svgPath)) {
-            svgFile = pdftocairo(resolver, imagesDir, file)
+            svgFile = pdftocairo(resolver, imagesDir, builtPdf)
             svgPath = resolver.resolve(imagesDir, svgFile)
           }
           fs.mkdirSync(imagesDestDir, { recursive: true })
           fs.copyFileSync(svgPath, resolver.resolve(imagesDestDir, svgFile))
-          fs.copyFileSync(resolver.resolve(imagesDir, pdfFileName), resolver.resolve(imagesDestDir, pdfFileName))
-          fs.copyFileSync(resolver.resolve(imagesDir, `${pdfFileName}.checksums`), resolver.resolve(imagesDestDir, `${pdfFileName}.checksums`))
+          fs.copyFileSync(resolver.resolve(imagesDir, builtPdf), resolver.resolve(imagesDestDir, builtPdf))
+          fs.copyFileSync(resolver.resolve(imagesDir, `${builtPdf}.checksums`), resolver.resolve(imagesDestDir, `${builtPdf}.checksums`))
         }
       }
       logger.success(name, 'Done.')
@@ -442,29 +442,30 @@ function toString (slug, root, linkedResources) {
   return matter.stringify(root.innerHTML, header)
 }
 
-function generatePdf (resolver, directory, file, previousBuildDir, includedImagesDir, pdfDestDir, pdfDestFilename) {
+function generatePdf (resolver, directory, file, previousBuildDir, includedImagesDir, pdfDestDir, pdfDestFileName) {
   const filePath = resolver.resolve(directory, file)
-  const destPdf = resolver.resolve(pdfDestDir, pdfDestFilename)
+  const destPdf = resolver.resolve(pdfDestDir, pdfDestFileName)
   if (debug.debug && fs.existsSync(destPdf)) {
     return null
   }
   const checksums = JSON.stringify(calculateTexFileChecksums(resolver, includedImagesDir, filePath))
-  const previousPdfFile = resolver.resolve(previousBuildDir, pdfDestFilename)
-  const previousChecksumsFile = resolver.resolve(previousBuildDir, `${pdfDestFilename}.checksums`)
+  const previousPdfFile = resolver.resolve(previousBuildDir, pdfDestFileName)
+  const previousChecksumsFile = resolver.resolve(previousBuildDir, `${pdfDestFileName}.checksums`)
+  const builtPdf = `${utils.getFileName(file)}.pdf`
   fs.mkdirSync(pdfDestDir, { recursive: true })
-  fs.writeFileSync(resolver.resolve(pdfDestDir, `${pdfDestFilename}.checksums`), checksums)
+  fs.writeFileSync(resolver.resolve(pdfDestDir, `${pdfDestFileName}.checksums`), checksums)
   if (fs.existsSync(previousChecksumsFile) && checksums === fs.readFileSync(previousChecksumsFile, { encoding: 'utf-8' }) && fs.existsSync(previousPdfFile)) {
     logger.info(name, 'Fully cached PDF found.')
-    fs.copyFileSync(resolver.resolve(previousBuildDir, pdfDestFilename), destPdf)
+    fs.copyFileSync(previousPdfFile, destPdf)
     return {
-      pdfFileName: `${utils.getFileName(file)}.pdf`,
+      builtPdf,
       wasCached: true
     }
   } else if (latexmk(resolver, directory, file)) {
-    fs.copyFileSync(resolver.resolve(directory, file), destPdf)
+    fs.copyFileSync(resolver.resolve(directory, builtPdf), destPdf)
     execSync('latexmk -quiet -c', { cwd: directory })
     return {
-      pdfFileName: `${utils.getFileName(file)}.pdf`,
+      builtPdf,
       wasCached: false
     }
   }
@@ -539,11 +540,11 @@ function latexmk (resolver, directory, file) {
   }
 }
 
-function pdftocairo (resolver, directory, file) {
-  const fileName = utils.getFileName(file)
+function pdftocairo (resolver, directory, pdfFileName) {
+  const fileName = utils.getFileName(pdfFileName)
   const svgFile = `${fileName}.svg`
   if (!debug.debug || !fs.existsSync(resolver.resolve(directory, svgFile))) {
-    execSync(`pdftocairo -svg "${fileName}.pdf" "${svgFile}"`, { cwd: directory })
+    execSync(`pdftocairo -svg "${pdfFileName}" "${svgFile}"`, { cwd: directory })
   }
   return svgFile
 }
