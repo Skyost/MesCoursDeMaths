@@ -442,26 +442,26 @@ function toString (slug, root, linkedResources) {
   return matter.stringify(root.innerHTML, header)
 }
 
-function generatePdf (resolver, directory, file, previousBuildDir, includedImagesDir, pdfDir, pdfFilename) {
+function generatePdf (resolver, directory, file, previousBuildDir, includedImagesDir, pdfDestDir, pdfDestFilename) {
   const filePath = resolver.resolve(directory, file)
-  const destPdf = resolver.resolve(pdfDir, pdfFilename)
+  const destPdf = resolver.resolve(pdfDestDir, pdfDestFilename)
   if (debug.debug && fs.existsSync(destPdf)) {
     return null
   }
   const checksums = JSON.stringify(calculateTexFileChecksums(resolver, includedImagesDir, filePath))
-  const previousPdfFile = resolver.resolve(previousBuildDir, pdfFilename)
-  const previousChecksumsFile = resolver.resolve(previousBuildDir, `${pdfFilename}.checksums`)
-  fs.mkdirSync(pdfDir, { recursive: true })
-  fs.writeFileSync(resolver.resolve(pdfDir, `${pdfFilename}.checksums`), checksums)
+  const previousPdfFile = resolver.resolve(previousBuildDir, pdfDestFilename)
+  const previousChecksumsFile = resolver.resolve(previousBuildDir, `${pdfDestFilename}.checksums`)
+  fs.mkdirSync(pdfDestDir, { recursive: true })
+  fs.writeFileSync(resolver.resolve(pdfDestDir, `${pdfDestFilename}.checksums`), checksums)
   if (fs.existsSync(previousChecksumsFile) && checksums === fs.readFileSync(previousChecksumsFile, { encoding: 'utf-8' }) && fs.existsSync(previousPdfFile)) {
     logger.info(name, 'Fully cached PDF found.')
-    fs.copyFileSync(resolver.resolve(previousBuildDir, pdfFilename), destPdf)
+    fs.copyFileSync(resolver.resolve(previousBuildDir, pdfDestFilename), destPdf)
     return {
       pdfFileName: `${utils.getFileName(file)}.pdf`,
       wasCached: true
     }
   } else if (latexmk(resolver, directory, file)) {
-    fs.copyFileSync(resolver.resolve(directory, pdfFilename), destPdf)
+    fs.copyFileSync(resolver.resolve(directory, file), destPdf)
     execSync('latexmk -quiet -c', { cwd: directory })
     return {
       pdfFileName: `${utils.getFileName(file)}.pdf`,
