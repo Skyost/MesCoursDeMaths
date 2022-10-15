@@ -59,6 +59,7 @@ export default {
         print.style.alignSelf = 'end'
         print.onclick = async function () {
           const canvas = await html2canvas(exercise)
+          canvas.style.maxWidth = '100%'
           const newWindow = window.open()
           newWindow.document.body.appendChild(canvas)
           newWindow.print()
@@ -67,12 +68,12 @@ export default {
         print.innerHTML = '<i class="bi bi-printer-fill"></i> Imprimer'
         exercise.parentNode.insertBefore(print, exercise.nextSibling)
       }
-      const flexGrows = this.$el.getElementsByClassName('flex-grow')
-      for (const flexGrow of flexGrows) {
-        for (const cssClass of ['d-flex', 'flex-column', 'flex-lg-row', 'align-items-center']) {
-          flexGrow.parentElement.classList.add(cssClass)
-        }
-      }
+      // const flexGrows = this.$el.getElementsByClassName('flex-grow')
+      // for (const flexGrow of flexGrows) {
+      //   for (const cssClass of ['d-flex', 'flex-column', 'flex-lg-row', 'align-items-center']) {
+      //     flexGrow.parentElement.classList.add(cssClass)
+      //   }
+      // }
       const dotLines = this.$el.getElementsByClassName('dots')
       for (const dotLine of dotLines) {
         const parent = dotLine.parentNode
