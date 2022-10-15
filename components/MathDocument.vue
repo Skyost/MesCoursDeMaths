@@ -59,13 +59,15 @@ export default {
         print.style.alignSelf = 'end'
         print.onclick = async function () {
           const canvas = await html2canvas(exercise)
-          canvas.style.maxWidth = '100%'
-          canvas.style.height = 'auto%'
-          canvas.style.objectFit = 'cover'
           const newWindow = window.open()
-          newWindow.document.body.appendChild(canvas)
-          newWindow.print()
-          newWindow.close()
+          const img = newWindow.document.createElement('img')
+          img.src = canvas.toDataURL()
+          img.style.maxWidth = '100%'
+          newWindow.document.body.appendChild(img)
+          setTimeout(() => {
+            newWindow.print()
+            newWindow.close()
+          }, 100)
         }
         print.innerHTML = '<i class="bi bi-printer-fill"></i> Imprimer'
         exercise.parentNode.insertBefore(print, exercise.nextSibling)
