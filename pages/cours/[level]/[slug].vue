@@ -12,10 +12,11 @@ const { pending, data: lesson } = useLazyAsyncData(
 
 <template>
   <div v-if="pending">
+    <Title>Affichage d'un cours</Title>
     <spinner />
   </div>
   <div v-else-if="lesson">
-    <page-head :title="title" />
+    <page-head :title="`${levelName} > ${lesson['page-title']}`" />
     <levels-navigation-entry />
     <lessons-navigation-entry :level="$route.params.level" />
     <lesson-navigation-entry :level="$route.params.level" :lesson="lesson" />
@@ -57,8 +58,8 @@ import PageHead from '~/components/Page/PageHead'
 export default {
   components: { PageHead, Spinner, LessonNavigationEntry, ErrorDisplay, LessonsNavigationEntry, LevelsNavigationEntry, SkiButton, SkiIcon, MathDocument },
   computed: {
-    title () {
-      return this.lesson ? `${levelUtils.getLevelName(this.$route.params.level)} > ${this.lesson['page-title']}` : "Affichage d'un cours"
+    levelName () {
+      return levelUtils.getLevelName(this.$route.params.level)
     },
     documentColor () {
       return levelUtils.getLevelColor(this.$route.params.level)

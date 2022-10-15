@@ -26,6 +26,7 @@ const { pending, data: lessons } = useLazyAsyncData(
 
 <template>
   <div v-if="pending">
+    <Title>Liste des cours</Title>
     <spinner />
   </div>
   <div v-else-if="lessons">
@@ -75,7 +76,7 @@ export default {
   components: { PageHead, Spinner, LessonsNavigationEntry, ErrorDisplay, LevelsNavigationEntry, SkiColumns, SkiColumn, SkiButton, SkiIcon, ImageCard },
   computed: {
     title () {
-      return `Liste des cours de ${this.levelName}`
+      return `Cours de ${this.levelName.toLowerCase()}`
     },
     levelName () {
       return levelUtils.getLevelName(this.$route.params.level)
