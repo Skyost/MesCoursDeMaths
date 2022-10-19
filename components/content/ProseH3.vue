@@ -20,5 +20,10 @@ h3 {
   color: #2980b9;
   border-bottom: 1px solid #d7d7d7;
   margin-bottom: 0.75em;
+  counter-increment: headline-3;
+
+  &:before {
+    content: counter(headline-3) '. '
+  }
 }
 </style>

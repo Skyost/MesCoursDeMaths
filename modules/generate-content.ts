@@ -203,16 +203,16 @@ async function processFiles (
       const imagesDir = resolver.resolve(imagesDestDir, fileName)
       if (contentGenerator.shouldGenerateMarkdown(fileName) && (!debug.debug || !fs.existsSync(mdFile))) {
         extractImages(resolver, contentGenerator, filePath, extractedImagesDir)
-        const htmlContent = execSync(`pandoc "${path.relative(directory, pandocRedefinitions)}" "${filePath}" -t html --gladtex --number-sections --shift-heading-level-by=1 --html-q-tags`, {
+        const htmlContent = execSync(`pandoc "${path.relative(directory, pandocRedefinitions)}" "${filePath}" -f latex-auto_identifiers -t html --gladtex --shift-heading-level-by=1 --html-q-tags`, {
           cwd: directory,
           encoding: 'utf-8'
         })
         const root = parse(htmlContent)
         const linkedResources = contentGenerator.getMarkdownLinkedResources(directory, file, pdfDestUrl)
         replaceImages(resolver, root, imagesDir, imagesDestUrl + '/' + fileName)
+        removeEmptyTitles(root)
         replaceVspaceElements(root)
         adjustColSize(root)
-        numberizeTitles(root)
         renderMath(root)
         fs.writeFileSync(mdFile, toString(filteredFileName, root, linkedResources))
       }
@@ -279,6 +279,15 @@ function replaceImages (resolver, root, imagesDestDir, imagesDestURL) {
   }
 }
 
+function removeEmptyTitles (root) {
+  const bubbleTitles = root.querySelectorAll('h2, h3, h4')
+  for (const bubbleTitle of bubbleTitles) {
+    if (bubbleTitle.text.trim().length === 0) {
+      bubbleTitle.remove()
+    }
+  }
+}
+
 function replaceVspaceElements (root) {
   const vspaces = root.querySelectorAll('.vertical-space')
   for (const vspace of vspaces) {
@@ -312,26 +321,6 @@ function adjustColSize (root) {
       }
     }
     sizeElement.remove()
-  }
-}
-
-function numberizeTitles (root) {
-  const numbers = root.querySelectorAll('.header-section-number')
-  for (const number of numbers) {
-    const numberText = number.text.trim()
-    const parts = numberText.split('.')
-    if (parts.length === 2) {
-      number.innerHTML = `${utils.romanize(parts[1])} -`
-    } else if (parts.length === 3) {
-      number.innerHTML = `${parts[2]}.`
-    } else if (parts.length === 4) {
-      const bubbleTitle = root.querySelector(`h4[data-number='${numberText}']`)
-      if (bubbleTitle && bubbleTitle.text.trim() === numberText) {
-        bubbleTitle.remove()
-      } else {
-        number.remove()
-      }
-    }
   }
 }
 

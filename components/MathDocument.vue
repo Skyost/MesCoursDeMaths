@@ -48,9 +48,7 @@ export default {
   methods: {
     setupDocument () {
       const exercises = this.$el.getElementsByClassName('bubble-exercice')
-      for (let i = 0; i < exercises.length; i++) {
-        const exercise = exercises[i]
-        exercise.style.setProperty('--number', `'${i + 1}'`)
+      for (const exercise of exercises) {
         const print = document.createElement('span')
         print.style.fontSize = '0.8em'
         print.style.float = 'right'
@@ -150,6 +148,8 @@ export default {
 }
 
 .math-document {
+  counter-reset: headline-2 headline-3 exercice;
+
   h1::after {
     display: block;
     content: '';
@@ -245,7 +245,8 @@ export default {
 }
 
 .bubble-exercice {
-  @include bubble-style('📝 Exercice ' var(--number), #e0f2f1, #009688);
+  counter-increment: exercice;
+  @include bubble-style('📝 Exercice ' counter(exercice), #e0f2f1, #009688);
 }
 
 .bubble-information {
