@@ -5,12 +5,21 @@
 </template>
 
 <style lang="scss" scoped>
-ul :deep(li) {
-  list-style-type: '— ';
+ul {
+  padding-left: 1.5rem;
 
-  &:last-child,
-  &:last-child > p {
-    margin-bottom: 0;
+  :deep(li) {
+    list-style-type: '— ';
+    padding-left: 1rem;
+
+    &::marker {
+      font-weight: bold;
+    }
+
+    &:last-child,
+    &:last-child > p {
+      margin-bottom: 0;
+    }
   }
 }
 </style>

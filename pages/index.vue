@@ -79,7 +79,7 @@
           <p>
             Les contenus présents sur ce site sont disponibles sous licence
             <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.fr">CC BY-NC-SA 4.0</a>.
-            Le site a été créé à l'aide de Github Pages et de Vercel. Il est
+            Il a été créé à l'aide de Github Pages, de Vercel et de Nuxt. Il est
             <a :href="githubUrl">totalement open-source</a>.
           </p>
           <p class="mb-0">

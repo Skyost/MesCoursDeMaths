@@ -127,6 +127,11 @@ export default {
     margin-bottom: 1rem;
   }
 
+  ul li::marker,
+  ol li::marker {
+    color: $titleColor;
+  }
+
   &:hover {
     background-color: darken($backgroundColor, 2%);
   }

@@ -5,11 +5,19 @@
 </template>
 
 <style lang="scss" scoped>
-ol :deep(li::marker) {
-  font-weight: bold;
-}
+ol {
+  padding-left: 1.5rem;
 
-ol :deep(> li > ol) {
-  list-style-type: lower-alpha;
+  :deep(li) {
+    padding-left: 1rem;
+
+    &::marker {
+      font-weight: bold;
+    }
+  }
+
+  :deep(> li > ol) {
+    list-style-type: lower-alpha;
+  }
 }
 </style>
