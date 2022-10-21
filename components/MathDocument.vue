@@ -47,14 +47,43 @@ export default {
   },
   methods: {
     setupDocument () {
+      const dotLines = this.$el.getElementsByClassName('dots')
+      for (const dotLine of dotLines) {
+        const parent = dotLine.parentNode
+        const base = parent.closest('.base')
+        if (base) {
+          base.style.width = 'initial'
+        }
+        const enclosing = parent.closest('.enclosing')
+        if (enclosing) {
+          enclosing.style.display = 'inline-block'
+          enclosing.style.textAlign = 'center'
+        }
+      }
       const exercises = this.$el.getElementsByClassName('bubble-exercice')
-      for (const exercise of exercises) {
+      for (let i = 0; i < exercises.length; i++) {
+        const exercise = exercises[i]
+        if (exercise.nextSibling && exercise.nextSibling.classList.contains('bubble-correction')) {
+          exercise.nextSibling.id = `correction-${i + 1}`
+          exercise.nextSibling.classList.add('collapse')
+          const correction = document.createElement('span')
+          correction.classList.add('button-exercice')
+          correction.classList.add('button-correction')
+          correction.setAttribute('data-bs-toggle', 'collapse')
+          correction.setAttribute('data-bs-target', `#correction-${i + 1}`)
+          correction.innerHTML = '<i class="bi bi-chevron-down"></i> Voir la correction'
+          if (this.$route.hash === `#correction-${i + 1}`) {
+            exercise.nextSibling.classList.add('show')
+            exercise.nextSibling.scrollIntoView(true)
+          } else {
+            correction.classList.add('collapsed')
+          }
+          exercise.parentNode.insertBefore(correction, exercise.nextSibling)
+        }
+
         const print = document.createElement('span')
-        print.style.fontSize = '0.8em'
-        print.style.float = 'right'
-        print.style.marginTop = '-1.6em'
-        print.style.cursor = 'pointer'
-        print.style.alignSelf = 'end'
+        print.classList.add('button-exercice')
+        print.classList.add('button-print')
         print.onclick = async function () {
           const canvas = await html2canvas(exercise)
           const newWindow = window.open()
@@ -69,19 +98,7 @@ export default {
         }
         print.innerHTML = '<i class="bi bi-printer-fill"></i> Imprimer'
         exercise.parentNode.insertBefore(print, exercise.nextSibling)
-      }
-      const dotLines = this.$el.getElementsByClassName('dots')
-      for (const dotLine of dotLines) {
-        const parent = dotLine.parentNode
-        const base = parent.closest('.base')
-        if (base) {
-          base.style.width = 'initial'
-        }
-        const enclosing = parent.closest('.enclosing')
-        if (enclosing) {
-          enclosing.style.display = 'inline-block'
-          enclosing.style.textAlign = 'center'
-        }
+        exercise.style.marginBottom = 'calc(1.6em + 1.5rem)'
       }
       this.setupTimeout = null
     },
@@ -162,6 +179,28 @@ export default {
     .doctitle,
     .docnumber {
       display: none;
+    }
+
+    .button-exercice {
+      font-size: 0.8em;
+      margin-top: calc(-1.6em - 1.5rem);
+      cursor: pointer;
+
+      &.button-correction {
+        float: left;
+
+        .bi-chevron-down::before {
+          transition: transform 200ms;
+        }
+
+        &.collapsed .bi-chevron-down::before {
+          transform: rotate(-90deg);
+        }
+      }
+
+      &.button-print {
+        float: right;
+      }
     }
 
     .dots {
@@ -251,5 +290,9 @@ export default {
 
 .bubble-information {
   @include bubble-style('☝ Information', #fce4ec, #e91e63);
+}
+
+.bubble-correction {
+  @include bubble-style('✔ Correction', #e8eaf6, #3f51b5);
 }
 </style>
