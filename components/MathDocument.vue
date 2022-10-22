@@ -60,7 +60,9 @@ export default {
           enclosing.style.textAlign = 'center'
         }
       }
+
       const exercises = this.$el.getElementsByClassName('bubble-exercice')
+      let scrollCollapse
       for (let i = 0; i < exercises.length; i++) {
         const exercise = exercises[i]
         if (exercise.nextSibling && exercise.nextSibling.classList.contains('bubble-correction')) {
@@ -71,10 +73,10 @@ export default {
           correction.classList.add('button-correction')
           correction.setAttribute('data-bs-toggle', 'collapse')
           correction.setAttribute('data-bs-target', `#correction-${i + 1}`)
-          correction.innerHTML = '<i class="bi bi-chevron-down"></i> Voir la correction'
+          correction.innerHTML = '<i class="bi bi-chevron-down"></i> <span class="show">Voir</span><span class="hide">Cacher</span> la correction'
           if (this.$route.hash === `#correction-${i + 1}`) {
-            exercise.nextSibling.classList.add('show')
-            exercise.nextSibling.scrollIntoView(true)
+            scrollCollapse = exercise.nextSibling
+            scrollCollapse.classList.add('show')
           } else {
             correction.classList.add('collapsed')
           }
@@ -100,6 +102,10 @@ export default {
         exercise.parentNode.insertBefore(print, exercise.nextSibling)
         exercise.style.marginBottom = 'calc(1.6em + 1.5rem)'
       }
+      if (scrollCollapse) {
+        scrollCollapse.scrollIntoView(true)
+      }
+
       this.setupTimeout = null
     },
     resizeDotLines () {
@@ -193,8 +199,26 @@ export default {
           transition: transform 200ms;
         }
 
-        &.collapsed .bi-chevron-down::before {
-          transform: rotate(-90deg);
+        .show {
+          display: none;
+        }
+
+        .hide {
+          display: inline;
+        }
+
+        &.collapsed {
+          .show {
+            display: inline;
+          }
+
+          .hide {
+            display: none;
+          }
+
+          .bi-chevron-down::before {
+            transform: rotate(-90deg);
+          }
         }
       }
 
@@ -293,6 +317,6 @@ export default {
 }
 
 .bubble-correction {
-  @include bubble-style('✔ Correction', #e8eaf6, #3f51b5);
+  @include bubble-style('✔ Correction de l\'exercice ' counter(exercice), #e8eaf6, #3f51b5);
 }
 </style>

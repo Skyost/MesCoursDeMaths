@@ -3,7 +3,7 @@ import { useLazyAsyncData, useRoute } from '#app'
 
 const route = useRoute()
 const { pending, data: lessons } = useLazyAsyncData(
-  route.fullPath,
+  route.path,
   async () => {
     const mdLessons = await queryContent(route.params.level)
       .sort({ number: 1 })
@@ -26,7 +26,6 @@ const { pending, data: lessons } = useLazyAsyncData(
 
 <template>
   <div v-if="pending">
-    <Title>Liste des cours</Title>
     <spinner />
   </div>
   <div v-else-if="lessons">
@@ -74,6 +73,9 @@ import PageHead from '~/components/Page/PageHead'
 
 export default {
   components: { PageHead, Spinner, LessonsNavigationEntry, ErrorDisplay, LevelsNavigationEntry, SkiColumns, SkiColumn, SkiButton, SkiIcon, ImageCard },
+  head: {
+    title: 'Liste des cours'
+  },
   computed: {
     title () {
       return `Cours de ${this.levelName.toLowerCase()}`

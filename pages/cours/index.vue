@@ -4,7 +4,7 @@ import levelUtils from '~/utils/level'
 
 const route = useRoute()
 const { pending, data: levels, error } = useLazyAsyncData(
-  route.fullPath,
+  route.path,
   async () => {
     const mdFiles = await queryContent('/')
       .where({ _extension: 'md' })

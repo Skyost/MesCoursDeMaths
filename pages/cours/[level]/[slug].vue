@@ -4,7 +4,7 @@ import { useLazyAsyncData, useRoute } from '#app'
 const route = useRoute()
 
 const { pending, data: lesson } = useLazyAsyncData(
-  route.fullPath,
+  route.path,
   () => queryContent(route.params.level, route.params.slug)
     .findOne()
 )
@@ -12,7 +12,6 @@ const { pending, data: lesson } = useLazyAsyncData(
 
 <template>
   <div v-if="pending">
-    <Title>Affichage d'un cours</Title>
     <spinner />
   </div>
   <div v-else-if="lesson">
@@ -57,6 +56,9 @@ import PageHead from '~/components/Page/PageHead'
 
 export default {
   components: { PageHead, Spinner, LessonNavigationEntry, ErrorDisplay, LessonsNavigationEntry, LevelsNavigationEntry, SkiButton, SkiIcon, MathDocument },
+  head: {
+    title: "Affichage d'un cours"
+  },
   computed: {
     levelName () {
       return levelUtils.getLevelName(this.$route.params.level)
