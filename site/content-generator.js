@@ -48,6 +48,7 @@ export default {
 \\usetikzlibrary{intersections}
 \\usetikzlibrary{shadows.blur}
 \\usetikzlibrary{decorations.pathreplacing}
+\\usetikzlibrary{ext.transformations.mirror}
 \\usetikzlibrary{babel}
 
 \\graphicspath{{${latexImagesDir}}}
