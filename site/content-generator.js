@@ -40,6 +40,16 @@ export default {
 \\usepackage{pgf-pie}
 \\usepackage{graphicx}
 \\usepackage{gensymb}
+\\usepackage{xlop}
+
+\\opset{%
+  dividendbridge,%
+  carrysub,%
+  displayintermediary=all,%
+  displayshiftintermediary=all,%
+  voperator=bottom,%
+  voperation=bottom%
+}
 
 \\setmathfont{Erewhon Math}
 
