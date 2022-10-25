@@ -304,8 +304,8 @@ function replaceVspaceElements (root) {
 function adjustColSize (root) {
   const rows = root.querySelectorAll('.row')
   for (const row of rows) {
-    const columns = row.querySelectorAll('.col')
-    const sizeElement = row.querySelector('.first-col-size')
+    const columns = row.querySelectorAll('> .col')
+    const sizeElement = row.querySelector('> .first-col-size')
     if (columns.length === 2) {
       if (sizeElement && sizeElement.text.trim().length > 0) {
         const size = parseFloat(sizeElement.text.trim())
