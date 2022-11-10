@@ -53,14 +53,15 @@ export default {
       height: 120%;
       max-width: 30%;
 
-      @include media-breakpoint-down(md) {
-        max-width: 90%;
-      }
-
       @include media-breakpoint-down(lg) {
         position: relative;
         max-width: 50%;
-        margin-bottom: 40px;
+        margin-top: 50px;
+        margin-bottom: 50px;
+      }
+
+      @include media-breakpoint-down(md) {
+        max-width: 80%;
       }
     }
   }
