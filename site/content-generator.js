@@ -99,7 +99,7 @@ export default {
       const files = fs.readdirSync(directory)
       for (const directoryFile of files) {
         const filePath = path.resolve(directory, directoryFile)
-        if (directoryFile.startsWith(prefix) && directoryFile.endsWith('.tex') && !directoryFile.includes('interrogation') && directoryFile !== file && this.shouldGeneratePdf(directoryFile)) {
+        if (directoryFile.startsWith(prefix) && directoryFile.endsWith('.tex') && directoryFile !== file && this.shouldGeneratePdf(directoryFile)) {
           const regex = /\\cours(\[[a-z ]*])?\{[A-Za-zÀ-ÖØ-öø-ÿ\d, ]+}\{([A-Za-zÀ-ÖØ-öø-ÿ\d, ]+)}/
           const content = fs.readFileSync(filePath, { encoding: 'utf-8' })
           const match = regex.exec(content)
