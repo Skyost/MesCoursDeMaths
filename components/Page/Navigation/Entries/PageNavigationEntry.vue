@@ -1,6 +1,5 @@
 <script setup>
-import { nextTick, onBeforeMount, onMounted } from 'vue'
-import { toRefs } from '@vue/reactivity'
+import { nextTick, onBeforeMount, onMounted, toRefs } from 'vue'
 import { useNuxtApp } from '#app'
 
 const props = defineProps({

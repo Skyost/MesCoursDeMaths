@@ -56,6 +56,7 @@ export default {
       required: true
     }
   },
+  emits: ['dayclick'],
   data () {
     const date = new Date()
     return {

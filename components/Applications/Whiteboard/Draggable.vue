@@ -27,6 +27,7 @@ export default {
       default: 10
     }
   },
+  emits: ['close'],
   data () {
     return {
       x: this.defaultX,

@@ -27,7 +27,7 @@ export default {
       required: true
     }
   },
-
+  emits: ['fileloaded'],
   methods: {
     promptForFile () {
       this.$refs.fileInput.onchange = (event) => {

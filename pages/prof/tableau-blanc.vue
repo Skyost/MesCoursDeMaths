@@ -63,6 +63,7 @@ import WhiteboardApplicationNavigationEntry
 
 export default {
   components: { WhiteboardApplicationNavigationEntry, PageHead, TeacherNavigationEntry, FileUploadButton, SkiButton, SkiIcon, Protected, StopwatchDraggable, WhiteboardCanvas, TextDraggable, PdfDraggable, ImageDraggable },
+  emits: ['removespace'],
   data () {
     return {
       textCount: 0,
