@@ -48,7 +48,8 @@ export default {
   displayintermediary=all,%
   displayshiftintermediary=all,%
   voperator=bottom,%
-  voperation=bottom%
+  voperation=bottom,%
+  deimalsepsymbol={,}%
 }
 
 \\setmathfont{Erewhon Math}
