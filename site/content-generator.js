@@ -49,7 +49,7 @@ export default {
   displayshiftintermediary=all,%
   voperator=bottom,%
   voperation=bottom,%
-  deimalsepsymbol={,}%
+  decimalsepsymbol={,}%
 }
 
 \\setmathfont{Erewhon Math}
