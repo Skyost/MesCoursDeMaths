@@ -7,7 +7,7 @@ export default defineNuxtModule({
     name: 'generate-commit-sha-file',
     version: '0.0.1',
     configKey: 'commitShaFileGenerator',
-    compatibility: { nuxt: '^3.0.0-rc.9' }
+    compatibility: { nuxt: '^3.0.0' }
   },
   defaults: {
     fileName: 'latest-commit.json'

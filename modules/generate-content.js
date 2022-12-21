@@ -22,7 +22,7 @@ export default defineNuxtModule({
   meta: {
     name,
     version: '0.0.1',
-    compatibility: { nuxt: '^3.0.0-rc.9' },
+    compatibility: { nuxt: '^3.0.0' },
     configKey: 'contentGenerator'
   },
   defaults: {
@@ -82,13 +82,14 @@ export default defineNuxtModule({
       await handleImages(resolver, contentGenerator, directory, previousImagesBuildDir, destination)
     }
 
-    await processFiles(
+    const generatedUrls = await processFiles(
       resolver,
       contentGenerator,
       lessonsDirectory,
       previousBuildDir,
       resolver.resolve(srcDir, 'content'),
       resolver.resolve(nuxt.options.vite.publicDir.toString(), contentGenerator.pdfDestination),
+      contentGenerator.destinationUrl,
       contentGenerator.pdfDestination,
       extractedImagesDir,
       imagesDestDir,
@@ -97,6 +98,11 @@ export default defineNuxtModule({
       ignored
     )
     await handleImages(resolver, contentGenerator, extractedImagesDir, previousImagesBuildDir, imagesDestDir)
+
+    const generatedUrlsFile = resolver.resolve(nuxt.options.srcDir, contentGenerator.generatedUrlsFile)
+    fsExtra.mkdirpSync(path.dirname(generatedUrlsFile))
+    fs.writeFileSync(generatedUrlsFile, JSON.stringify(generatedUrls))
+
     cleanTempDirs(tempDirs)
   }
 })
@@ -166,6 +172,7 @@ async function processFiles (
   previousBuildDir,
   mdDir,
   pdfDir,
+  destUrl,
   pdfDestUrl,
   extractedImagesDir,
   imagesDestDir,
@@ -173,6 +180,7 @@ async function processFiles (
   pandocRedefinitions,
   ignored
 ) {
+  const generatedUrls = []
   const files = fs.readdirSync(directory)
   for (const file of files) {
     const filePath = resolver.resolve(directory, file)
@@ -180,20 +188,21 @@ async function processFiles (
       continue
     }
     if (fs.lstatSync(filePath).isDirectory()) {
-      await processFiles(
+      generatedUrls.push(...await processFiles(
         resolver,
         contentGenerator,
         filePath,
         resolver.resolve(previousBuildDir, file),
         resolver.resolve(mdDir, file),
         resolver.resolve(pdfDir, file),
+        `${destUrl}/${file}`,
         `${pdfDestUrl}/${file}`,
         resolver.resolve(extractedImagesDir, file),
         resolver.resolve(imagesDestDir, file),
         `${imagesDestUrl}/${file}`,
         pandocRedefinitions,
         ignored
-      )
+      ))
     } else if (file.endsWith('.tex')) {
       logger.info(name, `Processing "${filePath}"...`)
       const fileName = utils.getFileName(file)
@@ -201,20 +210,23 @@ async function processFiles (
       fs.mkdirSync(mdDir, { recursive: true })
       const mdFile = resolver.resolve(mdDir, `${filteredFileName}.md`)
       const imagesDir = resolver.resolve(imagesDestDir, fileName)
-      if (contentGenerator.shouldGenerateMarkdown(fileName) && (!debug.debug || !fs.existsSync(mdFile))) {
-        extractImages(resolver, contentGenerator, filePath, extractedImagesDir)
-        const htmlContent = execSync(`pandoc "${path.relative(directory, pandocRedefinitions)}" "${filePath}" -f latex-auto_identifiers -t html --gladtex --shift-heading-level-by=1 --html-q-tags`, {
-          cwd: directory,
-          encoding: 'utf-8'
-        })
-        const root = parse(htmlContent)
-        const linkedResources = contentGenerator.getMarkdownLinkedResources(directory, file, pdfDestUrl)
-        replaceImages(resolver, root, imagesDir, imagesDestUrl + '/' + fileName)
-        removeEmptyTitles(root)
-        replaceVspaceElements(root)
-        adjustColSize(root)
-        renderMath(root)
-        fs.writeFileSync(mdFile, toString(filteredFileName, root, linkedResources))
+      if (contentGenerator.shouldGenerateMarkdown(fileName)) {
+        if (!debug.debug || !fs.existsSync(mdFile)) {
+          extractImages(resolver, contentGenerator, filePath, extractedImagesDir)
+          const htmlContent = execSync(`pandoc "${path.relative(directory, pandocRedefinitions)}" "${filePath}" -f latex-auto_identifiers -t html --gladtex --shift-heading-level-by=1 --html-q-tags`, {
+            cwd: directory,
+            encoding: 'utf-8'
+          })
+          const root = parse(htmlContent)
+          const linkedResources = contentGenerator.getMarkdownLinkedResources(directory, file, pdfDestUrl)
+          replaceImages(resolver, root, imagesDir, imagesDestUrl + '/' + fileName)
+          removeEmptyTitles(root)
+          replaceVspaceElements(root)
+          adjustColSize(root)
+          renderMath(root)
+          fs.writeFileSync(mdFile, toString(filteredFileName, root, linkedResources))
+        }
+        generatedUrls.push(`${destUrl}/${filteredFileName}/`)
       }
       if (contentGenerator.shouldGeneratePdf(fileName)) {
         const includedImagesDir = resolver.resolve(extractedImagesDir, contentGenerator.getLatexRelativeIncludedImagesDir(extractedImagesDir, filePath))
@@ -230,6 +242,7 @@ async function processFiles (
       logger.success(name, 'Done.')
     }
   }
+  return generatedUrls
 }
 
 function extractImages (resolver, contentGenerator, filePath, extractedImagesDir) {
@@ -404,27 +417,19 @@ async function handleImages (resolver, contentGenerator, imagesDir, previousImag
 function toString (slug, root, linkedResources) {
   const header = {}
   const title = root.querySelector('.doctitle p')
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
   header.slug = slug
   if (title) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     header.name = title.innerHTML.trim()
     header['page-title'] = title.text.trim()
     header['page-title-search'] = utils.normalizeString(header['page-title'])
   }
   const summary = root.querySelector('.docsummary p')
   if (summary) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     header.summary = summary.innerHTML.trim()
     header['page-description'] = summary.text.trim()
   }
   const number = root.querySelector('.docnumber p')
   if (number) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     header.number = parseInt(number.innerHTML.trim())
   }
   header['linked-resources'] = linkedResources

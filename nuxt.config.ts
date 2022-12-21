@@ -53,7 +53,6 @@ export default defineNuxtConfig({
     'skimple-components/nuxt',
     '@nuxt/content',
     '@nuxtjs/google-fonts',
-    '~/modules/generate-404',
     '~/modules/generate-sitemap'
   ],
 
@@ -85,11 +84,7 @@ export default defineNuxtConfig({
   sitemap: {
     hostname: url,
     exclude: [
-      '/erreur-404.html',
-      '/404.html',
-      '/:catchAll(.*)*',
-      '/cours/:level/:slug',
-      '/cours/:level',
+      '/404',
       '/prof/agenda',
       '/prof/cours',
       '/prof/tableau-blanc'

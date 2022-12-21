@@ -3,6 +3,7 @@ import fs from 'fs'
 import utils from '../utils/utils'
 
 export default {
+  destinationUrl: '/cours',
   pdfDestination: 'pdf',
   imagesDestination: 'images/lessons',
   imagesDirectories: {
@@ -123,5 +124,6 @@ export default {
     'latex/groupes.tex',
     'latex/impression.tex',
     'latex/scratch.tex'
-  ]
+  ],
+  generatedUrlsFile: 'node_modules/.cache/.content-generator/generated-urls.json'
 }

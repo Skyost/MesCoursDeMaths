@@ -1,26 +1,33 @@
-import { writeFileSync } from 'fs'
+import fs from 'fs'
 import { Readable } from 'stream'
 import { dirname } from 'path'
-import mkdirp from 'mkdirp'
 import { SitemapStream, streamToPromise } from 'sitemap'
 import { createResolver, defineNuxtModule } from '@nuxt/kit'
+import { NuxtPage } from '@nuxt/schema'
+import fsExtra from 'fs-extra'
+import contentGenerator from '../site/content-generator'
 
 export default defineNuxtModule({
   meta: {
     name: 'generate-sitemap',
     version: '0.0.1',
     configKey: 'sitemap',
-    compatibility: { nuxt: '^3.0.0-rc.9' }
+    compatibility: { nuxt: '^3.0.0' }
   },
   defaults: {
     hostname: 'http://localhost:3000',
-    exclude: []
+    exclude: [],
+    generatedUrlsFile: contentGenerator.generatedUrlsFile
   },
   setup (options, nuxt) {
-    function generateSitemap (routes) {
+    function generateSitemap (routes: Array<NuxtPage>) {
       const sitemapRoutes = routes
-        .filter(route => !options.exclude.includes(route.path))
+        .filter(route => !options.exclude.includes(route.path) && !route.path.includes(':'))
         .map(route => route.path)
+      const generatedUrlsFile = resolver.resolve(nuxt.options.srcDir, options.generatedUrlsFile)
+      if (fs.existsSync(generatedUrlsFile)) {
+        sitemapRoutes.push(...JSON.parse(fs.readFileSync(generatedUrlsFile, { encoding: 'utf-8' })))
+      }
 
       // https://github.com/ekalinin/sitemap.js#generate-a-one-time-sitemap-from-a-list-of-urls
       const stream = new SitemapStream({ hostname: options.hostname })
@@ -29,10 +36,10 @@ export default defineNuxtModule({
       )
     }
 
-    function createSitemapFile (sitemap, filepath) {
+    function createSitemapFile (sitemap: string, filepath: string) {
       const dirPath = dirname(filepath)
-      mkdirp.sync(dirPath)
-      writeFileSync(filepath, sitemap)
+      fsExtra.mkdirpSync(dirPath)
+      fs.writeFileSync(filepath, sitemap)
     }
 
     const resolver = createResolver(import.meta.url)
@@ -47,7 +54,6 @@ export default defineNuxtModule({
       dir: dirname(filePath)
     })
 
-    // TODO: Replace by generate:extendRoutes when implemented.
     nuxt.hook('pages:extend', async (pages) => {
       const sitemap = await generateSitemap(pages)
       createSitemapFile(sitemap, filePath)

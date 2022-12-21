@@ -1,14 +1,14 @@
 import { dirname } from 'path'
 import * as fs from 'fs'
-import mkdirp from 'mkdirp'
 import { createResolver, defineNuxtModule } from '@nuxt/kit'
+import fsExtra from 'fs-extra'
 
 export default defineNuxtModule({
   meta: {
     name: 'generate-cname',
     version: '0.0.1',
     configKey: 'cname',
-    compatibility: { nuxt: '^3.0.0-rc.9' }
+    compatibility: { nuxt: '^3.0.0' }
   },
   defaults: {
     hostname: 'localhost:3000'
@@ -18,7 +18,7 @@ export default defineNuxtModule({
     const filePath = resolver.resolve(nuxt.options.srcDir, 'node_modules/.cache/.cname/CNAME')
     const fileDirectory = dirname(filePath)
     if (!fs.existsSync(fileDirectory)) {
-      mkdirp.sync(fileDirectory)
+      fsExtra.mkdirpSync(fileDirectory)
     }
     nuxt.options.nitro.publicAssets = nuxt.options.nitro.publicAssets || []
     nuxt.options.nitro.publicAssets.push({
