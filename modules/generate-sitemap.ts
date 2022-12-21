@@ -24,7 +24,7 @@ export default defineNuxtModule({
     function generateSitemap (routes: Array<NuxtPage>) {
       const sitemapRoutes = routes
         .filter(route => !options.exclude.includes(route.path) && !route.path.includes(':'))
-        .map(route => route.path)
+        .map(route => route.path.endsWith('/') ? route.path : `${route.path}/`)
       const generatedUrlsFile = resolver.resolve(nuxt.options.srcDir, options.generatedUrlsFile)
       if (fs.existsSync(generatedUrlsFile)) {
         sitemapRoutes.push(...JSON.parse(fs.readFileSync(generatedUrlsFile, { encoding: 'utf-8' })))
