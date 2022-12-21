@@ -83,6 +83,11 @@ export default defineNuxtConfig({
 
   sitemap: {
     hostname: url,
+    include: [
+      '/cours/sixieme/',
+      '/cours/cinquieme/',
+      '/cours/troisieme/'
+    ],
     exclude: [
       '/404',
       '/prof/agenda',

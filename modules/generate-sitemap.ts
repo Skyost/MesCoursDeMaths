@@ -17,6 +17,7 @@ export default defineNuxtModule({
   defaults: {
     hostname: 'http://localhost:3000',
     exclude: [],
+    include: [],
     generatedUrlsFile: contentGenerator.generatedUrlsFile
   },
   setup (options, nuxt) {
@@ -28,6 +29,7 @@ export default defineNuxtModule({
       if (fs.existsSync(generatedUrlsFile)) {
         sitemapRoutes.push(...JSON.parse(fs.readFileSync(generatedUrlsFile, { encoding: 'utf-8' })))
       }
+      sitemapRoutes.push(...options.include)
 
       // https://github.com/ekalinin/sitemap.js#generate-a-one-time-sitemap-from-a-list-of-urls
       const stream = new SitemapStream({ hostname: options.hostname })
