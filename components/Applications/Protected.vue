@@ -34,7 +34,6 @@ import siteMeta from '~/site/meta'
 import accessTokenUtils from '~/utils/access-token'
 
 export default {
-  name: 'Protected',
   components: { SkiButton, SkiIcon },
   data () {
     return {

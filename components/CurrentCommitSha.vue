@@ -16,7 +16,6 @@ const { data: commitSha } = useLazyAsyncData(
 import siteMeta from '~/site/meta'
 
 export default {
-  name: 'CurrentCommitSha',
   computed: {
     githubRepo () {
       return `https://github.com/${siteMeta.github.username}/${siteMeta.github.repository}`

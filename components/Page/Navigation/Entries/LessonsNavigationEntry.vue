@@ -7,7 +7,6 @@ import PageNavigationEntry from '~/components/Page/Navigation/Entries/PageNaviga
 import levelUtils from '~/utils/level'
 
 export default {
-  name: 'LessonsNavigationEntry',
   components: { PageNavigationEntry },
   props: {
     level: {

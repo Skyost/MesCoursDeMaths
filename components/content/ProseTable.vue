@@ -6,12 +6,6 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'ProseTable'
-}
-</script>
-
 <style lang="scss" scoped>
 .table {
   background-color: white;

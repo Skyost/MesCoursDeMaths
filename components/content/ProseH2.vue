@@ -24,7 +24,7 @@ h2 {
   counter-reset: headline-3;
 
   &:before {
-    content: counter(headline-2, upper-roman) ' - '
+    content: counter(headline-2, upper-roman) ' - ';
   }
 }
 </style>

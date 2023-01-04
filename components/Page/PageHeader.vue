@@ -15,7 +15,6 @@ import siteMeta from '~/site/meta'
 import PageNavigation from '~/components/Page/Navigation/PageNavigation'
 
 export default {
-  name: 'PageHeader',
   components: { PageNavigation, SkiContainer },
   computed: {
     title () {

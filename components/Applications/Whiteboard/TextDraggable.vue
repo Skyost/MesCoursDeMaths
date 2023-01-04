@@ -13,7 +13,6 @@
 import Draggable from '~/components/Applications/Whiteboard/Draggable'
 
 export default {
-  name: 'TextDraggable',
   components: { Draggable },
   props: {
     index: {
@@ -29,7 +28,7 @@ export default {
   padding: 0;
 
   textarea {
-    padding: 1rem 1rem;
+    padding: 1rem;
     width: 100%;
     height: 100%;
     border: none;

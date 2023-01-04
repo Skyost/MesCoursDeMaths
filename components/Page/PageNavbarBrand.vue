@@ -9,7 +9,6 @@
 import siteMeta from '~/site/meta'
 
 export default {
-  name: 'PageNavbarBrand',
   computed: {
     title () {
       return siteMeta.title

@@ -12,7 +12,6 @@
 
 <script>
 export default {
-  name: 'Draggable',
   props: {
     title: {
       type: String,

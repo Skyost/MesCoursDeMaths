@@ -6,7 +6,6 @@
 import PageNavigationEntry from '~/components/Page/Navigation/Entries/PageNavigationEntry'
 
 export default {
-  name: 'HomeNavigationEntry',
   components: { PageNavigationEntry }
 }
 </script>

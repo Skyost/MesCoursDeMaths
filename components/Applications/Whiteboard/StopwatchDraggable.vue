@@ -60,7 +60,6 @@ import { SkiButton, SkiColumn, SkiColumns, SkiIcon } from 'skimple-components'
 import Draggable from '~/components/Applications/Whiteboard/Draggable'
 
 export default {
-  name: 'StopwatchDraggable',
   components: { Draggable, SkiButton, SkiIcon, SkiColumns, SkiColumn },
   props: {
     index: {

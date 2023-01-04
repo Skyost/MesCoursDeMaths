@@ -20,7 +20,6 @@ import { SkiIcon, SkiNavbar, SkiNavbarCollapse, SkiNavbarItem, SkiNavbarItems } 
 import PageNavbarBrand from '~/components/Page/PageNavbarBrand'
 
 export default {
-  name: 'PageNavbar',
   components: { PageNavbarBrand, SkiNavbar, SkiNavbarCollapse, SkiNavbarItems, SkiNavbarItem, SkiIcon },
   data () {
     return {

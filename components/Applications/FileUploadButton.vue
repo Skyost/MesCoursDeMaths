@@ -11,7 +11,6 @@
 import { SkiButton, SkiIcon } from 'skimple-components'
 
 export default {
-  name: 'FileUploadButton',
   components: { SkiButton, SkiIcon },
   props: {
     accept: {

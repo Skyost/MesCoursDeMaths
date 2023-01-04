@@ -10,7 +10,6 @@
 import { SkiContainer } from 'skimple-components'
 
 export default {
-  name: 'PageContent',
   components: { SkiContainer }
 }
 </script>

@@ -9,7 +9,6 @@
 import html2canvas from 'html2canvas'
 
 export default {
-  name: 'MathDocument',
   props: {
     document: {
       type: Object,
@@ -178,7 +177,7 @@ export default {
     content: '';
     width: 60px;
     height: 5px;
-    margin: 10px 0 15px 0;
+    margin: 10px 0 15px;
   }
 
   .math-document-content {
@@ -309,6 +308,7 @@ export default {
 
 .bubble-exercice {
   counter-increment: exercice;
+
   @include bubble-style('📝 Exercice ' counter(exercice), #e0f2f1, #009688);
 }
 

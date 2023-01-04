@@ -50,7 +50,6 @@ import siteMeta from '~/site/meta'
 import CurrentCommitSha from '~/components/CurrentCommitSha'
 
 export default {
-  name: 'PageFooter',
   components: { CurrentCommitSha, SkiContainer, SkiColumns, SkiColumn },
   computed: {
     author () {

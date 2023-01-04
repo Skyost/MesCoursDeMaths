@@ -40,7 +40,6 @@
 import { SkiButton, SkiIcon } from 'skimple-components'
 
 export default {
-  name: 'WhiteboardCanvas',
   components: { SkiIcon, SkiButton },
   props: {
     enabled: {
@@ -53,23 +52,15 @@ export default {
       tool: 'pen',
       isDrawing: false,
       canvasContext: null,
-      drawColor: '#e91e63',
-      initialResizeTimeout: null
+      drawColor: '#e91e63'
     }
   },
   async mounted () {
     await this.$nextTick()
     window.addEventListener('resize', this.resizeCanvas, false)
-    this.initialResizeTimeout = setTimeout(() => {
-      this.resizeCanvas()
-      this.initialResizeTimeout = null
-    }, 1000)
+    this.resizeCanvas()
   },
   unmounted () {
-    if (this.initialResizeTimeout) {
-      clearTimeout(this.initialResizeTimeout)
-      this.initialResizeTimeout = null
-    }
     window.removeEventListener('resize', this.resizeCanvas, false)
   },
   methods: {

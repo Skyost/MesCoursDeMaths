@@ -17,7 +17,6 @@
 import { SkiColumn, SkiColumns } from 'skimple-components'
 
 export default {
-  name: 'ImageCard',
   components: { SkiColumns, SkiColumn },
   props: {
     color: {

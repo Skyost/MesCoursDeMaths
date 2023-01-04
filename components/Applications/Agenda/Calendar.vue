@@ -48,7 +48,6 @@
 import { SkiButton, SkiColumn, SkiColumns, SkiIcon } from 'skimple-components'
 
 export default {
-  name: 'Calendar',
   components: { SkiIcon, SkiButton, SkiColumns, SkiColumn },
   props: {
     dates: {

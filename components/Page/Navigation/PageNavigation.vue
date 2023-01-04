@@ -12,7 +12,6 @@ import { useNuxtApp } from '#app'
 import { ref } from 'vue'
 
 export default {
-  name: 'PageNavigation',
   components: { SkiIcon },
   setup () {
     const navigationLinks = ref([])

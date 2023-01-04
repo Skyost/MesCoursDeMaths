@@ -6,7 +6,6 @@
 import { Codemirror } from 'vue-codemirror'
 
 export default {
-  name: 'CodeEditor',
   components: { Codemirror },
   props: {
     sourceDocument: {

@@ -13,7 +13,6 @@
 
 <script>
 export default {
-  name: 'ErrorDisplay',
   props: {
     error: {
       type: null,

@@ -14,7 +14,6 @@
 import Draggable from '~/components/Applications/Whiteboard/Draggable'
 
 export default {
-  name: 'PdfDraggable',
   components: { Draggable },
   props: {
     index: {
@@ -32,7 +31,7 @@ export default {
 
 <style lang="scss">
 .draggable-pdf .card-body {
-  padding: 0 0 14px 0;
+  padding: 0 0 14px;
 
   object {
     width: 100%;

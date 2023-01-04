@@ -22,8 +22,8 @@ h3 {
   margin-bottom: 0.75em;
   counter-increment: headline-3;
 
-  &:before {
-    content: counter(headline-3) '. '
+  &::before {
+    content: counter(headline-3) '. ';
   }
 }
 </style>
