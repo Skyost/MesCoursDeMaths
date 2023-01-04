@@ -53,7 +53,8 @@ export default defineNuxtConfig({
     'skimple-components/nuxt',
     '@nuxt/content',
     '@nuxtjs/google-fonts',
-    '~/modules/generate-sitemap'
+    '~/modules/generate-sitemap',
+    'nuxt-simple-robots'
   ],
 
   runtimeConfig: {
@@ -98,5 +99,9 @@ export default defineNuxtConfig({
 
   cname: {
     hostname: url
+  },
+
+  robots: {
+    sitemap: `${url}/sitemap.xml`
   }
 })

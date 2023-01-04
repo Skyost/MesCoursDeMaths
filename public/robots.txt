@@ -1,6 +1,0 @@
-User-agent: *
-Sitemap: https://mes-cours-de-maths.fr/sitemap.xml
-Disallow: /prof/
-Disallow: /api/
-Disallow: /_nuxt/
-Disallow: /404.html
