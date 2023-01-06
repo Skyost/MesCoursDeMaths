@@ -124,6 +124,5 @@ export default {
     'latex/groupes.tex',
     'latex/impression.tex',
     'latex/scratch.tex'
-  ],
-  generatedUrlsFile: 'node_modules/.cache/.content-generator/generated-urls.json'
+  ]
 }

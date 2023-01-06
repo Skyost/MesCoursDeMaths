@@ -1,9 +1,14 @@
 import { dirname } from 'path'
 import * as fs from 'fs'
 import { createResolver, defineNuxtModule } from '@nuxt/kit'
+// @ts-ignore
 import fsExtra from 'fs-extra'
 
-export default defineNuxtModule({
+export interface ModuleOptions {
+  hostname: string
+}
+
+export default defineNuxtModule<ModuleOptions>({
   meta: {
     name: 'generate-cname',
     version: '0.0.1',

@@ -15,7 +15,6 @@ if (debug.debug) {
 
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
-  target: 'static',
   ssr: true,
 
   app: {
@@ -53,7 +52,8 @@ export default defineNuxtConfig({
     'skimple-components/nuxt',
     '@nuxt/content',
     '@nuxtjs/google-fonts',
-    '~/modules/generate-sitemap',
+    'nuxt-link-checker',
+    'nuxt-simple-sitemap',
     'nuxt-simple-robots'
   ],
 
@@ -84,17 +84,19 @@ export default defineNuxtConfig({
 
   sitemap: {
     hostname: url,
-    include: [
-      '/cours/sixieme/',
-      '/cours/cinquieme/',
-      '/cours/troisieme/'
-    ],
+    trailingSlash: true,
     exclude: [
-      '/404',
-      '/prof/agenda',
-      '/prof/cours',
-      '/prof/tableau-blanc'
+      '/404/',
+      '/prof/agenda/',
+      '/prof/cours/',
+      '/prof/tableau-blanc/'
     ]
+  },
+
+  linkChecker: {
+    hostname: url,
+    trailingSlash: true,
+    failOn404: false
   },
 
   cname: {

@@ -2,7 +2,11 @@ import { execSync } from 'child_process'
 import fs from 'fs'
 import { createResolver, defineNuxtModule } from '@nuxt/kit'
 
-export default defineNuxtModule({
+export interface ModuleOptions {
+  fileName: string
+}
+
+export default defineNuxtModule<ModuleOptions>({
   meta: {
     name: 'generate-commit-sha-file',
     version: '0.0.1',

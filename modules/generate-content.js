@@ -82,7 +82,7 @@ export default defineNuxtModule({
       await handleImages(resolver, contentGenerator, directory, previousImagesBuildDir, destination)
     }
 
-    const generatedUrls = await processFiles(
+    await processFiles(
       resolver,
       contentGenerator,
       lessonsDirectory,
@@ -98,11 +98,6 @@ export default defineNuxtModule({
       ignored
     )
     await handleImages(resolver, contentGenerator, extractedImagesDir, previousImagesBuildDir, imagesDestDir)
-
-    const generatedUrlsFile = resolver.resolve(nuxt.options.srcDir, contentGenerator.generatedUrlsFile)
-    fsExtra.mkdirpSync(path.dirname(generatedUrlsFile))
-    fs.writeFileSync(generatedUrlsFile, JSON.stringify(generatedUrls))
-
     cleanTempDirs(tempDirs)
   }
 })
@@ -180,7 +175,6 @@ async function processFiles (
   pandocRedefinitions,
   ignored
 ) {
-  const generatedUrls = []
   const files = fs.readdirSync(directory)
   for (const file of files) {
     const filePath = resolver.resolve(directory, file)
@@ -188,7 +182,7 @@ async function processFiles (
       continue
     }
     if (fs.lstatSync(filePath).isDirectory()) {
-      generatedUrls.push(...await processFiles(
+      await processFiles(
         resolver,
         contentGenerator,
         filePath,
@@ -202,7 +196,7 @@ async function processFiles (
         `${imagesDestUrl}/${file}`,
         pandocRedefinitions,
         ignored
-      ))
+      )
     } else if (file.endsWith('.tex')) {
       logger.info(name, `Processing "${filePath}"...`)
       const fileName = utils.getFileName(file)
@@ -226,7 +220,6 @@ async function processFiles (
           renderMath(root)
           fs.writeFileSync(mdFile, toString(filteredFileName, root, linkedResources))
         }
-        generatedUrls.push(`${destUrl}/${filteredFileName}/`)
       }
       if (contentGenerator.shouldGeneratePdf(fileName)) {
         const includedImagesDir = resolver.resolve(extractedImagesDir, contentGenerator.getLatexRelativeIncludedImagesDir(extractedImagesDir, filePath))
@@ -242,7 +235,6 @@ async function processFiles (
       logger.success(name, 'Done.')
     }
   }
-  return generatedUrls
 }
 
 function extractImages (resolver, contentGenerator, filePath, extractedImagesDir) {
