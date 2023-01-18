@@ -50,7 +50,8 @@ export default {
   displayshiftintermediary=all,%
   voperator=bottom,%
   voperation=bottom,%
-  decimalsepsymbol={,}%
+  decimalsepsymbol={,},%
+  shiftdecimalsep=divisor%
 }
 
 \\setmathfont{Erewhon Math}
