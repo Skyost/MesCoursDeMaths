@@ -116,11 +116,25 @@ export default {
     return []
   },
   getMarkdownLinkedResourceTitle (file) {
-    const activiteRegex = /activite-([A-Za-zÀ-ÖØ-öø-ÿ\d, ]+)/
-    const match = activiteRegex.exec(file)
-    if (match != null) {
-      const id = match[1]
-      return `Activité ${id}`
+    const resourceTypes = [
+      {
+        fileNameRegex: /activite-([A-Za-zÀ-ÖØ-öø-ÿ\d, ]+)/,
+        buildTitle: match => `Activité ${match[1]}`
+      },
+      {
+        fileNameRegex: /evaluation/,
+        buildTitle: _ => 'Évaluation'
+      },
+      {
+        fileNameRegex: /interrogation/,
+        buildTitle: _ => 'Interrogation'
+      }
+    ]
+    for (const resourceType of resourceTypes) {
+      const match = resourceType.fileNameRegex.exec(file)
+      if (match != null) {
+        return resourceType.buildTitle(match)
+      }
     }
     return null
   },
