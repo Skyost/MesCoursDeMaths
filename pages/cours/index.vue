@@ -7,6 +7,7 @@ const { pending, data: levels, error } = useLazyAsyncData(
   route.path,
   async () => {
     const mdFiles = await queryContent('/')
+      .only(['_file', '_extension'])
       .where({ _extension: 'md' })
       .find()
     let levels = {}
