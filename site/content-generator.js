@@ -42,6 +42,7 @@ export default {
 \\usepackage{graphicx}
 \\usepackage{gensymb}
 \\usepackage{xlop}
+\\usepackage[group-separator={\\;}, group-minimum-digits=4]{siunitx}
 
 \\opset{%
   dividendbridge,%
@@ -118,15 +119,15 @@ export default {
   getMarkdownLinkedResourceTitle (file) {
     const resourceTypes = [
       {
-        fileNameRegex: /activite-([A-Za-zÀ-ÖØ-öø-ÿ\d, ]+)/,
+        fileNameRegex: /-activite-([A-Za-zÀ-ÖØ-öø-ÿ\d, ]+)/,
         buildTitle: match => `Activité ${match[1]}`
       },
       {
-        fileNameRegex: /evaluation/,
+        fileNameRegex: /-evaluation/,
         buildTitle: _ => 'Évaluation'
       },
       {
-        fileNameRegex: /interrogation/,
+        fileNameRegex: /-interrogation/,
         buildTitle: _ => 'Interrogation'
       }
     ]
