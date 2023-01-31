@@ -1,5 +1,6 @@
 <script setup>
 import { useLazyAsyncData, useRoute } from '#app'
+import levels from '~/site/levels'
 
 const route = useRoute()
 const { pending, data: lessons } = useLazyAsyncData(
@@ -16,7 +17,7 @@ const { pending, data: lessons } = useLazyAsyncData(
         id: mdLesson.slug,
         title: mdLesson.name,
         subtitle: `Chapitre ${mdLesson.number}`,
-        color: levelUtils.getLevelColor(route.params.level),
+        color: levels[route.params.level].color,
         url: `/cours/${route.params.level}/${mdLesson.slug}/`
       })
     }
@@ -63,10 +64,10 @@ const { pending, data: lessons } = useLazyAsyncData(
 </template>
 
 <script>
+// eslint-disable-next-line import/order
 import { SkiButton, SkiColumn, SkiColumns, SkiIcon } from 'skimple-components'
 import Spinner from '~/components/Spinner.vue'
 import ImageCard from '~/components/ImageCard'
-import levelUtils from '~/utils/level'
 import LevelsNavigationEntry from '~/components/Page/Navigation/Entries/LevelsNavigationEntry'
 import LessonsNavigationEntry from '~/components/Page/Navigation/Entries/LessonsNavigationEntry'
 import ErrorDisplay from '~/components/ErrorDisplay.vue'
@@ -82,7 +83,7 @@ export default {
       return `Cours de ${this.levelName.toLowerCase()}`
     },
     levelName () {
-      return levelUtils.getLevelName(this.$route.params.level)
+      return levels[this.$route.params.level].name
     }
   }
 }

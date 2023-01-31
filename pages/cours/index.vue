@@ -1,6 +1,6 @@
 <script setup>
 import { useLazyAsyncData, useRoute } from '#app'
-import levelUtils from '~/utils/level'
+import siteLevels from '~/site/levels'
 
 const route = useRoute()
 const { pending, data: levels, error } = useLazyAsyncData(
@@ -16,10 +16,10 @@ const { pending, data: levels, error } = useLazyAsyncData(
       if (!Object.prototype.hasOwnProperty.call(levels, levelId)) {
         levels[levelId] = {
           id: levelId,
-          title: levelUtils.getLevelName(levelId),
-          number: levelUtils.getLevelAsNumber(levelId),
-          subtitle: `Cours de ${levelUtils.getLevelAsNumber(levelId)}e`,
-          color: levelUtils.getLevelColor(levelId),
+          title: siteLevels[levelId].name,
+          number: siteLevels[levelId].number,
+          subtitle: `Cours de ${siteLevels[levelId].number}e`,
+          color: siteLevels[levelId].color,
           url: `/cours/${levelId}/`,
           image: `/images/levels/${levelId}.svg`
         }

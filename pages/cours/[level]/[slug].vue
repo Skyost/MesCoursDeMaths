@@ -50,7 +50,7 @@ import LevelsNavigationEntry from '~/components/Page/Navigation/Entries/LevelsNa
 import LessonsNavigationEntry from '~/components/Page/Navigation/Entries/LessonsNavigationEntry'
 import LessonNavigationEntry from '~/components/Page/Navigation/Entries/LessonNavigationEntry'
 import ErrorDisplay from '~/components/ErrorDisplay.vue'
-import levelUtils from '~/utils/level'
+import levels from '~/site/levels'
 import MathDocument from '~/components/MathDocument.vue'
 import PageHead from '~/components/Page/PageHead'
 
@@ -61,10 +61,10 @@ export default {
   },
   computed: {
     levelName () {
-      return levelUtils.getLevelName(this.$route.params.level)
+      return levels[this.$route.params.level].name
     },
     documentColor () {
-      return levelUtils.getLevelColor(this.$route.params.level)
+      return levels[this.$route.params.level].color
     }
   }
 }

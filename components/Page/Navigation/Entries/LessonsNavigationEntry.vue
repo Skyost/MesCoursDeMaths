@@ -4,7 +4,7 @@
 
 <script>
 import PageNavigationEntry from '~/components/Page/Navigation/Entries/PageNavigationEntry'
-import levelUtils from '~/utils/level'
+import levels from '~/site/levels'
 
 export default {
   components: { PageNavigationEntry },
@@ -16,7 +16,7 @@ export default {
   },
   computed: {
     title () {
-      return levelUtils.getLevelName(this.level)
+      return levels[this.level].name
     }
   }
 }
