@@ -13,6 +13,7 @@ module.exports = {
       {
         ignoreFunctions: ['lighten', 'darken']
       }
-    ]
+    ],
+    'color-function-notation': null
   }
 }

@@ -23,7 +23,7 @@ export default {
 
   .page-content {
     position: relative;
-    padding: 100px 60px 80px 60px;
+    padding: 100px 60px 80px;
     background-color: white;
     z-index: 1;
 
@@ -54,9 +54,10 @@ export default {
   text-align: center;
   border-bottom: none;
 
-  &:before,
-  &:after {
+  &::before,
+  &::after {
     $size: 0.2em;
+
     content: '';
     display: inline-block;
     height: $size;
@@ -66,11 +67,11 @@ export default {
     border-radius: 100%;
   }
 
-  &:before {
+  &::before {
     margin-right: 0.75em;
   }
 
-  &:after {
+  &::after {
     margin-left: 0.75em;
   }
 }
