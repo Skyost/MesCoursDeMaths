@@ -8,7 +8,7 @@ const { pending, data: lessons } = useLazyAsyncData(
   async () => {
     const mdLessons = await queryContent(route.params.level)
       .only(['_extension', 'number', 'slug', 'name'])
-      .sort({ number: 1, $numeric: 1 })
+      .sort({ number: 1, $numeric: true })
       .where({ _extension: 'md' })
       .find()
     const lessons = []
