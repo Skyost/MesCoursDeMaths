@@ -107,6 +107,11 @@ export default {
 }
 
 \\tikzset{
+  graphfonctionlabel/.style args={at #1 #2 with #3}{
+    postaction={
+      decorate, decoration={markings, mark= at position #1 with \\node [#2] {#3};}
+    }
+  },
   every picture/.append style={scale=1.5, every node/.style={scale=1.5}}
 }
 
