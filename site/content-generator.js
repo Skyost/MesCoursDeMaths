@@ -42,6 +42,8 @@ export default {
 \\usepackage{graphicx}
 \\usepackage{gensymb}
 \\usepackage{xlop}
+\\usepackage{ifthen}
+\\usepackage{xparse}
 \\usepackage[group-separator={\\;}, group-minimum-digits=4]{siunitx}
 
 \\opset{%
@@ -68,6 +70,41 @@ export default {
 \\graphicspath{{${latexImagesDir}}}
 
 \\newcommand{\\dddots}[1]{\\makebox[#1]{\\dotfill}}
+\\NewDocumentCommand{\\graphfonction}{O{1} O{1} m m m m O{\\x} O{f} O{0.5 below right}}{
+  \\tikzgraph[#1][#2]{#3}{#4}{#5}{#6}
+  \\begin{scope}
+    \\clip (\\xmin,\\ymin) rectangle (\\xmax,\\ymax);
+    \\draw[domain=\\xmin:\\xmax, variable=\\x, graphfonctionlabel=at #9 with {$\\color{teal} \\mathcal{C}_{#8}$}, thick, smooth, teal] plot ({\\x}, {(#7)});
+  \\end{scope}
+}
+
+\\NewDocumentCommand{\\tikzgraph}{O{1} O{1} m m m m}{
+  \\coordinate (O) at (0,0);
+
+  \\pgfmathparse{#3-0.5}
+  \\edef\\xmin{\\pgfmathresult}
+  \\pgfmathparse{#4-0.5}
+  \\edef\\ymin{\\pgfmathresult}
+  \\pgfmathparse{#5+0.5}
+  \\edef\\xmax{\\pgfmathresult}
+  \\pgfmathparse{#6+0.5}
+  \\edef\\ymax{\\pgfmathresult}
+
+  \\draw[opacity=0.5,thin] (\\xmin,\\ymin) grid (\\xmax,\\ymax);
+  \\foreach \\x in {#3,...,#5} {
+    \\pgfmathparse{int(#1*\\x)}
+    \\edef\\xlabel{\\pgfmathresult}
+    \\ifthenelse{\\x = 0}{}{\\draw[opacity=0.5] (\\x,0.25) -- (\\x,-0.25) node {\\small $\\xlabel$}};
+  }
+  \\foreach \\y in {#4,...,#6} {
+    \\pgfmathparse{int(#2*\\y)}
+    \\edef\\ylabel{\\pgfmathresult}
+    \\ifthenelse{\\y = 0}{}{\\draw[opacity=0.5] (0.25,\\y) -- (-0.25,\\y) node[shift={(-0.1,0)}] {\\small $\\ylabel$}};
+  }
+  \\draw[opacity=0.5] (0,0.25) -- (0,-0.25) node[shift={(-0.35,-0.1)}]{\\small $0$};
+  \\draw[thick,->] (\\xmin,0) -- (\\xmax,0);
+  \\draw[thick,->] (0,\\ymin) -- (0,\\ymax);
+}
 
 \\tikzset{
   every picture/.append style={scale=1.5, every node/.style={scale=1.5}}
