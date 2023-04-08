@@ -145,7 +145,7 @@ export default {
       const files = fs.readdirSync(directory)
       for (const directoryFile of files) {
         if (directoryFile.startsWith(prefix) && directoryFile.endsWith('.tex') && directoryFile !== file && this.shouldGeneratePdf(directoryFile)) {
-          const title = this.getMarkdownLinkedResourceTitle(directoryFile)
+          const title = this.getMarkdownLinkedResourceTitle(prefix, directoryFile)
           if (title != null) {
             result.push({
               title,
@@ -158,18 +158,18 @@ export default {
     }
     return []
   },
-  getMarkdownLinkedResourceTitle (file) {
+  getMarkdownLinkedResourceTitle (prefix, file) {
     const resourceTypes = [
       {
-        fileNameRegex: /-activite-([A-Za-zÀ-ÖØ-öø-ÿ\d, ]+)/,
+        fileNameRegex: RegExp(prefix + /-activite-([A-Za-zÀ-ÖØ-öø-ÿ\d, ]+)/.source),
         buildTitle: match => `Activité ${match[1]}`
       },
       {
-        fileNameRegex: /-evaluation/,
+        fileNameRegex: RegExp(prefix + /-evaluation/.source),
         buildTitle: _ => 'Évaluation'
       },
       {
-        fileNameRegex: /-interrogation/,
+        fileNameRegex: RegExp(prefix + /-interrogation/.source),
         buildTitle: _ => 'Interrogation'
       }
     ]
