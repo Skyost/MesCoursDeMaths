@@ -1,4 +1,4 @@
-import fs from 'fs'
+import * as fs from 'fs'
 import { execSync } from 'child_process'
 import * as path from 'path'
 import { parse } from 'node-html-parser'

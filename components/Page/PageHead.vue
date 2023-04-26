@@ -1,3 +1,11 @@
+<script setup>
+import { useRoute, useRuntimeConfig } from '#app'
+
+const runtimeConfig = useRuntimeConfig()
+const route = useRoute()
+const currentAddress = `${runtimeConfig.public.url}${route.path}`
+</script>
+
 <template>
   <Head class="page-head">
     <Title>{{ title }}</Title>
@@ -50,9 +58,6 @@ export default {
   computed: {
     siteName () {
       return siteMeta.title
-    },
-    currentAddress () {
-      return `${this.$config.url}${this.$route.path}`
     }
   }
 }

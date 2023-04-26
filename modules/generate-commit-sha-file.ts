@@ -1,5 +1,5 @@
 import { execSync } from 'child_process'
-import fs from 'fs'
+import * as fs from 'fs'
 import { createResolver, defineNuxtModule } from '@nuxt/kit'
 
 export interface ModuleOptions {
