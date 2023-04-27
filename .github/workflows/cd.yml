@@ -32,7 +32,7 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-latest ]
-        node: [ 16 ]
+        node: [ 18 ]
     steps:
       - name: Checkout 🛎
         uses: actions/checkout@v3
@@ -43,28 +43,6 @@ jobs:
           cache: 'npm'
       - name: Install dependencies 👨🏻‍💻
         run: npm ci
-      # - name: Install pandoc 📄
-      #   run: |
-      #     wget https://github.com/jgm/pandoc/releases/download/${{ matrix.pandoc }}/pandoc-${{ matrix.pandoc }}-1-amd64.deb
-      #     sudo dpkg -i pandoc-${{ matrix.pandoc }}-1-amd64.deb
-      #     rm pandoc-${{ matrix.pandoc }}-1-amd64.deb
-      #     pandoc -v
-      # - name: Install Poppler 🖼
-      #   run: |
-      #     sudo apt install poppler-utils
-      #     pdftocairo -v
-      # - name: Install MiKTeX 🖋
-      #   run: |
-      #     sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys D6BC243565B2087BC3F897C9277A7293F59E4889
-      #     echo "deb http://miktex.org/download/ubuntu focal universe" | sudo tee /etc/apt/sources.list.d/miktex.list
-      #     sudo apt-get update
-      #     sudo apt-get install -y miktex
-      #     sudo miktexsetup --shared=yes finish
-      #     sudo initexmf --admin --set-config-value [MPM]AutoInstall=1
-      #     sudo mpm --admin --update
-      #     mpm --update
-      #     sudo initexmf --admin --update-fndb
-      #     miktex --version
       - name: Generate ⚙️
         run: npm run generate
         env:
@@ -72,7 +50,7 @@ jobs:
           GITHUB_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
           GITHUB_PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
       - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@v4.3.3
+        uses: JamesIves/github-pages-deploy-action@v4.4.1
         with:
           folder: dist
           branch: gh-pages
