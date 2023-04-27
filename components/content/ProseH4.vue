@@ -17,7 +17,7 @@ export default {
 
 <style lang="scss" scoped>
 h4 {
-  border-bottom: none;
-  margin-bottom: 0;
+  border-bottom: none !important;
+  margin-bottom: 0 !important;
 }
 </style>
