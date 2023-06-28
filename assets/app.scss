@@ -3,12 +3,14 @@
 
 // 2. Include any default variable overrides here
 @import 'assets/colors';
+
 $headings-font-family: 'Raleway', sans-serif;
 $font-family-sans-serif: 'Montserrat', sans-serif;
 $enable-rounded: false;
 
 // 3. Include remainder of required Bootstrap stylesheets
 @import 'bootstrap/scss/variables';
+@import 'bootstrap/scss/variables-dark';
 
 // 4. Include any default map overrides here
 

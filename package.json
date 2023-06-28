@@ -24,7 +24,7 @@
     "katex": "^0.16.8",
     "marked": "^5.1.0",
     "mitt": "^3.0.0",
-    "skimple-components": "^0.5.16",
+    "skimple-components": "^0.5.17",
     "vue-codemirror": "^6.1.1"
   },
   "devDependencies": {
