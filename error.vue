@@ -20,7 +20,7 @@ export default {
   computed: {
     title () {
       let result = 'Erreur'
-      if ((Object.hasOwnProperty.call(this.error, 'errorCode'))) {
+      if ((Object.hasOwnProperty.call(this.error, 'statusCode'))) {
         result += ` ${this.error.errorCode}`
       }
       return result
