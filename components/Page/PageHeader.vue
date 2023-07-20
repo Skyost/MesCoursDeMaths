@@ -3,7 +3,7 @@
     <ski-container class="page-header">
       <img class="page-header-image main" src="/images/main.svg" :alt="title">
       <span class="page-header-navigation">
-        <ski-icon icon="geo-alt-fill" /> <page-navigation />
+        <page-navigation />
       </span>
     </ski-container>
   </header>

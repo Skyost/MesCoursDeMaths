@@ -1,5 +1,6 @@
 <template>
   <span v-if="navigationLinks.length > 0">
+    <ski-icon icon="geo-alt-fill" />&nbsp;
     <span v-for="(navigationLink, index) of navigationLinks" :key="navigationLink.to">
       <nuxt-link :to="navigationLink.to">{{ navigationLink.title }}</nuxt-link><ski-icon v-if="index < navigationLinks.length - 1" icon="chevron-right" />
     </span>

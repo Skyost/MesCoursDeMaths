@@ -21,7 +21,7 @@ export default {
     title () {
       let result = 'Erreur'
       if ((Object.hasOwnProperty.call(this.error, 'statusCode'))) {
-        result += ` ${this.error.errorCode}`
+        result += ` ${this.error.statusCode}`
       }
       return result
     }
