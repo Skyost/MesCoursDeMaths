@@ -10,7 +10,7 @@
         <ski-icon icon="person-fill" class="fs-2" />
         <div class="ms-2">
           Vous devez vous connecter via Github pour continuer.
-          <br><strong>Attention.</strong> Vous devenez avoir accès au dépôt <code v-text="dataRepository" />.
+          <br><strong>Attention.</strong> Vous devez avoir accès au dépôt <code v-text="dataRepository" />.
         </div>
       </div>
       <div class="text-center mt-3 mb-5">
