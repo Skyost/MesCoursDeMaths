@@ -83,7 +83,7 @@ export default defineNuxtConfig({
   },
 
   sitemap: {
-    hostname: url, // TODO: Will soon be deprecated.
+    siteUrl: url, // TODO: Will soon be deprecated.
     trailingSlash: true,
     exclude: [
       '/prof/agenda/',
@@ -93,7 +93,7 @@ export default defineNuxtConfig({
   },
 
   linkChecker: {
-    hostname: url,
+    host: url,
     trailingSlash: true,
     failOn404: false
   },
