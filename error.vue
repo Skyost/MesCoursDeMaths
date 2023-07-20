@@ -1,6 +1,6 @@
 <template>
   <NuxtLayout>
-    <page-head title="Erreur" />
+    <page-head :title="title" />
     <error-display :error="error" />
   </NuxtLayout>
 </template>
@@ -15,6 +15,15 @@ export default {
     error: {
       type: Object,
       required: true
+    }
+  },
+  computed: {
+    title () {
+      let result = 'Erreur'
+      if ((Object.hasOwnProperty.call(this.error, 'errorCode'))) {
+        result += ` ${this.error.errorCode}`
+      }
+      return result
     }
   }
 }

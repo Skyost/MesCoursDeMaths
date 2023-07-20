@@ -32,14 +32,14 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-latest ]
-        node: [ 18 ]
+        node: [ latest ]
     steps:
       - name: Checkout 🛎
         uses: actions/checkout@v3
-      - name: Setup Node.js ${{ matrix.node-version }} 🏗
+      - name: Setup Node.js ${{ matrix.node }} 🏗
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: ${{ matrix.node }}
           cache: 'npm'
       - name: Install dependencies 👨🏻‍💻
         run: npm ci

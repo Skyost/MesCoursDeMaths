@@ -83,10 +83,9 @@ export default defineNuxtConfig({
   },
 
   sitemap: {
-    hostname: url,
+    hostname: url, // TODO: Will soon be deprecated.
     trailingSlash: true,
     exclude: [
-      '/404/',
       '/prof/agenda/',
       '/prof/cours/',
       '/prof/tableau-blanc/'
@@ -101,9 +100,5 @@ export default defineNuxtConfig({
 
   cname: {
     hostname: url
-  },
-
-  robots: {
-    sitemap: `${url}/sitemap.xml`
   }
 })
