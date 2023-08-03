@@ -95,7 +95,7 @@ export default defineNuxtConfig({
   linkChecker: {
     host: url,
     trailingSlash: true,
-    failOn404: false
+    failOnError: false
   },
 
   cname: {

@@ -80,7 +80,7 @@ export default defineNuxtModule({
       github,
       directories,
       lessonsDirectory,
-      latestCommitShaFilename === null ? null : resolver.resolve('content', latestCommitShaFilename)
+      latestCommitShaFilename === null ? null : resolver.resolve(srcDir, 'content', latestCommitShaFilename)
     )
     if (tempDir) {
       tempDirs.push(tempDir)
@@ -161,10 +161,11 @@ async function downloadRemoteDirectory (resolver, github, directories, lessonsDi
         ...latestCommitData,
         ...JSON.parse(fs.readFileSync(latestCommitShaFile, { encoding: 'utf-8' }))
       }
-    }
-    const fileDirectory = path.dirname(latestCommitShaFile)
-    if (!fs.existsSync(fileDirectory)) {
-      fs.mkdirSync(fileDirectory, { recursive: true })
+    } else {
+      const fileDirectory = path.dirname(latestCommitShaFile)
+      if (!fs.existsSync(fileDirectory)) {
+        fs.mkdirSync(fileDirectory, { recursive: true })
+      }
     }
     fs.writeFileSync(latestCommitShaFile, JSON.stringify(latestCommitData))
   }
