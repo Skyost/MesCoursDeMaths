@@ -1,8 +1,6 @@
 import { dirname } from 'path'
 import * as fs from 'fs'
 import { createResolver, defineNuxtModule } from '@nuxt/kit'
-// @ts-ignore
-import fsExtra from 'fs-extra'
 
 export interface ModuleOptions {
   hostname: string
@@ -23,7 +21,7 @@ export default defineNuxtModule<ModuleOptions>({
     const filePath = resolver.resolve(nuxt.options.srcDir, 'node_modules/.cache/.cname/CNAME')
     const fileDirectory = dirname(filePath)
     if (!fs.existsSync(fileDirectory)) {
-      fsExtra.mkdirpSync(fileDirectory)
+      fs.mkdirSync(fileDirectory, { recursive: true })
     }
     nuxt.options.nitro.publicAssets = nuxt.options.nitro.publicAssets || []
     nuxt.options.nitro.publicAssets.push({

@@ -162,6 +162,10 @@ async function downloadRemoteDirectory (resolver, github, directories, lessonsDi
         ...JSON.parse(fs.readFileSync(latestCommitShaFile, { encoding: 'utf-8' }))
       }
     }
+    const fileDirectory = path.dirname(latestCommitShaFile)
+    if (!fs.existsSync(fileDirectory)) {
+      fs.mkdirSync(fileDirectory, { recursive: true })
+    }
     fs.writeFileSync(latestCommitShaFile, JSON.stringify(latestCommitData))
   }
   logger.info(name, `Downloading and unzipping ${github.username}/${github.dataRepository}...`)
