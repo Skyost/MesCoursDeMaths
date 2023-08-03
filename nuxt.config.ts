@@ -100,5 +100,9 @@ export default defineNuxtConfig({
 
   cname: {
     hostname: url
+  },
+
+  commitShaFileGenerator: {
+    fileName: 'latest-commit.json'
   }
 })

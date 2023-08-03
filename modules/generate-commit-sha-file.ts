@@ -21,6 +21,16 @@ export default defineNuxtModule<ModuleOptions>({
     const srcDir = nuxt.options.srcDir
     const long = execSync('git rev-parse HEAD', { cwd: srcDir }).toString().trim()
     const short = execSync('git rev-parse --short HEAD', { cwd: srcDir }).toString().trim()
-    fs.writeFileSync(resolver.resolve(srcDir, 'content', options.fileName), JSON.stringify({ long, short }))
+    const latestCommitShaFile = resolver.resolve(srcDir, 'content', options.fileName)
+    let latestCommitData = {
+      websiteRepository: { long, short }
+    }
+    if (fs.existsSync(latestCommitShaFile)) {
+      latestCommitData = {
+        ...latestCommitData,
+        ...JSON.parse(fs.readFileSync(latestCommitShaFile, { encoding: 'utf-8' }))
+      }
+    }
+    fs.writeFileSync(latestCommitShaFile, JSON.stringify(latestCommitData))
   }
 })

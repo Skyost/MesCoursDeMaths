@@ -9,7 +9,15 @@ const { data: commitSha } = useLazyAsyncData(
 </script>
 
 <template>
-  <span v-if="commitSha">Révision <a :href="`${githubRepo}/commit/${commitSha.long}`">&#35;{{ commitSha.short }}</a>.</span>
+  <span v-if="commitSha">
+    <span v-if="commitSha.dataRepository">
+      Site web <a :href="`${githubRepo}/commit/${commitSha.websiteRepository.long}`">&#35;{{ commitSha.websiteRepository.short }}</a>.
+      <br>Données <u>&#35;{{ commitSha.dataRepository.short }}</u>.
+    </span>
+    <span v-else>
+      Révision <a :href="`${githubRepo}/commit/${commitSha.websiteRepository.long}`">&#35;{{ commitSha.websiteRepository.short }}</a>.
+    </span>
+  </span>
 </template>
 
 <script>

@@ -31,7 +31,8 @@ export default defineNuxtModule({
       ...siteMeta.github
     },
     directories,
-    contentGenerator
+    contentGenerator,
+    latestCommitShaFileName: null
   },
   setup: async (options, nuxt) => {
     const contentGenerator = options.contentGenerator
@@ -40,6 +41,7 @@ export default defineNuxtModule({
 
     const resolver = createResolver(import.meta.url)
     const srcDir = nuxt.options.srcDir
+    const latestCommitShaFilename = options.latestCommitShaFileName ?? (nuxt.options.commitShaFileGenerator ?? {}).fileName
 
     const tempDirs = []
     let downloadPreviousBuildResult
@@ -73,7 +75,13 @@ export default defineNuxtModule({
     ignored.push(extractedImagesDir)
     ignored.push(pandocRedefinitions)
 
-    const tempDir = await downloadRemoteDirectory(resolver, github, directories, lessonsDirectory)
+    const tempDir = await downloadRemoteDirectory(
+      resolver,
+      github,
+      directories,
+      lessonsDirectory,
+      latestCommitShaFilename === null ? null : resolver.resolve('content', latestCommitShaFilename)
+    )
     if (tempDir) {
       tempDirs.push(tempDir)
     }
@@ -88,7 +96,7 @@ export default defineNuxtModule({
       lessonsDirectory,
       previousBuildDir,
       resolver.resolve(srcDir, 'content'),
-      resolver.resolve(nuxt.options.vite.publicDir.toString(), contentGenerator.pdfDestination),
+      resolver.resolve(srcDir, nuxt.options.dir.public, contentGenerator.pdfDestination),
       contentGenerator.destinationUrl,
       contentGenerator.pdfDestination,
       extractedImagesDir,
@@ -130,12 +138,32 @@ async function downloadPreviousBuild (resolver, srcDir, github, contentGenerator
   return null
 }
 
-async function downloadRemoteDirectory (resolver, github, directories, lessonsDirectory) {
+async function downloadRemoteDirectory (resolver, github, directories, lessonsDirectory, latestCommitShaFile) {
   if (github.repository === github.dataRepository || fs.existsSync(lessonsDirectory)) {
     return null
   }
-  logger.info(name, `Downloading and unzipping ${github.username}/${github.dataRepository}...`)
   const octokit = new Octokit({ auth: github.accessToken })
+  if (latestCommitShaFile !== null) {
+    logger.info(name, `Getting and saving the latest commit info of ${github.username}/${github.dataRepository}...`)
+    const response = await octokit.request('GET repos/{owner}/{repo}/commits/master', {
+      owner: github.username,
+      repo: github.dataRepository
+    })
+    let latestCommitData = {
+      dataRepository: {
+        long: response.data.sha,
+        short: response.data.sha.substring(0, 7)
+      }
+    }
+    if (fs.existsSync(latestCommitShaFile)) {
+      latestCommitData = {
+        ...latestCommitData,
+        ...JSON.parse(fs.readFileSync(latestCommitShaFile, { encoding: 'utf-8' }))
+      }
+    }
+    fs.writeFileSync(latestCommitShaFile, JSON.stringify(latestCommitData))
+  }
+  logger.info(name, `Downloading and unzipping ${github.username}/${github.dataRepository}...`)
   const response = await octokit.request('GET /repos/{owner}/{repo}/zipball/{ref}', {
     owner: github.username,
     repo: github.dataRepository,
