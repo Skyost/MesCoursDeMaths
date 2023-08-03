@@ -145,9 +145,10 @@ async function downloadRemoteDirectory (resolver, github, directories, lessonsDi
   const octokit = new Octokit({ auth: github.accessToken })
   if (latestCommitShaFile !== null) {
     logger.info(name, `Getting and saving the latest commit info of ${github.username}/${github.dataRepository}...`)
-    const response = await octokit.request('GET /repos/{owner}/{repo}/commits/master', {
+    const response = await octokit.request('GET /repos/{owner}/{repo}/commits/{ref}', {
       owner: github.username,
-      repo: github.dataRepository
+      repo: github.dataRepository,
+      ref: 'main'
     })
     let latestCommitData = {
       dataRepository: {
