@@ -20,7 +20,7 @@ const modalBackdrop = ref<HTMLElement | null>(null)
 const editor = ref<InstanceType<typeof CodeEditor> | null>(null)
 
 const modalTitle = computed(() => currentDate.value === null ? null : new Date(currentDate.value).toLocaleString('default', { day: 'numeric', month: 'numeric', year: 'numeric' }))
-const modalHtmlContent = computed(() => modalMarkdownContent.value == null ? null : marked.parse(modalMarkdownContent.value, { mangle: false, headerIds: false }))
+const modalHtmlContent = computed(() => modalMarkdownContent.value == null ? null : marked.parse(modalMarkdownContent.value))
 
 const onDayClicked = async (date: string) => {
   const bootstrap = await import('bootstrap')
