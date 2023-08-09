@@ -1,3 +1,9 @@
+<script setup lang="ts">
+import Draggable from '~/components/Applications/Whiteboard/Draggable.vue'
+
+withDefaults(defineProps<{ index?: number }>(), { index: 0 })
+</script>
+
 <template>
   <draggable
     class="draggable-text"
@@ -8,20 +14,6 @@
     <textarea />
   </draggable>
 </template>
-
-<script>
-import Draggable from '~/components/Applications/Whiteboard/Draggable'
-
-export default {
-  components: { Draggable },
-  props: {
-    index: {
-      type: Number,
-      default: 0
-    }
-  }
-}
-</script>
 
 <style lang="scss">
 .draggable-text .card-body {

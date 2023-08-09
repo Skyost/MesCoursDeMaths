@@ -1,3 +1,18 @@
+<script setup lang="ts">
+withDefaults(defineProps<{
+  color?: string,
+  to: string,
+  subtitle?: string | undefined,
+  title?: string | undefined,
+  image?: string | undefined
+}>(), {
+  color: 'blue',
+  subtitle: undefined,
+  title: undefined,
+  image: undefined
+})
+</script>
+
 <template>
   <nuxt-link class="image-card" :class="color" :to="to">
     <ski-columns>
@@ -12,36 +27,6 @@
     </ski-columns>
   </nuxt-link>
 </template>
-
-<script>
-import { SkiColumn, SkiColumns } from 'skimple-components'
-
-export default {
-  components: { SkiColumns, SkiColumn },
-  props: {
-    color: {
-      type: String,
-      default: 'blue'
-    },
-    to: {
-      type: String,
-      required: true
-    },
-    subtitle: {
-      type: String,
-      default: null
-    },
-    title: {
-      type: String,
-      default: null
-    },
-    image: {
-      type: String,
-      default: null
-    }
-  }
-}
-</script>
 
 <style lang="scss" scoped>
 @import 'assets/colors';

@@ -1,21 +1,13 @@
+<script setup lang="ts">
+import { siteMeta } from '~/site/meta'
+</script>
+
 <template>
   <ski-navbar-brand>
     <img class="logo" src="/images/logo.svg" alt="Logo">
-    <nuxt-link class="navbar-brand" to="/">{{ title }}</nuxt-link>
+    <nuxt-link class="navbar-brand" to="/">{{ siteMeta.title }}</nuxt-link>
   </ski-navbar-brand>
 </template>
-
-<script>
-import siteMeta from '~/site/meta'
-
-export default {
-  computed: {
-    title () {
-      return siteMeta.title
-    }
-  }
-}
-</script>
 
 <style lang="scss" scoped>
 .logo {

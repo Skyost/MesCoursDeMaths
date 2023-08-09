@@ -39,7 +39,7 @@ Dans les paramètres de votre dépôt Github, il va falloir créer deux secrets 
 ### Configuration
 
 Pour configurer le site web (nom, dépôt Github, répertoire des cours, etc.), il vous faut modifier le
-fichier `site/authentication.js`. Indiquez votre `Client ID` dans le champ `clientId`
+fichier `site/authentication.ts`. Indiquez votre `Client ID` dans le champ `clientId`
 (j'ai personnellement choisi de le laisser dans la variable d'environnement `CLIENT_ID`, mais c'est à vous de voir).
 
 Pour modifier le contenu de la page d'accueil, il faut éditer le fichier `pages/index.vue`.
@@ -47,7 +47,7 @@ Une façon plus rapide (et intuitive...) de modifier les pages sera sûrement aj
 
 Vous pouvez également modifier certains paramètres dans le fichier `site/content-generator.js`, ceci vous permettra
 de personnaliser les fichiers à compiler en PDF, à transformer en markdown, où se situent les images, etc.
-Le fichier `site/levels.js` contient les différents niveaux disponibles. Chacun d'eux doit posséder un sous-dossier
+Le fichier `site/levels.ts` contient les différents niveaux disponibles. Chacun d'eux doit posséder un sous-dossier
 dans votre répertoire LaTeX.
 
 ### Création d'un dépôt de données

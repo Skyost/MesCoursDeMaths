@@ -1,13 +1,51 @@
-<script setup>
-import { useLazyAsyncData, useRoute } from '#app'
+<script lang="ts">
+import { Level, LessonContent } from '~/types'
+
+interface LessonContentData {
+  lessonContent: LessonContent,
+  url: string
+}
+
+export const lessonNavigationEntry = (lesson: LessonContentData) => {
+  return {
+    title: lesson.lessonContent['page-title'],
+    to: lesson.url,
+    depth: 1
+  }
+}
+</script>
+
+<script setup lang="ts">
+import { levels } from '~/site/levels'
+import { levelsNavigationEntry } from '~/pages/cours/index.vue'
+import { levelNavigationEntry } from '~/pages/cours/[level]/index.vue'
 
 const route = useRoute()
+const level: Level | undefined = levels[route.params.level.toString()]
 
-const { pending, data: lesson } = useLazyAsyncData(
+const { pending, data } = useLazyAsyncData<LessonContentData>(
   route.path,
-  () => queryContent(route.params.level, route.params.slug)
-    .findOne()
+  async () => {
+    const lessonContent: LessonContent = await queryContent<LessonContent>(level.id, route.params.slug.toString())
+      .findOne()
+    const result: LessonContentData = {
+      lessonContent,
+      url: `/cours/${level}/${lessonContent.slug}/`
+    }
+    return result
+  }
 )
+
+const lesson = computed(() => data.value ? data.value.lessonContent : null)
+const title = computed(() => level && lesson.value ? `${level.name} > ${lesson.value['page-title']}` : 'Affichage d\'un cours')
+
+useHead({ title })
+
+useNavigationEntry(levelsNavigationEntry)
+if (level) {
+  useNavigationEntry(levelNavigationEntry(level))
+}
+const onMathDocumentMounted = () => useNavigationEntry(lessonNavigationEntry(data.value!))
 </script>
 
 <template>
@@ -15,14 +53,11 @@ const { pending, data: lesson } = useLazyAsyncData(
     <spinner />
   </div>
   <div v-else-if="lesson">
-    <page-head :title="`${levelName} > ${lesson['page-title']}`" />
-    <levels-navigation-entry />
-    <lessons-navigation-entry :level="$route.params.level" />
-    <lesson-navigation-entry :level="$route.params.level" :lesson="lesson" />
+    <page-head :title="title" />
     <div>
       <div class="lesson-control-buttons">
         <span class="title"><ski-icon icon="list" /> Navigation</span>
-        <ski-button variant="light" :to="`/cours/${$route.params.level}/`">
+        <ski-button variant="light" :to="level.url">
           <ski-icon icon="arrow-left" /> Retourner à la liste des cours
         </ski-button>
         <ski-button variant="light" :href="`/pdf/${$route.params.level}/${lesson.slug}.pdf`">
@@ -36,49 +71,21 @@ const { pending, data: lesson } = useLazyAsyncData(
         </ski-button>
       </div>
     </div>
-    <math-document :document="lesson" :color="documentColor" />
+    <math-document :document="lesson" :color="level.color" @vue:mounted="onMathDocumentMounted" />
   </div>
   <div v-else>
     <error-display error="404" />
   </div>
 </template>
 
-<script>
-import { SkiButton, SkiIcon } from 'skimple-components'
-import Spinner from '~/components/Spinner.vue'
-import LevelsNavigationEntry from '~/components/Page/Navigation/Entries/LevelsNavigationEntry'
-import LessonsNavigationEntry from '~/components/Page/Navigation/Entries/LessonsNavigationEntry'
-import LessonNavigationEntry from '~/components/Page/Navigation/Entries/LessonNavigationEntry'
-import ErrorDisplay from '~/components/ErrorDisplay.vue'
-import levels from '~/site/levels'
-import MathDocument from '~/components/MathDocument.vue'
-import PageHead from '~/components/Page/PageHead'
-
-export default {
-  components: { PageHead, Spinner, LessonNavigationEntry, ErrorDisplay, LessonsNavigationEntry, LevelsNavigationEntry, SkiButton, SkiIcon, MathDocument },
-  head: {
-    title: "Affichage d'un cours"
-  },
-  computed: {
-    levelName () {
-      return levels[this.$route.params.level].name
-    },
-    documentColor () {
-      return levels[this.$route.params.level].color
-    }
-  }
-}
-</script>
-
 <style lang="scss">
 .lesson-control-buttons {
   display: flex;
-  flex-direction: row;
+  flex-flow: row wrap;
   justify-content: flex-end;
   column-gap: 8px;
   row-gap: 8px;
   margin-bottom: 1rem;
-  flex-wrap: wrap;
 
   .title {
     flex-basis: 100%;

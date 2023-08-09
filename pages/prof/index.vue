@@ -1,6 +1,72 @@
+<script lang="ts">
+export const teacherNavigationEntry = {
+  title: 'Accès enseignant',
+  to: '/prof/',
+  depth: 0
+}
+</script>
+
+<script setup lang="ts">
+import { cookieExpirationDays } from '~/site/cookie'
+import Protected from '~/components/Applications/Protected.vue'
+
+const applications = [
+  {
+    id: 'whiteboard',
+    title: 'Tableau blanc',
+    subtitle: 'Application',
+    color: 'red',
+    url: '/prof/tableau-blanc/',
+    image: '/images/applications/whiteboard.svg'
+  },
+  {
+    id: 'agenda',
+    title: 'Agenda',
+    subtitle: 'Application',
+    color: 'blue',
+    url: '/prof/agenda/',
+    image: '/images/applications/agenda.svg'
+  },
+  {
+    id: 'lessons',
+    title: 'Cours',
+    subtitle: 'Application',
+    color: 'teal',
+    url: '/prof/cours/',
+    image: '/images/applications/lessons.svg'
+  }
+]
+
+const logout = () => {
+  const accessToken = useAccessToken()
+  accessToken.value = null
+}
+
+onMounted(async () => {
+  await nextTick()
+  const route = useRoute()
+  if ('access_token' in route.query) {
+    let expiration
+    if ('expiration' in route.query) {
+      expiration = new Date(parseInt(route.query.expiration!.toString()))
+    } else {
+      expiration = new Date()
+      expiration.setDate(expiration.getDate() + cookieExpirationDays)
+    }
+
+    const accessToken = useAccessToken(expiration)
+    accessToken.value = route.query.access_token!.toString()
+
+    const router = useRouter()
+    await router.replace({ path: route.path.endsWith('/') ? route.path : (route.path + '/'), query: undefined })
+  }
+})
+
+useNavigationEntry(teacherNavigationEntry)
+</script>
+
 <template>
   <div>
-    <teacher-navigation-entry />
     <protected>
       <page-head title="Accès enseignant" />
       <div class="text-end mb-3">
@@ -30,76 +96,6 @@
     </protected>
   </div>
 </template>
-
-<script>
-import { SkiButton, SkiColumn, SkiColumns, SkiIcon } from 'skimple-components'
-import Protected from '~/components/Applications/Protected'
-import PageHead from '~/components/Page/PageHead.vue'
-import cookie from '~/site/cookie'
-import accessTokenUtils from '~/utils/access-token'
-import TeacherNavigationEntry from '~/components/Page/Navigation/Entries/TeacherNavigationEntry'
-import ImageCard from '~/components/ImageCard'
-
-export default {
-  components: { ImageCard, PageHead, TeacherNavigationEntry, SkiColumns, SkiColumn, SkiButton, SkiIcon, Protected },
-  data () {
-    return {
-      applications: [
-        {
-          id: 'whiteboard',
-          title: 'Tableau blanc',
-          subtitle: 'Application',
-          color: 'red',
-          url: '/prof/tableau-blanc/',
-          image: '/images/applications/whiteboard.svg'
-        },
-        {
-          id: 'agenda',
-          title: 'Agenda',
-          subtitle: 'Application',
-          color: 'blue',
-          url: '/prof/agenda/',
-          image: '/images/applications/agenda.svg'
-        },
-        {
-          id: 'lessons',
-          title: 'Cours',
-          subtitle: 'Application',
-          color: 'teal',
-          url: '/prof/cours/',
-          image: '/images/applications/lessons.svg'
-        }
-      ]
-    }
-  },
-  async mounted () {
-    await this.$nextTick()
-    if (Object.prototype.hasOwnProperty.call(this.$route.query, 'access_token')) {
-      let expiration
-      if (Object.prototype.hasOwnProperty.call(this.$route.query, 'expiration')) {
-        expiration = new Date(parseInt(this.$route.query.expiration.toString()))
-      } else {
-        expiration = new Date()
-        expiration.setDate(expiration.getDate() + cookie.cookieExpirationDays)
-      }
-
-      accessTokenUtils.storeAccessTokenInCookies(this.$route.query.access_token, {
-        path: '/',
-        expires: expiration,
-        sameSite: 'Lax',
-        secure: true
-      })
-      window.location.href = '/prof'
-    }
-  },
-  methods: {
-    logout () {
-      accessTokenUtils.removeAccessTokenFromCookies()
-      window.location.href = '/prof'
-    }
-  }
-}
-</script>
 
 <style lang="scss" scoped>
 #logo {

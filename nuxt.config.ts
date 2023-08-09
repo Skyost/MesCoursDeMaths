@@ -2,13 +2,13 @@ import { defineNuxtConfig } from 'nuxt/config'
 import StylelintPlugin from 'vite-plugin-stylelint'
 import eslintPlugin from 'vite-plugin-eslint'
 import 'dotenv/config'
-import siteMeta from './site/meta'
-import debug from './site/debug'
-import authentication from './site/authentication'
+import { siteMeta } from './site/meta'
+import { debug } from './site/debug'
+import { authentication } from './site/authentication'
 
 let url = siteMeta.url
 let apiUrl = siteMeta.apiUrl
-if (debug.debug) {
+if (debug) {
   url = 'http://localhost:3000'
   apiUrl = 'http://localhost:3000/api'
 }
@@ -82,9 +82,13 @@ export default defineNuxtConfig({
     bootstrapJs: false
   },
 
+  site: {
+    url,
+    name: siteMeta.title,
+    trailingSlash: true
+  },
+
   sitemap: {
-    siteUrl: url, // TODO: Will soon be deprecated.
-    trailingSlash: true,
     exclude: [
       '/prof/agenda/',
       '/prof/cours/',
@@ -93,8 +97,6 @@ export default defineNuxtConfig({
   },
 
   linkChecker: {
-    host: url,
-    trailingSlash: true,
     failOnError: false
   },
 

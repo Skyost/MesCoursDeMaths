@@ -1,6 +1,14 @@
-<script setup>
-import { useLazyAsyncData, useRoute } from '#app'
-import siteLevels from '~/site/levels'
+<script lang="ts">
+export const levelsNavigationEntry = {
+  title: 'Liste des niveaux',
+  to: '/cours/',
+  depth: 0
+}
+</script>
+
+<script setup lang="ts">
+import { levels as siteLevels } from '~/site/levels'
+import { Level } from '~/types'
 
 const route = useRoute()
 const { pending, data: levels, error } = useLazyAsyncData(
@@ -10,26 +18,20 @@ const { pending, data: levels, error } = useLazyAsyncData(
       .only(['_file', '_extension'])
       .where({ _extension: 'md' })
       .find()
-    let levels = {}
+    const levels: Set<Level> = new Set<Level>()
     for (const mdFile of mdFiles) {
-      const levelId = mdFile._file.split('/')[0]
-      if (!Object.prototype.hasOwnProperty.call(levels, levelId)) {
-        levels[levelId] = {
-          id: levelId,
-          title: siteLevels[levelId].name,
-          number: siteLevels[levelId].number,
-          subtitle: `Cours de ${siteLevels[levelId].number}e`,
-          color: siteLevels[levelId].color,
-          url: `/cours/${levelId}/`,
-          image: `/images/levels/${levelId}.svg`
-        }
+      const levelId: string = mdFile._file.split('/')[0]
+      if (levelId in siteLevels) {
+        levels.add(siteLevels[levelId])
       }
     }
-    levels = Object.values(levels)
-    levels.sort((a, b) => (a.number < b.number ? 1 : (a.number > b.number ? -1 : 0)))
-    return levels
+    const result = [...levels]
+    result.sort((a, b) => (a.number < b.number ? 1 : (a.number > b.number ? -1 : 0)))
+    return result
   }
 )
+
+useNavigationEntry(levelsNavigationEntry)
 </script>
 
 <template>
@@ -41,7 +43,6 @@ const { pending, data: levels, error } = useLazyAsyncData(
   </div>
   <div v-else>
     <page-head title="Liste des niveaux" />
-    <levels-navigation-entry />
     <h1>Liste des niveaux</h1>
     <ski-columns v-if="levels && levels.length > 0" class="justify-content-center">
       <ski-column
@@ -53,7 +54,7 @@ const { pending, data: levels, error } = useLazyAsyncData(
         class="mt-3"
       >
         <image-card
-          :title="level.title"
+          :title="level.name"
           :color="level.color"
           :subtitle="level.subtitle"
           :to="level.url"
@@ -66,17 +67,3 @@ const { pending, data: levels, error } = useLazyAsyncData(
     </div>
   </div>
 </template>
-
-<script>
-// eslint-disable-next-line import/order
-import { SkiColumn, SkiColumns } from 'skimple-components'
-import PageHead from '~/components/Page/PageHead'
-import ImageCard from '~/components/ImageCard'
-import LevelsNavigationEntry from '~/components/Page/Navigation/Entries/LevelsNavigationEntry'
-import Spinner from '~/components/Spinner.vue'
-import ErrorDisplay from '~/components/ErrorDisplay.vue'
-
-export default {
-  components: { PageHead, LevelsNavigationEntry, SkiColumns, SkiColumn, ImageCard, Spinner, ErrorDisplay }
-}
-</script>

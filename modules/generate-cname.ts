@@ -1,5 +1,5 @@
 import { dirname } from 'path'
-import * as fs from 'fs'
+import fs from 'fs'
 import { createResolver, defineNuxtModule } from '@nuxt/kit'
 
 export interface ModuleOptions {

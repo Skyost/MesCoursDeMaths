@@ -1,29 +1,46 @@
-<script setup>
-import { useLazyAsyncData, useRoute } from '#app'
-import levels from '~/site/levels'
+<script lang="ts">
+import { Level, Lesson, createLesson } from '~/types'
+
+export const levelNavigationEntry = (level: Level) => {
+  return {
+    title: level.name,
+    to: level.url,
+    depth: 1
+  }
+}
+</script>
+
+<script setup lang="ts">
+import { levels } from '~/site/levels'
+import { levelsNavigationEntry } from '~/pages/cours/index.vue'
 
 const route = useRoute()
+const level: Level | undefined = levels[route.params.level.toString()]
+
 const { pending, data: lessons } = useLazyAsyncData(
   route.path,
   async () => {
-    const mdLessons = await queryContent(route.params.level)
+    const mdLessons = await queryContent(level.id)
       .only(['_extension', 'number', 'slug', 'name'])
       .sort({ number: 1, $numeric: true })
       .where({ _extension: 'md' })
       .find()
-    const lessons = []
+    const lessons: Lesson[] = []
     for (const mdLesson of mdLessons) {
-      lessons.push({
-        id: mdLesson.slug,
-        title: mdLesson.name,
-        subtitle: `Chapitre ${mdLesson.number}`,
-        color: levels[route.params.level].color,
-        url: `/cours/${route.params.level}/${mdLesson.slug}/`
-      })
+      lessons.push(createLesson(mdLesson.slug, mdLesson.name, mdLesson.number, level))
     }
     return lessons
   }
 )
+
+const title = computed(() => level ? `Cours de ${level.name.toLowerCase()}` : 'Liste des cours')
+
+useHead({ title })
+
+useNavigationEntry(levelsNavigationEntry)
+if (level) {
+  useNavigationEntry(levelNavigationEntry(level))
+}
 </script>
 
 <template>
@@ -31,8 +48,6 @@ const { pending, data: lessons } = useLazyAsyncData(
     <spinner />
   </div>
   <div v-else-if="lessons">
-    <levels-navigation-entry />
-    <lessons-navigation-entry :level="$route.params.level" />
     <page-head :title="title" />
     <div class="text-end mb-3">
       <ski-button variant="light" :to="`/cours/`">
@@ -50,7 +65,7 @@ const { pending, data: lessons } = useLazyAsyncData(
         class="mt-3"
       >
         <image-card
-          :title="lesson.title"
+          :title="lesson.name"
           :color="lesson.color"
           :subtitle="lesson.subtitle"
           :to="lesson.url"
@@ -62,30 +77,3 @@ const { pending, data: lessons } = useLazyAsyncData(
     <error-display error="404" />
   </div>
 </template>
-
-<script>
-// eslint-disable-next-line import/order
-import { SkiButton, SkiColumn, SkiColumns, SkiIcon } from 'skimple-components'
-import Spinner from '~/components/Spinner.vue'
-import ImageCard from '~/components/ImageCard'
-import LevelsNavigationEntry from '~/components/Page/Navigation/Entries/LevelsNavigationEntry'
-import LessonsNavigationEntry from '~/components/Page/Navigation/Entries/LessonsNavigationEntry'
-import ErrorDisplay from '~/components/ErrorDisplay.vue'
-import PageHead from '~/components/Page/PageHead'
-
-export default {
-  components: { PageHead, Spinner, LessonsNavigationEntry, ErrorDisplay, LevelsNavigationEntry, SkiColumns, SkiColumn, SkiButton, SkiIcon, ImageCard },
-  head: {
-    title: 'Liste des cours'
-  },
-  computed: {
-    title () {
-      return `Cours de ${this.levelName.toLowerCase()}`
-    },
-    levelName () {
-      return levels[this.$route.params.level].name
-    }
-  }
-}
-
-</script>

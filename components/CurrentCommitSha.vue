@@ -1,11 +1,12 @@
-<script setup>
-import { useLazyAsyncData } from '#app'
+<script setup lang="ts">
+import { siteMeta } from '~/site/meta'
 
 const { data: commitSha } = useLazyAsyncData(
   'current-commit-sha',
   () => queryContent('/latest-commit')
     .findOne()
 )
+const githubRepo = `https://github.com/${siteMeta.github.username}/${siteMeta.github.repository}`
 </script>
 
 <template>
@@ -19,15 +20,3 @@ const { data: commitSha } = useLazyAsyncData(
     </span>
   </span>
 </template>
-
-<script>
-import siteMeta from '~/site/meta'
-
-export default {
-  computed: {
-    githubRepo () {
-      return `https://github.com/${siteMeta.github.username}/${siteMeta.github.repository}`
-    }
-  }
-}
-</script>

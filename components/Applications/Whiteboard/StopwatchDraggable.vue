@@ -1,10 +1,52 @@
+<script setup lang="ts">
+import Draggable from '~/components/Applications/Whiteboard/Draggable.vue'
+
+withDefaults(defineProps<{ index?: number }>(), { index: 0 })
+
+const seconds = ref<number>(0)
+const interval = ref<ReturnType<typeof setInterval> | null>(null)
+
+const isPaused = computed(() => interval.value === null)
+const secondCount = computed(() => seconds.value % 10)
+const tenSecondCount = computed(() => (~~(seconds.value / 10)) % 6)
+const minuteCount = computed(() => ~~(seconds.value / 60) % 10)
+const tenMinuteCount = computed(() => ~~(seconds.value / 600))
+
+const togglePlay = () => {
+  if (seconds.value >= 0) {
+    if (isPaused.value) {
+      interval.value = setInterval(() => {
+        changeSeconds(seconds.value - 1)
+        if (seconds.value <= 0) {
+          clearInterval(interval.value!)
+          interval.value = null
+        }
+      }, 1000)
+    } else {
+      clearInterval(interval.value!)
+      interval.value = null
+    }
+  }
+}
+
+const changeSeconds = (newSeconds: number) => {
+  if (newSeconds <= 0) {
+    newSeconds = 0
+  }
+  if (newSeconds >= 90 * 60) {
+    newSeconds = 90 * 60
+  }
+  seconds.value = newSeconds
+}
+</script>
+
 <template>
   <draggable
     class="draggable-stopwatch"
     title="Chronomètre"
     :default-x="400 + index * 10"
     :default-y="400 + index * 10"
-    @close="togglePlay"
+    @closed="togglePlay"
   >
     <ski-columns class="h-100 ms-0 me-0">
       <ski-column class="duration-column" width="2">
@@ -54,71 +96,6 @@
     </ski-columns>
   </draggable>
 </template>
-
-<script>
-import { SkiButton, SkiColumn, SkiColumns, SkiIcon } from 'skimple-components'
-import Draggable from '~/components/Applications/Whiteboard/Draggable'
-
-export default {
-  components: { Draggable, SkiButton, SkiIcon, SkiColumns, SkiColumn },
-  props: {
-    index: {
-      type: Number,
-      default: 0
-    }
-  },
-  data () {
-    return {
-      seconds: 0,
-      intervalID: null
-    }
-  },
-  computed: {
-    isPaused () {
-      return this.intervalID === null
-    },
-    secondCount () {
-      return this.seconds % 10
-    },
-    tenSecondCount () {
-      return (~~(this.seconds / 10)) % 6
-    },
-    minuteCount () {
-      return ~~(this.seconds / 60) % 10
-    },
-    tenMinuteCount () {
-      return ~~(this.seconds / 600)
-    }
-  },
-  methods: {
-    togglePlay () {
-      if (this.seconds >= 0) {
-        if (this.isPaused) {
-          this.intervalID = setInterval(() => {
-            this.changeSeconds(this.seconds - 1)
-            if (this.seconds <= 0) {
-              clearInterval(this.intervalID)
-              this.intervalID = null
-            }
-          }, 1000)
-        } else {
-          clearInterval(this.intervalID)
-          this.intervalID = null
-        }
-      }
-    },
-    changeSeconds (newSeconds) {
-      if (newSeconds <= 0) {
-        newSeconds = 0
-      }
-      if (newSeconds >= 90 * 60) {
-        newSeconds = 90 * 60
-      }
-      this.seconds = newSeconds
-    }
-  }
-}
-</script>
 
 <style lang="scss">
 .draggable-stopwatch .card-body {

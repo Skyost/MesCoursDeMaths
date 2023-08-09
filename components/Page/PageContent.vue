@@ -6,14 +6,6 @@
   </div>
 </template>
 
-<script>
-import { SkiContainer } from 'skimple-components'
-
-export default {
-  components: { SkiContainer }
-}
-</script>
-
 <style lang="scss" scoped>
 @import 'assets/bootstrap-mixins';
 @import 'assets/colors';
@@ -33,6 +25,18 @@ export default {
 
     @include media-breakpoint-down(sm) {
       padding: 60px 12px;
+    }
+  }
+
+  .page-navigation {
+    position: absolute;
+    top: -0.5rem;
+    right: calc(var(--bs-gutter-x) * 0.5);
+    font-size: 0.6em;
+
+    &:deep(a) {
+      color: white !important;
+      text-decoration: none !important;
     }
   }
 

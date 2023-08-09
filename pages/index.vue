@@ -1,7 +1,59 @@
+<script lang="ts">
+export const homeNavigationEntry = {
+  title: 'Page d\'accueil',
+  to: '/',
+  depth: 0
+}
+</script>
+
+<script setup lang="ts">
+import { siteMeta } from '~/site/meta'
+
+const githubUrl = `https://github.com/${siteMeta.github.username}/${siteMeta.github.repository}`
+const links = [
+  {
+    id: 'monclasseurdemaths',
+    to: 'https://www.monclasseurdemaths.fr/',
+    name: 'Mon classeur de maths',
+    image: '/images/index/monclasseurdemaths.png',
+    text: 'Ce petit site contient tout un tas de cours et de vidéos explicatives.'
+  },
+  {
+    id: 'desmaths',
+    to: 'https://www.desmaths.fr/cours/',
+    name: 'Desmaths.fr',
+    image: '/images/index/desmaths.svg',
+    text: 'Contient également pas mal de cours intégralement consultables en ligne.'
+  },
+  {
+    id: 'yvan-monka',
+    to: 'https://www.youtube.com/c/YMONKA',
+    name: 'Yvan Monka sur YouTube',
+    image: '/images/index/yvan-monka.png',
+    text: 'Bien que certaines de ses vidéos soient un peu vieilles, elles restent un bon moyen pour comprendre des notions.'
+  },
+  {
+    id: 'el-jj',
+    to: 'https://www.youtube.com/c/ElJj42',
+    name: 'El Jj sur YouTube',
+    image: '/images/index/el-jj.png',
+    text: 'Une véritable mine d\'or de culture mathématique que je ne peux que recommander.'
+  },
+  {
+    id: 'micmaths',
+    to: 'https://www.youtube.com/c/Micmaths',
+    name: 'Micmaths sur YouTube',
+    image: '/images/index/micmaths.png',
+    text: 'Une autre chaîne de vulgarisation mathématique, approuvée par McFly et Carlito !'
+  }
+]
+
+useNavigationEntry(homeNavigationEntry)
+</script>
+
 <template>
   <div>
     <page-head title="Accueil" />
-    <home-navigation-entry />
     <section>
       <h1 class="centered">Bienvenue !</h1>
       <ski-columns>
@@ -12,7 +64,7 @@
         >
           <div class="text-center text-md-start">
             <p>
-              Bonjour et bienvenue sur <em>{{ title }}</em>. Je mets sur ce petit site web tous mes cours ainsi que les
+              Bonjour et bienvenue sur <em>{{ siteMeta.title }}</em>. Je mets sur ce petit site web tous mes cours ainsi que les
               ressources qui y sont rattachées. Vous trouverez donc ici des cours de mathématiques, mais également des
               exercices et des activités de découverte.
             </p>
@@ -93,65 +145,6 @@
     </ski-columns>
   </div>
 </template>
-
-<script>
-import HomeNavigationEntry from '~/components/Page/Navigation/Entries/HomeNavigationEntry'
-import siteMeta from '~/site/meta'
-import PageHead from '~/components/Page/PageHead'
-
-export default {
-  components: { HomeNavigationEntry, PageHead },
-  data () {
-    return {
-      links: [
-        {
-          id: 'monclasseurdemaths',
-          to: 'https://www.monclasseurdemaths.fr/',
-          name: 'Mon classeur de maths',
-          image: '/images/index/monclasseurdemaths.png',
-          text: 'Ce petit site contient tout un tas de cours et de vidéos explicatives.'
-        },
-        {
-          id: 'desmaths',
-          to: 'https://www.desmaths.fr/cours/',
-          name: 'Desmaths.fr',
-          image: '/images/index/desmaths.svg',
-          text: 'Contient également pas mal de cours intégralement consultables en ligne.'
-        },
-        {
-          id: 'yvan-monka',
-          to: 'https://www.youtube.com/c/YMONKA',
-          name: 'Yvan Monka sur YouTube',
-          image: '/images/index/yvan-monka.png',
-          text: 'Bien que certaines de ses vidéos soient un peu vieilles, elles restent un bon moyen pour comprendre des notions.'
-        },
-        {
-          id: 'el-jj',
-          to: 'https://www.youtube.com/c/ElJj42',
-          name: 'El Jj sur YouTube',
-          image: '/images/index/el-jj.png',
-          text: 'Une véritable mine d\'or de culture mathématique que je ne peux que recommander.'
-        },
-        {
-          id: 'micmaths',
-          to: 'https://www.youtube.com/c/Micmaths',
-          name: 'Micmaths sur YouTube',
-          image: '/images/index/micmaths.png',
-          text: 'Une autre chaîne de vulgarisation mathématique, approuvée par McFly et Carlito !'
-        }
-      ]
-    }
-  },
-  computed: {
-    githubUrl () {
-      return `https://github.com/${siteMeta.github.username}/${siteMeta.github.repository}`
-    },
-    title () {
-      return siteMeta.title
-    }
-  }
-}
-</script>
 
 <style lang="scss" scoped>
 @import 'assets/bootstrap-mixins';

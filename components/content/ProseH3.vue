@@ -1,19 +1,12 @@
+<script setup lang="ts">
+defineProps<{ id?: string }>()
+</script>
+
 <template>
   <h3>
     <slot />
   </h3>
 </template>
-
-<script>
-export default {
-  props: {
-    id: {
-      type: String,
-      default: null
-    }
-  }
-}
-</script>
 
 <style lang="scss" scoped>
 h3 {

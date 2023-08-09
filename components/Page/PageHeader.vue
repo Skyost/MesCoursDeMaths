@@ -1,28 +1,19 @@
+<script setup lang="ts">
+import { siteMeta } from '~/site/meta'
+</script>
+
 <template>
   <header class="page-header-parent">
     <ski-container class="page-header">
-      <img class="page-header-image main" src="/images/main.svg" :alt="title">
-      <span class="page-header-navigation">
-        <page-navigation />
-      </span>
+      <img class="page-header-image main" src="/images/main.svg" :alt="siteMeta.title">
+      <client-only>
+        <div class="page-header-navigation">
+          <page-navigation />
+        </div>
+      </client-only>
     </ski-container>
   </header>
 </template>
-
-<script>
-import { SkiContainer } from 'skimple-components'
-import siteMeta from '~/site/meta'
-import PageNavigation from '~/components/Page/Navigation/PageNavigation'
-
-export default {
-  components: { PageNavigation, SkiContainer },
-  computed: {
-    title () {
-      return siteMeta.title
-    }
-  }
-}
-</script>
 
 <style lang="scss" scoped>
 @import 'assets/bootstrap-mixins';

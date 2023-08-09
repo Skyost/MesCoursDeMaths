@@ -1,33 +1,27 @@
+<script setup lang="ts">
+import Draggable from '~/components/Applications/Whiteboard/Draggable.vue'
+
+withDefaults(defineProps<{
+  index?: number,
+  data: string
+}>(), {
+  index: 0
+})
+
+const emit = defineEmits<{(event: 'closed'): void}>()
+</script>
+
 <template>
   <draggable
     title="Image"
     class="draggable-image"
     :default-x="300 + index * 10"
     :default-y="300 + index * 10"
-    @close="$emit('close')"
+    @closed="emit('closed')"
   >
     <img :src="data" alt="Image">
   </draggable>
 </template>
-
-<script>
-import Draggable from '~/components/Applications/Whiteboard/Draggable'
-
-export default {
-  components: { Draggable },
-  props: {
-    index: {
-      type: Number,
-      default: 0
-    },
-    data: {
-      type: String,
-      required: true
-    }
-  },
-  emits: ['close']
-}
-</script>
 
 <style lang="scss">
 .draggable-image .card-body {

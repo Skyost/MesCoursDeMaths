@@ -1,3 +1,106 @@
+<script setup lang="ts">
+const props = defineProps<{ dates: string[] }>()
+
+const emit = defineEmits<{(event: 'dayclick', date: string): void}>()
+
+const month = ref<number>(new Date().getMonth())
+const year = ref<number>(new Date().getFullYear())
+
+const formattedMonth = computed(() => {
+  const date = new Date(year.value, month.value)
+  const formattedMonth = date.toLocaleString('default', { month: 'long', year: 'numeric' })
+  return formattedMonth[0].toUpperCase() + formattedMonth.substring(1)
+})
+
+const nextMonday = computed(() => {
+  const result = new Date(year.value, month.value)
+  while (result.getDay() !== 1) {
+    result.setDate(result.getDate() + 1)
+  }
+  return result
+})
+
+const firstDate = computed(() => {
+  const result = new Date(year.value, month.value)
+  while (result.getDay() !== 1) {
+    result.setDate(result.getDate() - 1)
+  }
+  return result
+})
+
+const lastDate = computed(() => {
+  const startOfTheMonth = new Date(year.value, month.value)
+  const result = new Date(startOfTheMonth)
+  while (result.getDay() !== 0) {
+    result.setDate(result.getDate() + 1)
+  }
+  while (result.getMonth() === startOfTheMonth.getMonth()) {
+    result.setDate(result.getDate() + 7)
+  }
+  return result
+})
+
+const weeks = computed(() => {
+  return Math.ceil((lastDate.value.getTime() - firstDate.value.getTime()) / (1000 * 3600 * 24 * 7))
+})
+
+const goToPreviousMonth = () => {
+  if (month.value === 0) {
+    month.value = 11
+    year.value = year.value - 1
+    return
+  }
+  month.value--
+}
+
+const goToNextMonth = () => {
+  if (month.value === 11) {
+    month.value = 0
+    year.value = year.value + 1
+    return
+  }
+  month.value++
+}
+
+const getDateFromWeekAndDayOfWeek = (week: number, dayOfWeek: number) => {
+  const result = new Date(firstDate.value)
+  result.setDate(result.getDate() + dayOfWeek + (week * 7))
+  return result
+}
+
+const formatDayOfMonth = (week: number, dayOfWeek: number) => getDateFromWeekAndDayOfWeek(week, dayOfWeek)
+  .toLocaleString('default', { day: 'numeric', month: 'numeric' })
+
+const formatDayOfWeek = (dayOfWeek: number) => {
+  const nextMondayClone = new Date(nextMonday.value)
+  nextMondayClone.setDate(nextMondayClone.getDate() + dayOfWeek - 1)
+  const result = nextMondayClone.toLocaleString('default', { weekday: 'long' })
+  return result[0].toUpperCase() + result.substring(1)
+}
+
+const onDayClicked = (week: number, dayOfWeek: number) => {
+  const date = getDateFromWeekAndDayOfWeek(week, dayOfWeek)
+  if (date.getMonth() === month.value) {
+    emit('dayclick', formatDate(date))
+  }
+}
+
+const getColDayClass = (week: number, dayOfWeek: number) => {
+  const date = getDateFromWeekAndDayOfWeek(week, dayOfWeek)
+  const yyyymmdd = formatDate(date)
+  return {
+    'has-content': props.dates.includes(yyyymmdd),
+    disabled: date.getMonth() !== month.value
+  }
+}
+
+const formatDate = (date: Date) => {
+  const offset = date.getTimezoneOffset()
+  const result = new Date(date.getTime() - (offset * 60 * 1000))
+  return result.getFullYear() + '-' + ('0' + (result.getMonth() + 1)).slice(-2) + '-' + ('0' + result.getDate()).slice(-2)
+}
+</script>
+
 <template>
   <div>
     <ski-columns>
@@ -43,115 +146,6 @@
     </ski-columns>
   </div>
 </template>
-
-<script>
-import { SkiButton, SkiColumn, SkiColumns, SkiIcon } from 'skimple-components'
-
-export default {
-  components: { SkiIcon, SkiButton, SkiColumns, SkiColumn },
-  props: {
-    dates: {
-      type: Array,
-      required: true
-    }
-  },
-  emits: ['dayclick'],
-  data () {
-    const date = new Date()
-    return {
-      month: date.getMonth(),
-      year: date.getFullYear()
-    }
-  },
-  computed: {
-    formattedMonth () {
-      const date = new Date(this.year, this.month)
-      const month = date.toLocaleString('default', { month: 'long', year: 'numeric' })
-      return month[0].toUpperCase() + month.substring(1)
-    },
-    nextMonday () {
-      const result = new Date(this.year, this.month)
-      while (result.getDay() !== 1) {
-        result.setDate(result.getDate() + 1)
-      }
-      return result
-    },
-    firstDate () {
-      const result = new Date(this.year, this.month)
-      while (result.getDay() !== 1) {
-        result.setDate(result.getDate() - 1)
-      }
-      return result
-    },
-    lastDate () {
-      const startOfTheMonth = new Date(this.year, this.month)
-      const result = new Date(startOfTheMonth)
-      while (result.getDay() !== 0) {
-        result.setDate(result.getDate() + 1)
-      }
-      while (result.getMonth() === startOfTheMonth.getMonth()) {
-        result.setDate(result.getDate() + 7)
-      }
-      return result
-    },
-    weeks () {
-      return Math.ceil((this.lastDate.getTime() - this.firstDate.getTime()) / (1000 * 3600 * 24 * 7))
-    }
-  },
-  methods: {
-    goToPreviousMonth () {
-      if (this.month === 0) {
-        this.month = 11
-        this.year = this.year - 1
-        return
-      }
-      this.month--
-    },
-    goToNextMonth () {
-      if (this.month === 11) {
-        this.month = 0
-        this.year = this.year + 1
-        return
-      }
-      this.month++
-    },
-    getDateFromWeekAndDayOfWeek (week, dayOfWeek) {
-      const result = new Date(this.firstDate)
-      result.setDate(result.getDate() + dayOfWeek + (week * 7))
-      return result
-    },
-    formatDayOfMonth (week, dayOfWeek) {
-      const date = this.getDateFromWeekAndDayOfWeek(week, dayOfWeek)
-      return date.toLocaleString('default', { day: 'numeric', month: 'numeric' })
-    },
-    formatDayOfWeek (dayOfWeek) {
-      const nextMonday = new Date(this.nextMonday)
-      nextMonday.setDate(nextMonday.getDate() + dayOfWeek - 1)
-      const result = nextMonday.toLocaleString('default', { weekday: 'long' })
-      return result[0].toUpperCase() + result.substring(1)
-    },
-    onDayClicked (week, dayOfWeek) {
-      const date = this.getDateFromWeekAndDayOfWeek(week, dayOfWeek)
-      if (date.getMonth() === this.month) {
-        this.$emit('dayclick', this.formatDate(date))
-      }
-    },
-    getColDayClass (week, dayOfWeek) {
-      const date = this.getDateFromWeekAndDayOfWeek(week, dayOfWeek)
-      const yyyymmdd = this.formatDate(date)
-      return {
-        'has-content': this.dates.includes(yyyymmdd),
-        disabled: date.getMonth() !== this.month
-      }
-    },
-    formatDate (date) {
-      const offset = date.getTimezoneOffset()
-      const result = new Date(date.getTime() - (offset * 60 * 1000))
-      return result.getFullYear() + '-' + ('0' + (result.getMonth() + 1)).slice(-2) + '-' + ('0' + result.getDate()).slice(-2)
-    }
-  }
-}
-</script>
 
 <style lang="scss" scoped>
 @import 'assets/bootstrap-mixins';

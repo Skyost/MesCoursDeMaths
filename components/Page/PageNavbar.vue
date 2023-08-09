@@ -1,5 +1,5 @@
 <template>
-  <ski-navbar brightness="primary" class="navbar-dark">
+  <ski-navbar color="primary" class="navbar-dark">
     <ski-navbar-collapse id="page-navbar-collapse">
       <page-navbar-brand class="d-none d-lg-inline" />
       <ski-navbar-items class="ms-auto">
@@ -14,20 +14,6 @@
     <page-navbar-brand class="mobile-navbar-brand" />
   </ski-navbar>
 </template>
-
-<script>
-import { SkiIcon, SkiNavbar, SkiNavbarCollapse, SkiNavbarItem, SkiNavbarItems } from 'skimple-components'
-import PageNavbarBrand from '~/components/Page/PageNavbarBrand'
-
-export default {
-  components: { PageNavbarBrand, SkiNavbar, SkiNavbarCollapse, SkiNavbarItems, SkiNavbarItem, SkiIcon },
-  data () {
-    return {
-      request: null
-    }
-  }
-}
-</script>
 
 <style lang="scss" scoped>
 @import 'assets/bootstrap-mixins';

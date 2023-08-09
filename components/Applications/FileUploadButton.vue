@@ -1,3 +1,33 @@
+<script setup lang="ts">
+import { blobAsDataUrl } from '~/utils/utils'
+
+export interface FileContent {
+  file: File,
+  content: string
+}
+
+defineProps<{
+  accept?: string,
+  icon: string,
+  text: string
+}>()
+const emit = defineEmits<{(event: 'loaded', file: FileContent): void}>()
+
+const fileInput = ref<HTMLInputElement | null>(null)
+
+const promptForFile = () => {
+  fileInput.value!.onchange = async (event: Event) => {
+    const target = event.target as HTMLInputElement
+    const files: FileList | null = target.files
+    if (files && files.length > 0) {
+      const content = await blobAsDataUrl(files[0])
+      emit('loaded', { file: files[0], content })
+    }
+  }
+  fileInput.value!.click()
+}
+</script>
+
 <template>
   <span>
     <input ref="fileInput" type="file" :accept="accept" hidden>
@@ -6,48 +36,3 @@
     </ski-button>
   </span>
 </template>
-
-<script>
-import { SkiButton, SkiIcon } from 'skimple-components'
-
-export default {
-  components: { SkiButton, SkiIcon },
-  props: {
-    accept: {
-      type: String,
-      default: null
-    },
-    icon: {
-      type: String,
-      required: true
-    },
-    text: {
-      type: String,
-      required: true
-    }
-  },
-  emits: ['fileloaded'],
-  methods: {
-    promptForFile () {
-      this.$refs.fileInput.onchange = (event) => {
-        const file = event.target.files[0]
-        this.blobAsDataUrl(file).then(content => this.$emit('fileloaded', { file, content }))
-      }
-      this.$refs.fileInput.click()
-    },
-    blobAsDataUrl (blob) {
-      return new Promise(function (resolve, reject) {
-        const reader = new FileReader()
-        reader.onload = function (event) {
-          resolve(event.target.result)
-        }
-        reader.onerror = function (error) {
-          reader.abort()
-          reject(error)
-        }
-        reader.readAsDataURL(blob)
-      })
-    }
-  }
-}
-</script>

@@ -1,10 +1,14 @@
+<script setup lang="ts">
+import { siteMeta } from '~/site/meta'
+</script>
+
 <template>
   <footer class="page-footer">
     <ski-container class="pb-md-5">
       <ski-columns>
         <ski-column width="12" md="8" lg="6">
           <p class="mb-0">
-            Copyright &copy; 2022 — <strong v-text="author" />. Tous droits réservés.
+            Copyright &copy; 2023 — <strong v-text="siteMeta.author" />. Tous droits réservés.
             Voir les <nuxt-link to="/#licence">licences</nuxt-link>.
             <br>Accéder à l'<nuxt-link to="/prof/">espace enseignant</nuxt-link>.
           </p>
@@ -43,21 +47,6 @@
     </ski-container>
   </footer>
 </template>
-
-<script>
-import { SkiColumn, SkiColumns, SkiContainer } from 'skimple-components'
-import siteMeta from '~/site/meta'
-import CurrentCommitSha from '~/components/CurrentCommitSha'
-
-export default {
-  components: { CurrentCommitSha, SkiContainer, SkiColumns, SkiColumn },
-  computed: {
-    author () {
-      return siteMeta.author
-    }
-  }
-}
-</script>
 
 <style lang="scss" scoped>
 .page-footer {

@@ -1,3 +1,27 @@
+<script setup lang="ts">
+const props = defineProps<{ error: any }>()
+
+const errorCode = computed(() => {
+  if (/^-?\d+$/.test(props.error.toString())) {
+    return parseInt(props.error.toString())
+  }
+  if (Object.prototype.hasOwnProperty.call(props.error, 'statusCode')) {
+    return parseInt(props.error.statusCode)
+  }
+  return null
+})
+
+const title = computed(() => {
+  if (errorCode.value === 404) {
+    return 'Page non trouvée !'
+  }
+  if (errorCode.value) {
+    return `Erreur ${errorCode.value}`
+  }
+  return 'Erreur'
+})
+</script>
+
 <template>
   <div>
     <h1 v-text="title" />
@@ -10,35 +34,3 @@
     </p>
   </div>
 </template>
-
-<script>
-export default {
-  props: {
-    error: {
-      type: null,
-      required: true
-    }
-  },
-  computed: {
-    errorCode () {
-      if (/^-?\d+$/.test(this.error.toString())) {
-        return parseInt(this.error.toString())
-      }
-      if (Object.prototype.hasOwnProperty.call(this.error, 'statusCode')) {
-        return parseInt(this.error.statusCode)
-      }
-      return null
-    },
-    title () {
-      const errorCode = this.errorCode
-      if (errorCode === 404) {
-        return 'Page non trouvée !'
-      }
-      if (errorCode) {
-        return `Erreur ${errorCode}`
-      }
-      return 'Erreur'
-    }
-  }
-}
-</script>

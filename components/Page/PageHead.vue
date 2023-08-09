@@ -1,5 +1,18 @@
-<script setup>
-import { useRoute, useRuntimeConfig } from '#app'
+<script setup lang="ts">
+import { siteMeta } from '~/site/meta'
+
+withDefaults(defineProps<{
+  title: string,
+  description?: string,
+  openGraphImage?: string,
+  twitterCard?: string,
+  twitterImage?: string
+}>(), {
+  description: siteMeta.description,
+  openGraphImage: `${siteMeta.url}/images/social/open-graph.png`,
+  twitterCard: 'summary',
+  twitterImage: `${siteMeta.url}/images/social/twitter.png`
+})
 
 const runtimeConfig = useRuntimeConfig()
 const route = useRoute()
@@ -13,7 +26,7 @@ const currentAddress = `${runtimeConfig.public.url}${route.path}`
     <Meta name="og:title" :content="title" />
     <Meta name="og:description" :content="description" />
     <Meta name="og:type" content="website" />
-    <Meta name="og:site_name" :content="siteName" />
+    <Meta name="og:site_name" :content="siteMeta.title" />
     <Meta name="og:url" :content="currentAddress" />
     <Meta name="og:image" :content="openGraphImage" />
     <Meta name="og:locale" content="fr" />
@@ -28,40 +41,6 @@ const currentAddress = `${runtimeConfig.public.url}${route.path}`
     <slot />
   </Head>
 </template>
-
-<script>
-import siteMeta from '~/site/meta'
-
-export default {
-  props: {
-    title: {
-      type: String,
-      required: true
-    },
-    description: {
-      type: String,
-      default: siteMeta.description
-    },
-    openGraphImage: {
-      type: String,
-      default: `${siteMeta.url}/images/social/open-graph.png`
-    },
-    twitterCard: {
-      type: String,
-      default: 'summary'
-    },
-    twitterImage: {
-      type: String,
-      default: `${siteMeta.url}/images/social/twitter.png`
-    }
-  },
-  computed: {
-    siteName () {
-      return siteMeta.title
-    }
-  }
-}
-</script>
 
 <style lang="scss" scoped>
 .page-head {

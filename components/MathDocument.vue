@@ -1,130 +1,131 @@
+<script setup lang="ts">
+import html2canvas from 'html2canvas'
+import { LessonContent } from '~/types'
+
+withDefaults(defineProps<{
+  document: LessonContent,
+  color?: string
+}>(), {
+  color: 'red'
+})
+
+const root = ref<HTMLElement | null>(null)
+const setupTimeout = ref<ReturnType<typeof setTimeout> | null>(null)
+const initialDotsTimeout = ref<ReturnType<typeof setTimeout> | null>(null)
+
+const route = useRoute()
+
+const setupDocument = () => {
+  const dotLines = root.value!.querySelectorAll<HTMLElement>('.dots')
+  for (const dotLine of dotLines) {
+    const parent = dotLine.parentElement
+    const base = parent?.closest<HTMLElement>('.base')
+    if (base) {
+      base.style.width = 'initial'
+    }
+    const enclosing = parent?.closest<HTMLElement>('.enclosing')
+    if (enclosing) {
+      enclosing.style.display = 'inline-block'
+      enclosing.style.textAlign = 'center'
+    }
+  }
+
+  const exercises = root.value!.querySelectorAll<HTMLElement>('.bubble-exercice')
+  let scrollCollapse
+  for (let i = 0; i < exercises.length; i++) {
+    const exercise = exercises[i]
+    if (exercise.nextElementSibling && exercise.nextElementSibling.classList.contains('bubble-correction')) {
+      exercise.nextElementSibling.id = `correction-${i + 1}`
+      exercise.nextElementSibling.classList.add('collapse')
+      const correction = document.createElement('span')
+      correction.classList.add('button-exercice')
+      correction.classList.add('button-correction')
+      correction.setAttribute('data-bs-toggle', 'collapse')
+      correction.setAttribute('data-bs-target', `#correction-${i + 1}`)
+      correction.innerHTML = '<i class="bi bi-chevron-down"></i> <span class="show">Voir</span><span class="hide">Cacher</span> la correction'
+      if (route.hash === `#correction-${i + 1}`) {
+        scrollCollapse = exercise.nextElementSibling
+        scrollCollapse.classList.add('show')
+      } else {
+        correction.classList.add('collapsed')
+      }
+      exercise.parentNode?.insertBefore(correction, exercise.nextSibling)
+    }
+
+    const print = document.createElement('span')
+    print.classList.add('button-exercice')
+    print.classList.add('button-print')
+    print.onclick = async () => {
+      const canvas = await html2canvas(exercise)
+      const newWindow = window.open()
+      if (newWindow) {
+        const img = newWindow.document.createElement('img')
+        img.src = canvas.toDataURL()
+        img.style.maxWidth = '100%'
+        newWindow.document.body.appendChild(img)
+        setTimeout(() => {
+          newWindow.print()
+          newWindow.close()
+        }, 100)
+      }
+    }
+    print.innerHTML = '<i class="bi bi-printer-fill"></i> Imprimer'
+    exercise.parentNode?.insertBefore(print, exercise.nextSibling)
+    exercise.style.marginBottom = 'calc(1.6em + 1.5rem)'
+  }
+  if (scrollCollapse) {
+    scrollCollapse.scrollIntoView(true)
+  }
+
+  setupTimeout.value = null
+}
+
+const resizeDotLines = () => {
+  const dotLines = root.value!.querySelectorAll<HTMLElement>('.dots')
+  for (const dotLine of dotLines) {
+    dotLine.innerHTML = '. . . '
+    if (dotLine.parentElement) {
+      const originalHeight = dotLine.parentElement.offsetHeight
+      while (dotLine.parentElement.offsetHeight === originalHeight) {
+        if (!dotLine.parentElement.offsetWidth || dotLine.parentElement.offsetWidth <= 0) {
+          break
+        }
+        dotLine.innerHTML += '. '
+      }
+      dotLine.innerHTML = dotLine.innerHTML.substring(0, Math.max(0, dotLine.innerHTML.length - 2))
+    }
+  }
+  initialDotsTimeout.value = null
+}
+
+onMounted(async () => {
+  await nextTick()
+  setupTimeout.value = setTimeout(setupDocument, 1000)
+  initialDotsTimeout.value = setTimeout(resizeDotLines, 1000)
+  window.addEventListener('load', resizeDotLines)
+  window.addEventListener('resize', resizeDotLines)
+})
+
+onUnmounted(() => {
+  if (setupTimeout.value) {
+    clearTimeout(setupTimeout.value)
+    setupTimeout.value = null
+  }
+  if (initialDotsTimeout.value) {
+    clearTimeout(initialDotsTimeout.value)
+    initialDotsTimeout.value = null
+  }
+  window.removeEventListener('load', resizeDotLines)
+  window.removeEventListener('resize', resizeDotLines)
+})
+</script>
+
 <template>
-  <div class="math-document" :class="color">
+  <div ref="root" class="math-document" :class="color">
     <h1 v-html="document.name" />
     <content-renderer class="math-document-content" :value="document" />
   </div>
 </template>
-
-<script>
-import html2canvas from 'html2canvas'
-
-export default {
-  props: {
-    document: {
-      type: Object,
-      required: true
-    },
-    color: {
-      type: String,
-      default: 'red'
-    }
-  },
-  data () {
-    return {
-      setupTimeout: null,
-      initialDotsTimeout: null
-    }
-  },
-  async mounted () {
-    await this.$nextTick()
-    this.setupTimeout = setTimeout(this.setupDocument, 1000)
-    this.initialDotsTimeout = setTimeout(this.resizeDotLines, 1000)
-    window.addEventListener('load', this.resizeDotLines)
-    window.addEventListener('resize', this.resizeDotLines)
-  },
-  unmounted () {
-    if (this.setupTimeout) {
-      clearTimeout(this.setupTimeout)
-      this.setupTimeout = null
-    }
-    if (this.initialDotsTimeout) {
-      clearTimeout(this.initialDotsTimeout)
-      this.initialDotsTimeout = null
-    }
-    window.removeEventListener('load', this.resizeDotLines)
-    window.removeEventListener('resize', this.resizeDotLines)
-  },
-  methods: {
-    setupDocument () {
-      const dotLines = this.$el.getElementsByClassName('dots')
-      for (const dotLine of dotLines) {
-        const parent = dotLine.parentNode
-        const base = parent.closest('.base')
-        if (base) {
-          base.style.width = 'initial'
-        }
-        const enclosing = parent.closest('.enclosing')
-        if (enclosing) {
-          enclosing.style.display = 'inline-block'
-          enclosing.style.textAlign = 'center'
-        }
-      }
-
-      const exercises = this.$el.getElementsByClassName('bubble-exercice')
-      let scrollCollapse
-      for (let i = 0; i < exercises.length; i++) {
-        const exercise = exercises[i]
-        if (exercise.nextSibling && exercise.nextSibling.classList.contains('bubble-correction')) {
-          exercise.nextSibling.id = `correction-${i + 1}`
-          exercise.nextSibling.classList.add('collapse')
-          const correction = document.createElement('span')
-          correction.classList.add('button-exercice')
-          correction.classList.add('button-correction')
-          correction.setAttribute('data-bs-toggle', 'collapse')
-          correction.setAttribute('data-bs-target', `#correction-${i + 1}`)
-          correction.innerHTML = '<i class="bi bi-chevron-down"></i> <span class="show">Voir</span><span class="hide">Cacher</span> la correction'
-          if (this.$route.hash === `#correction-${i + 1}`) {
-            scrollCollapse = exercise.nextSibling
-            scrollCollapse.classList.add('show')
-          } else {
-            correction.classList.add('collapsed')
-          }
-          exercise.parentNode.insertBefore(correction, exercise.nextSibling)
-        }
-
-        const print = document.createElement('span')
-        print.classList.add('button-exercice')
-        print.classList.add('button-print')
-        print.onclick = async function () {
-          const canvas = await html2canvas(exercise)
-          const newWindow = window.open()
-          const img = newWindow.document.createElement('img')
-          img.src = canvas.toDataURL()
-          img.style.maxWidth = '100%'
-          newWindow.document.body.appendChild(img)
-          setTimeout(() => {
-            newWindow.print()
-            newWindow.close()
-          }, 100)
-        }
-        print.innerHTML = '<i class="bi bi-printer-fill"></i> Imprimer'
-        exercise.parentNode.insertBefore(print, exercise.nextSibling)
-        exercise.style.marginBottom = 'calc(1.6em + 1.5rem)'
-      }
-      if (scrollCollapse) {
-        scrollCollapse.scrollIntoView(true)
-      }
-
-      this.setupTimeout = null
-    },
-    resizeDotLines () {
-      const dotLines = this.$el.getElementsByClassName('dots')
-      for (const dotLine of dotLines) {
-        dotLine.innerHTML = '. . . '
-        const originalHeight = dotLine.parentElement.offsetHeight
-        while (dotLine.parentElement.offsetHeight === originalHeight) {
-          if (!dotLine.parentElement.offsetWidth || dotLine.parentElement.offsetWidth <= 0) {
-            break
-          }
-          dotLine.innerHTML += '. '
-        }
-        dotLine.innerHTML = dotLine.innerHTML.substring(0, Math.max(0, dotLine.innerHTML.length - 2))
-      }
-      this.initialDotsTimeout = null
-    }
-  }
-}
-</script>
 
 <style lang="scss">
 @import '../assets/colors';
