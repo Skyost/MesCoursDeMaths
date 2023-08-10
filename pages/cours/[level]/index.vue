@@ -17,7 +17,7 @@ import { levelsNavigationEntry } from '~/pages/cours/index.vue'
 const route = useRoute()
 const level: Level | undefined = levels[route.params.level.toString()]
 
-const { pending, data: lessons } = useLazyAsyncData(
+const { pending, data: lessons, error } = useLazyAsyncData(
   route.path,
   async () => {
     const mdLessons = await queryContent(level.id)
@@ -74,6 +74,6 @@ if (level) {
     </ski-columns>
   </div>
   <div v-else>
-    <error-display error="404" />
+    <error-display :error="error || 404" />
   </div>
 </template>

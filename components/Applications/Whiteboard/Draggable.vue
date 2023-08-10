@@ -9,9 +9,7 @@ const props = withDefaults(defineProps<{
 })
 
 const emit = defineEmits<{(event: 'closed'): void}>()
-// eslint-disable-next-line vue/no-setup-props-destructure
 const x = ref(props.defaultX)
-// eslint-disable-next-line vue/no-setup-props-destructure
 const y = ref(props.defaultY)
 const root = ref<HTMLElement | null>(null)
 let deltaX = 0

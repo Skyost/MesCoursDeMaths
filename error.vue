@@ -15,8 +15,8 @@ const title = computed(() => {
 </script>
 
 <template>
-  <NuxtLayout>
+  <nuxt-layout>
     <page-head :title="title" />
     <error-display :error="error" />
-  </NuxtLayout>
+  </nuxt-layout>
 </template>

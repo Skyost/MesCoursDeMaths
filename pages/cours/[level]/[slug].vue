@@ -1,15 +1,15 @@
 <script lang="ts">
-import { Level, LessonContent } from '~/types'
+import { Level, LessonContent, Lesson, createLesson } from '~/types'
 
 interface LessonContentData {
-  lessonContent: LessonContent,
-  url: string
+  lesson: Lesson,
+  content: LessonContent
 }
 
-export const lessonNavigationEntry = (lesson: LessonContentData) => {
+export const lessonNavigationEntry = (lessonContentData: LessonContentData) => {
   return {
-    title: lesson.lessonContent['page-title'],
-    to: lesson.url,
+    title: lessonContentData.content['page-title'],
+    to: lessonContentData.lesson.url,
     depth: 1
   }
 }
@@ -23,21 +23,22 @@ import { levelNavigationEntry } from '~/pages/cours/[level]/index.vue'
 const route = useRoute()
 const level: Level | undefined = levels[route.params.level.toString()]
 
-const { pending, data } = useLazyAsyncData<LessonContentData>(
+const { pending, data, error } = useLazyAsyncData<LessonContentData>(
   route.path,
   async () => {
     const lessonContent: LessonContent = await queryContent<LessonContent>(level.id, route.params.slug.toString())
       .findOne()
     const result: LessonContentData = {
-      lessonContent,
-      url: `/cours/${level}/${lessonContent.slug}/`
+      lesson: createLesson(lessonContent.slug, lessonContent.name, lessonContent.number, level),
+      content: lessonContent
     }
     return result
   }
 )
 
-const lesson = computed(() => data.value ? data.value.lessonContent : null)
-const title = computed(() => level && lesson.value ? `${level.name} > ${lesson.value['page-title']}` : 'Affichage d\'un cours')
+const lesson = computed(() => data.value ? data.value.lesson : null)
+const content = computed(() => data.value ? data.value.content : null)
+const title = computed(() => level && content.value ? `${level.name} > ${content.value['page-title']}` : 'Affichage d\'un cours')
 
 useHead({ title })
 
@@ -52,7 +53,7 @@ const onMathDocumentMounted = () => useNavigationEntry(lessonNavigationEntry(dat
   <div v-if="pending">
     <spinner />
   </div>
-  <div v-else-if="lesson">
+  <div v-else-if="lesson && content">
     <page-head :title="title" />
     <div>
       <div class="lesson-control-buttons">
@@ -60,21 +61,21 @@ const onMathDocumentMounted = () => useNavigationEntry(lessonNavigationEntry(dat
         <ski-button variant="light" :to="level.url">
           <ski-icon icon="arrow-left" /> Retourner à la liste des cours
         </ski-button>
-        <ski-button variant="light" :href="`/pdf/${$route.params.level}/${lesson.slug}.pdf`">
+        <ski-button variant="light" :href="lesson.pdf">
           <ski-icon icon="file-earmark-pdf-fill" /> Télécharger le PDF
         </ski-button>
       </div>
-      <div v-if="lesson['linked-resources'].length > 0" class="lesson-control-buttons">
+      <div v-if="content['linked-resources'].length > 0" class="lesson-control-buttons">
         <span class="title"><ski-icon icon="paperclip" /> Ressources associées</span>
-        <ski-button v-for="resource in lesson['linked-resources']" :key="resource.url" :href="resource.url" variant="light">
+        <ski-button v-for="resource in content['linked-resources']" :key="resource.url" :href="resource.url" variant="light">
           <ski-icon v-if="resource.url.endsWith('.pdf')" icon="file-earmark-pdf-fill" /> {{ resource.title }}
         </ski-button>
       </div>
     </div>
-    <math-document :document="lesson" :color="level.color" @vue:mounted="onMathDocumentMounted" />
+    <math-document :document="content" :color="lesson.color" @vue:mounted="onMathDocumentMounted" />
   </div>
   <div v-else>
-    <error-display error="404" />
+    <error-display :error="error || 404" />
   </div>
 </template>
 

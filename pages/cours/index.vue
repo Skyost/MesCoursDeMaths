@@ -38,13 +38,10 @@ useNavigationEntry(levelsNavigationEntry)
   <div v-if="pending">
     <spinner />
   </div>
-  <div v-else-if="error">
-    <error-display :error="error" />
-  </div>
-  <div v-else>
+  <div v-else-if="levels">
     <page-head title="Liste des niveaux" />
     <h1>Liste des niveaux</h1>
-    <ski-columns v-if="levels && levels.length > 0" class="justify-content-center">
+    <ski-columns v-if="levels.length > 0" class="justify-content-center">
       <ski-column
         v-for="level in levels"
         :key="level.id"
@@ -65,5 +62,8 @@ useNavigationEntry(levelsNavigationEntry)
     <div v-else class="text-center">
       <em class="text-muted">Il n'y a pas de cours disponible.</em>
     </div>
+  </div>
+  <div v-else>
+    <error-display :error="error || 404" />
   </div>
 </template>

@@ -8,6 +8,7 @@ export interface Lesson {
   color: string
   subtitle: string
   url: string
+  pdf: string
 }
 
 export const createLesson = (id: string, name: string, number: number, level: Level): Lesson => {
@@ -17,7 +18,8 @@ export const createLesson = (id: string, name: string, number: number, level: Le
     number,
     color: level.color,
     subtitle: `Chapitre ${number}`,
-    url: `/cours/${level.id}/${id}/`
+    url: `${level.url}${id}/`,
+    pdf: `/pdf/${level.id}/${id}.pdf`
   }
 }
 
@@ -27,7 +29,10 @@ interface LinkedResource {
 }
 
 export interface LessonContent extends ParsedContent {
+  slug: angles
+  name: Angles
   'page-title': string,
-  'linked-resources': LinkedResource[],
-  url: string
+  'page-title-search': string
+  number: number
+  'linked-resources': LinkedResource[]
 }
