@@ -29,16 +29,18 @@ const { url: oauthUrl } = oauthAuthorizationUrl({
           <br><strong>Attention.</strong> Vous devez avoir accès au dépôt <code v-text="`${siteMeta.github.username}/${siteMeta.github.dataRepository}`" />.
         </div>
       </div>
-      <div class="text-center mt-3 mb-5">
-        <ski-button
-          class="d-inline-flex align-items-center btn-lg"
-          type="submit"
-          :href="oauthUrl"
-        >
-          <ski-icon icon="github" />
-          <span class="ms-2">Connexion avec Github</span>
-        </ski-button>
-      </div>
+      <client-only>
+        <div class="text-center mt-3 mb-5">
+          <ski-button
+            class="d-inline-flex align-items-center btn-lg"
+            type="submit"
+            :href="oauthUrl"
+          >
+            <ski-icon icon="github" />
+            <span class="ms-2">Connexion avec Github</span>
+          </ski-button>
+        </div>
+      </client-only>
     </div>
   </div>
 </template>
