@@ -267,7 +267,7 @@ async function processFiles (
           })
           const root = parse(htmlContent)
           const linkedResources = contentGenerator.getMarkdownLinkedResources(directory, file, pdfDestUrl)
-          replaceImages(resolver, root, imagesDir, imagesDestUrl + '/' + fileName)
+          replaceImages(resolver, contentGenerator, root, imagesDir, imagesDestUrl + '/' + fileName)
           removeEmptyTitles(root)
           replaceVspaceElements(root)
           adjustColSize(root)
@@ -313,7 +313,7 @@ function extractImages (resolver: Resolver, contentGenerator: ContentGeneratorSe
   }
 }
 
-function replaceImages (resolver: Resolver, root: HTMLElement, imagesDestDir: string, imagesDestURL: string) {
+function replaceImages (resolver: Resolver, contentGenerator: ContentGeneratorSettings, root: HTMLElement, imagesDestDir: string, imagesDestURL: string) {
   const images = root.querySelectorAll('img')
   for (const image of images) {
     const src = image.getAttribute('src')
@@ -331,13 +331,11 @@ function replaceImages (resolver: Resolver, root: HTMLElement, imagesDestDir: st
       }
     }
   }
-  const tikzImages = root.querySelectorAll('.tikz-image')
-  for (let i = 0; i < tikzImages.length; i++) {
-    tikzImages[i].replaceWith(`<img src="/${imagesDestURL}/tikzpicture-${i + 1}.svg" class="extracted-image tikz-image" alt="Tikz ${i + 1}">`)
-  }
-  const scratchImages = root.querySelectorAll('.scratch-image')
-  for (let i = 0; i < scratchImages.length; i++) {
-    scratchImages[i].replaceWith(`<img src="/${imagesDestURL}/scratch-${i + 1}.svg" class="extracted-image scratch-image" alt="Scratch ${i + 1}">`)
+  for (const blockType of contentGenerator.imagesToExtract) {
+    const images = root.querySelectorAll(`.${blockType}-image`)
+    for (let i = 0; i < images.length; i++) {
+      images[i].replaceWith(`<img src="/${imagesDestURL}/${blockType}-${i + 1}.svg" class="extracted-image ${blockType}-image" alt="${blockType}-${i + 1}">`)
+    }
   }
 }
 

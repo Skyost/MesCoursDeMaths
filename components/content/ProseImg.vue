@@ -24,7 +24,7 @@ defineProps({
 </template>
 
 <style lang="scss" scoped>
-img.tikz-image {
+img.tikzpicture-image {
   max-width: 100%;
 }
 </style>

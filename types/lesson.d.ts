@@ -29,8 +29,8 @@ interface LinkedResource {
 }
 
 export interface LessonContent extends ParsedContent {
-  slug: angles
-  name: Angles
+  slug: string
+  name: string
   'page-title': string,
   'page-title-search': string
   number: number
