@@ -437,9 +437,9 @@ async function handleImages (resolver: Resolver, contentGenerator: ContentGenera
           includedImagesDir = fs.readFileSync(resolver.resolve(imagesDir, includedImagesDirFileName), { encoding: 'utf-8' })
         }
         const { builtPdf, wasCached } = generatePdf(resolver, imagesDir, file, previousImagesBuildDir, includedImagesDir, imagesDir, `${fileName}.pdf`)
-        if (builtPdf && previousImagesBuildDir) {
-          let svgPath = resolver.resolve(previousImagesBuildDir, svgFile)
-          if (!wasCached || !fs.existsSync(svgPath)) {
+        if (builtPdf) {
+          let svgPath = previousImagesBuildDir ? resolver.resolve(previousImagesBuildDir, svgFile) : null
+          if (!wasCached || !svgPath || !fs.existsSync(svgPath)) {
             svgFile = pdftocairo(resolver, imagesDir, builtPdf)
             svgPath = resolver.resolve(imagesDir, svgFile)
           }
