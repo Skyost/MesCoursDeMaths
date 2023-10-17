@@ -4,10 +4,7 @@ import crypto from 'crypto'
 
 export const normalizeString = (string: string) => string.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase()
 
-export const getFileName = (file: string) => {
-  const extension = file.substring(file.lastIndexOf('.'))
-  return path.basename(file.substring(0, file.length - extension.length))
-}
+export const getFileName = (file: string) => path.parse(file).name
 
 export const getDirectories = (path: string) => fs.readdirSync(path).filter(file => fs.statSync(path + '/' + file).isDirectory())
 
