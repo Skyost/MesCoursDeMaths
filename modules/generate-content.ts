@@ -515,7 +515,13 @@ function generatePdf (resolver: Resolver, directory: string, file: string, previ
 }
 
 function calculateTexFileChecksums (resolver: Resolver, includedImagesDir: string, file: string) {
-  const latexIncludeCommands = [
+  interface LatexIncludeCommand {
+    command: string,
+    directory: string | null,
+    extensions: string[],
+    excludes: string[]
+  }
+  const latexIncludeCommands: LatexIncludeCommand[] = [
     {
       command: 'includegraphics',
       directory: includedImagesDir,
@@ -533,6 +539,12 @@ function calculateTexFileChecksums (resolver: Resolver, includedImagesDir: strin
       directory: path.dirname(file),
       extensions: ['.tex'],
       excludes: []
+    },
+    {
+      command: 'input',
+      directory: path.dirname(file),
+      extensions: ['.tex'],
+      excludes: []
     }
   ]
   const fileName = getFileName(file)
@@ -546,7 +558,7 @@ function calculateTexFileChecksums (resolver: Resolver, includedImagesDir: strin
       const fileName = match[2]
       if (!latexIncludeCommand.excludes.includes(fileName) && !(fileName in checksums)) {
         const extensions = ['', ...latexIncludeCommand.extensions]
-        let includeFile = resolver.resolve(latexIncludeCommand.directory, fileName)
+        let includeFile = latexIncludeCommand.directory ? resolver.resolve(latexIncludeCommand.directory, fileName) : fileName
         for (const extension of extensions) {
           const includeFileWithExtension = `${includeFile}${extension}`
           if (fs.existsSync(includeFileWithExtension)) {
