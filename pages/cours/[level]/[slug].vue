@@ -84,8 +84,7 @@ const onMathDocumentMounted = () => useNavigationEntry(lessonNavigationEntry(dat
   display: flex;
   flex-flow: row wrap;
   justify-content: flex-end;
-  column-gap: 8px;
-  row-gap: 8px;
+  gap: 8px 8px;
   margin-bottom: 1rem;
 
   .title {

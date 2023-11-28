@@ -10,7 +10,7 @@ export interface ModuleOptions {
 const name = 'generate-commit-sha-file'
 export default defineNuxtModule<ModuleOptions>({
   meta: {
-    name: name,
+    name,
     version: '0.0.1',
     configKey: 'commitShaFileGenerator',
     compatibility: { nuxt: '^3.0.0' }

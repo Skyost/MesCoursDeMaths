@@ -16,7 +16,7 @@ h2 {
   counter-increment: headline-2;
   counter-reset: headline-3;
 
-  &:before {
+  &::before {
     content: counter(headline-2, upper-roman) ' - ';
   }
 }
