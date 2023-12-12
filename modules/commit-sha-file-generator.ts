@@ -1,5 +1,6 @@
 import { execSync } from 'child_process'
 import fs from 'fs'
+import path from 'path'
 import { createResolver, defineNuxtModule } from '@nuxt/kit'
 import * as logger from '../utils/logger'
 
@@ -54,7 +55,9 @@ export default defineNuxtModule<ModuleOptions>({
     }
 
     // Write commit information to file.
-    fs.writeFileSync(resolver.resolve(srcDir, 'content', options.fileName), JSON.stringify(latestCommitData))
+    const filePath = resolver.resolve(srcDir, 'content', options.fileName)
+    fs.mkdirSync(path.dirname(filePath), { recursive: true })
+    fs.writeFileSync(filePath, JSON.stringify(latestCommitData))
 
     logger.success(name, `Wrote latest commit info for ${long}.`)
   }
