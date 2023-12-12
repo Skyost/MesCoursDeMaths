@@ -1,16 +1,54 @@
+/**
+ * Represents metadata for the website.
+ * @interface
+ */
 interface SiteMeta {
-  title: string,
-  description: string,
-  author: string,
-  url: string,
-  apiUrl: string,
+  /**
+   * Title of the website.
+   * @type {string}
+   */
+  title: string;
+
+  /**
+   * Description of the website.
+   * @type {string}
+   */
+  description: string;
+
+  /**
+   * Author of the website.
+   * @type {string}
+   */
+  author: string;
+
+  /**
+   * URL of the website.
+   * @type {string}
+   */
+  url: string;
+
+  /**
+   * Vercel API URL associated with the website.
+   * @type {string}
+   */
+  apiUrl: string;
+
+  /**
+   * GitHub information for the website.
+   * @type {{ username: string, repository: string, dataRepository: string }}
+   */
   github: {
-    username: string,
-    repository: string,
-    dataRepository: string
-  }
+    username: string;
+    repository: string;
+    dataRepository: string;
+  };
 }
 
+/**
+ * Metadata object for the website.
+ * @const {SiteMeta}
+ * @export
+ */
 export const siteMeta: SiteMeta = {
   title: 'Mes cours de maths',
   description: 'Vous trouverez sur Mes Cours de Maths des cours de mathématiques gratuits à destination des collégiens ainsi que les activités qui y sont rattachées. Et bien sûr : tout est téléchargeable au format PDF !',

@@ -1,5 +1,8 @@
 <script setup lang="ts">
-const props = defineProps<{ error: any }>()
+const props = defineProps<{
+  error: any,
+  changeTitle?: boolean
+}>()
 
 const errorCode = computed(() => {
   if (/^-?\d+$/.test(props.error.toString())) {
@@ -24,6 +27,7 @@ const title = computed(() => {
 
 <template>
   <div>
+    <Title v-if="changeTitle">{{ title }}</Title>
     <h1 v-text="title" />
     <p>
       Vous pouvez continuer votre navigation en allant sur <a href="javascript:history.back()">la page précédente</a> ou

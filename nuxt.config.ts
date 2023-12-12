@@ -46,9 +46,11 @@ export default defineNuxtConfig({
   },
 
   modules: [
-    '~/modules/generate-content',
-    '~/modules/generate-commit-sha-file',
-    '~/modules/generate-cname',
+    '~/modules/cname-generator',
+    '~/modules/commit-sha-file-generator',
+    '~/modules/content-downloader',
+    '~/modules/latex-pdf-generator',
+    '~/modules/nuxt-content-latex',
     'skimple-components/nuxt',
     '@nuxt/content',
     '@nuxtjs/google-fonts',
@@ -104,7 +106,11 @@ export default defineNuxtConfig({
     hostname: url
   },
 
-  commitShaFileGenerator: {
-    fileName: 'latest-commit.json'
+  experimental: {
+    defaults: {
+      nuxtLink: {
+        trailingSlash: 'append'
+      }
+    }
   }
 })

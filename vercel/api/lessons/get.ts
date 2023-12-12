@@ -1,7 +1,9 @@
+// noinspection ES6PreferShortImport
+
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { siteMeta } from '../../../site/meta'
-import { siteDirectories } from '../../../site/directories'
 import { createOctokitFromRequest, allowCors } from '../_utils'
+import { siteContentSettings } from '~/site/content'
 
 export interface APILessonsGetEntry {
   name: string,
@@ -26,7 +28,7 @@ export default async function handler (request: VercelRequest, response: VercelR
   const githubResponse = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
     owner: siteMeta.github.username,
     repo: siteMeta.github.dataRepository,
-    path: `${siteDirectories.lessonsDirectory}${path}`
+    path: `${siteContentSettings.dataLatexDirectory}/${path}`
   })
   const data = githubResponse.data
   if (!('name' in data) || !('path' in data) || !('sha' in data) || !('content' in data)) {
@@ -35,7 +37,7 @@ export default async function handler (request: VercelRequest, response: VercelR
   }
   const fileContent: APILessonsGetEntry = {
     name: data.name,
-    path: data.path.replace(siteDirectories.lessonsDirectory, ''),
+    path: data.path.replace(`${siteContentSettings.dataLatexDirectory}/`, ''),
     sha: data.sha,
     content: data.content
   }

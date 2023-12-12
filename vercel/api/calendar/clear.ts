@@ -1,7 +1,8 @@
+// noinspection ES6PreferShortImport
+
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { createOctokitFromRequest, allowCors, loadCalendar } from '../_utils'
 import { siteMeta } from '../../../site/meta'
-import { siteDirectories } from '../../../site/directories'
 
 export default async function handler (request: VercelRequest, response: VercelResponse) {
   if (!allowCors(request, response)) {
@@ -21,7 +22,7 @@ export default async function handler (request: VercelRequest, response: VercelR
   const deleteResponse = await octokit.request('DELETE /repos/{owner}/{repo}/contents/{path}', {
     owner: siteMeta.github.username,
     repo: siteMeta.github.dataRepository,
-    path: siteDirectories.calendarFile,
+    path: 'calendar.json',
     message: 'Suppression du calendrier.',
     sha: calendar.sha
   })

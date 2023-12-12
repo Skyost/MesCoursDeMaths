@@ -1,7 +1,9 @@
+// noinspection ES6PreferShortImport
+
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { siteMeta } from '../../../site/meta'
-import { siteDirectories } from '../../../site/directories'
 import { createOctokitFromRequest, allowCors } from '../_utils'
+import { siteContentSettings } from '~/site/content'
 
 export default async function handler (request: VercelRequest, response: VercelResponse) {
   if (!allowCors(request, response)) {
@@ -23,7 +25,7 @@ export default async function handler (request: VercelRequest, response: VercelR
   const getResponse = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
     owner: siteMeta.github.username,
     repo: siteMeta.github.dataRepository,
-    path: `${siteDirectories.lessonsDirectory}${path}`
+    path: `${siteContentSettings.dataLatexDirectory}/${path}`
   })
   if (!('content' in getResponse.data)) {
     response.status(500).send('Réponse de Github incorrecte.')
@@ -32,7 +34,7 @@ export default async function handler (request: VercelRequest, response: VercelR
   const deleteResponse = await octokit.request('DELETE /repos/{owner}/{repo}/contents/{path}', {
     owner: siteMeta.github.username,
     repo: siteMeta.github.dataRepository,
-    path: `${siteDirectories.lessonsDirectory}${path}`,
+    path: `${siteContentSettings.dataLatexDirectory}/${path}`,
     message: `Renommage de \`${path}\` (1/2).`,
     sha: request.query.sha.toString()
   })
@@ -40,7 +42,7 @@ export default async function handler (request: VercelRequest, response: VercelR
   const putResponse = await octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
     owner: siteMeta.github.username,
     repo: siteMeta.github.dataRepository,
-    path: `${siteDirectories.lessonsDirectory}${newPath}`,
+    path: `${siteContentSettings.dataLatexDirectory}/${newPath}`,
     message: `Renommage de \`${path}\` (2/2).`,
     content: getResponse.data.content
   })
@@ -55,7 +57,7 @@ export default async function handler (request: VercelRequest, response: VercelR
     deleteCommit,
     createCommit,
     name: file.name,
-    path: file.path?.replace(siteDirectories.lessonsDirectory, ''),
+    path: file.path?.replace(`${siteContentSettings.dataLatexDirectory}/`, ''),
     sha: file.sha
   })
 }

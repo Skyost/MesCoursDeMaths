@@ -1,7 +1,9 @@
+// noinspection ES6PreferShortImport
+
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { siteMeta } from '../../../site/meta'
-import { siteDirectories } from '../../../site/directories'
 import { createOctokitFromRequest, allowCors } from '../_utils'
+import { siteContentSettings } from '~/site/content'
 
 export default async function handler (request: VercelRequest, response: VercelResponse) {
   if (!allowCors(request, response)) {
@@ -19,7 +21,7 @@ export default async function handler (request: VercelRequest, response: VercelR
   const githubResponse = await octokit.request('DELETE /repos/{owner}/{repo}/contents/{path}', {
     owner: siteMeta.github.username,
     repo: siteMeta.github.dataRepository,
-    path: `${siteDirectories.lessonsDirectory}${path}`,
+    path: `${siteContentSettings.dataLatexDirectory}/${path}`,
     message: `Suppression de \`${path}\`.`,
     sha: request.query.sha.toString()
   })

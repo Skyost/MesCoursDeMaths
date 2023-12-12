@@ -105,9 +105,3 @@ sw.*
 *.run.xml
 .output
 content/
-!components/content/
-public/images/lessons/
-public/pdf/
-static/CNAME
-latex/
-tikz-images/

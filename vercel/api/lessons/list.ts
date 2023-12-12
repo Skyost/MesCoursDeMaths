@@ -1,7 +1,9 @@
+// noinspection ES6PreferShortImport
+
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { siteMeta } from '../../../site/meta'
-import { siteDirectories } from '../../../site/directories'
 import { createOctokitFromRequest, allowCors } from '../_utils'
+import { siteContentSettings } from '~/site/content'
 
 export interface APILessonsListEntry {
   name: string,
@@ -19,7 +21,7 @@ export default async function handler (request: VercelRequest, response: VercelR
     return
   }
   let path = request.query.path ?? ''
-  path = `${siteDirectories.lessonsDirectory}${path}`
+  path = `${siteContentSettings.dataLatexDirectory}/${path}`
   if (path.endsWith('/')) {
     path = path.substring(0, path.length - 1)
   }
@@ -33,7 +35,7 @@ export default async function handler (request: VercelRequest, response: VercelR
   for (const content of contents) {
     jsonResponse.push({
       name: content.name,
-      path: content.path.replace(siteDirectories.lessonsDirectory, ''),
+      path: content.path.replace(`${siteContentSettings.dataLatexDirectory}/`, ''),
       sha: content.sha,
       type: content.type
     })

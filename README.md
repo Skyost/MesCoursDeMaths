@@ -45,7 +45,7 @@ fichier `site/authentication.ts`. Indiquez votre `Client ID` dans le champ `clie
 Pour modifier le contenu de la page d'accueil, il faut éditer le fichier `pages/index.vue`.
 Une façon plus rapide (et intuitive...) de modifier les pages sera sûrement ajoutée à l'avenir.
 
-Vous pouvez également modifier certains paramètres dans le fichier `site/content-generator.js`, ceci vous permettra
+Vous pouvez également modifier la plupart des paramètres dans le fichier `site/content.js`. Ceci vous permettra
 de personnaliser les fichiers à compiler en PDF, à transformer en markdown, où se situent les images, etc.
 Le fichier `site/levels.ts` contient les différents niveaux disponibles. Chacun d'eux doit posséder un sous-dossier
 dans votre répertoire LaTeX.

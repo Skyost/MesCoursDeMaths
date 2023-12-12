@@ -1,10 +1,11 @@
+// noinspection ES6PreferShortImport
+
 import 'dotenv/config'
 import crypto from 'crypto'
 import type { IncomingHttpHeaders } from 'http'
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { Octokit } from '@octokit/core'
 import { siteMeta } from '../../site/meta'
-import { siteDirectories } from '../../site/directories'
 import { authentication } from '../../site/authentication'
 
 export interface Calendar {
@@ -18,7 +19,7 @@ export async function loadCalendar (octokit: Octokit): Promise<Calendar | null> 
     githubResponse = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
       owner: siteMeta.github.username,
       repo: siteMeta.github.dataRepository,
-      path: siteDirectories.calendarFile
+      path: 'calendar.json'
     })
   } catch (ex) {
     githubResponse = ex

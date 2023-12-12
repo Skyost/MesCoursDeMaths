@@ -1,5 +1,7 @@
+// noinspection ES6PreferShortImport
+
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import { createOAuthAppAuth, WebFlowAuthOptions } from '@octokit/auth-oauth-app'
+import { createOAuthAppAuth, type WebFlowAuthOptions } from '@octokit/auth-oauth-app'
 import { encrypt } from '../_utils'
 import { authentication } from '../../../site/authentication'
 import { debug } from '../../../site/debug'

@@ -1,21 +1,29 @@
 <script setup lang="ts">
 import html2canvas from 'html2canvas'
-import { LessonContent } from '~/types'
 
 withDefaults(defineProps<{
-  document: LessonContent,
+  title: string,
+  body: string,
   color?: string
 }>(), {
   color: 'red'
 })
 
 const root = ref<HTMLElement | null>(null)
-const setupTimeout = ref<ReturnType<typeof setTimeout> | null>(null)
-const initialDotsTimeout = ref<ReturnType<typeof setTimeout> | null>(null)
 
 const route = useRoute()
 
 const setupDocument = () => {
+  const tables = root.value!.querySelectorAll<HTMLElement>('table')
+  for (const table of tables) {
+    table.classList.add('table', 'table-bordered', 'table-hover')
+    const parent = table.parentNode
+    const wrapper = document.createElement('div')
+    wrapper.classList.add('table-responsive')
+    parent!.replaceChild(wrapper, table)
+    wrapper.appendChild(table)
+  }
+
   const dotLines = root.value!.querySelectorAll<HTMLElement>('.dots')
   for (const dotLine of dotLines) {
     const parent = dotLine.parentElement
@@ -76,8 +84,6 @@ const setupDocument = () => {
   if (scrollCollapse) {
     scrollCollapse.scrollIntoView(true)
   }
-
-  setupTimeout.value = null
 }
 
 const resizeDotLines = () => {
@@ -95,26 +101,17 @@ const resizeDotLines = () => {
       dotLine.innerHTML = dotLine.innerHTML.substring(0, Math.max(0, dotLine.innerHTML.length - 2))
     }
   }
-  initialDotsTimeout.value = null
 }
 
 onMounted(async () => {
   await nextTick()
-  setupTimeout.value = setTimeout(setupDocument, 1000)
-  initialDotsTimeout.value = setTimeout(resizeDotLines, 1000)
+  setupDocument()
+  resizeDotLines()
   window.addEventListener('load', resizeDotLines)
   window.addEventListener('resize', resizeDotLines)
 })
 
 onUnmounted(() => {
-  if (setupTimeout.value) {
-    clearTimeout(setupTimeout.value)
-    setupTimeout.value = null
-  }
-  if (initialDotsTimeout.value) {
-    clearTimeout(initialDotsTimeout.value)
-    initialDotsTimeout.value = null
-  }
   window.removeEventListener('load', resizeDotLines)
   window.removeEventListener('resize', resizeDotLines)
 })
@@ -122,8 +119,8 @@ onUnmounted(() => {
 
 <template>
   <div ref="root" class="math-document" :class="color">
-    <h1 v-html="document.name" />
-    <content-renderer class="math-document-content" :value="document" />
+    <h1 v-html="title" />
+    <div class="math-document-content" v-html="body" />
   </div>
 </template>
 
@@ -187,6 +184,46 @@ onUnmounted(() => {
       display: none;
     }
 
+    h2 {
+      color: #1c567d;
+      padding-bottom: 0.2em;
+      margin-bottom: 0.75em;
+      counter-increment: headline-2;
+      counter-reset: headline-3;
+
+      &::before {
+        content: counter(headline-2, upper-roman) ' - ';
+      }
+    }
+
+    h3 {
+      color: #2980b9;
+      border-bottom: 1px solid #d7d7d7;
+      margin-bottom: 0.75em;
+      counter-increment: headline-3;
+
+      &::before {
+        content: counter(headline-3) '. ';
+      }
+    }
+
+    h4 {
+      border-bottom: none !important;
+      margin-bottom: 0 !important;
+    }
+
+    img {
+      max-width: 100%;
+    }
+
+    .table {
+      background-color: white;
+
+      td {
+        height: 2.5em;
+      }
+    }
+
     .button-exercice {
       font-size: 0.8em;
       margin-top: calc(-1.6em - 1.5rem);
@@ -241,9 +278,34 @@ onUnmounted(() => {
       }
     }
 
-    ol,
-    ul {
+    ol, ul {
+      padding-left: 1.5rem;
       margin-bottom: 1rem;
+
+      li {
+        padding-left: 1rem;
+
+        &::marker {
+          font-weight: bold;
+        }
+
+        :last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+
+    ol > li > ol {
+      list-style-type: lower-alpha;
+    }
+
+    ul li {
+      list-style-type: '— ';
+
+      &:last-child,
+      &:last-child > p {
+        margin-bottom: 0;
+      }
     }
 
     .center {

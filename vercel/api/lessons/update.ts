@@ -1,7 +1,9 @@
+// noinspection ES6PreferShortImport
+
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { siteMeta } from '../../../site/meta'
-import { siteDirectories } from '../../../site/directories'
 import { createOctokitFromRequest, allowCors } from '../_utils'
+import { siteContentSettings } from '~/site/content'
 
 export default async function handler (request: VercelRequest, response: VercelResponse) {
   if (!allowCors(request, response)) {
@@ -19,7 +21,7 @@ export default async function handler (request: VercelRequest, response: VercelR
   const githubResponse = await octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
     owner: siteMeta.github.username,
     repo: siteMeta.github.dataRepository,
-    path: `${siteDirectories.lessonsDirectory}${path}`,
+    path: `${siteContentSettings.dataLatexDirectory}/${path}`,
     message: `Mise à jour de \`${path}\`.`,
     sha: request.body.sha,
     content: request.body.content
@@ -33,7 +35,7 @@ export default async function handler (request: VercelRequest, response: VercelR
   response.status(githubResponse.status).json({
     commit: data.commit,
     name: file.name,
-    path: file.path?.replace(siteDirectories.lessonsDirectory, ''),
+    path: file.path?.replace(`${siteContentSettings.dataLatexDirectory}/`, ''),
     sha: file.sha,
     content: file.content
   })
