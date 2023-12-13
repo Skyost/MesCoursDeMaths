@@ -163,7 +163,7 @@ const generateAndCopy = (
     {
       includeGraphicsDirectories: options.getIncludeGraphicsDirectories(filePath),
       cacheDirectory: previousBuildDirectory == null ? undefined : previousBuildDirectory,
-      cachedFileName: options.renameFile(getFileName(filePath))
+      cachedFileName: options.renameFile(destinationFileName ?? getFileName(filePath))
     }
   )
 
