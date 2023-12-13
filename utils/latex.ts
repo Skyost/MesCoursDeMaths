@@ -3,6 +3,8 @@
 import path from 'path'
 import fs from 'fs'
 import { execSync } from 'child_process'
+import { optimize, type PluginConfig } from 'svgo'
+import type { XastElement, XastParent, XastRoot } from 'svgo/lib/types'
 import { debug } from '../site/debug'
 import { generateChecksum, getFileName } from './utils'
 import * as logger from './logger'
@@ -19,23 +21,33 @@ export interface GenerateOptions {
   /**
    * If true, generate the PDF even if it already exists.
    */
-  generateIfExists?: boolean;
+  generateIfExists?: boolean
   /**
    * Directory to find cached generated files.
    */
-  cacheDirectory?: string;
+  cacheDirectory?: string
   /**
    * The cached file name.
    */
-  cachedFileName?: string;
+  cachedFileName?: string
   /**
    * If true, clean auxiliary files after compilation.
    */
-  clean?: boolean;
+  clean?: boolean
   /**
    * Directories to search for graphics files.
    */
-  includeGraphicsDirectories?: string[];
+  includeGraphicsDirectories?: string[]
+}
+
+/**
+ * Options for generating SVGs.
+ */
+export interface SvgGenerateOptions extends GenerateOptions {
+  /**
+   * Whether to compress the SVG.
+   */
+  optimize?: boolean
 }
 
 /**
@@ -45,11 +57,11 @@ export interface GenerateResult {
   /**
    * Path to the generated file or null if generation fails.
    */
-  builtFilePath: string | null;
+  builtFilePath: string | null
   /**
    * Indicates whether the file was retrieved from the cache.
    */
-  wasCached: boolean;
+  wasCached: boolean
 }
 
 /**
@@ -59,7 +71,7 @@ export interface PdfGenerateResult extends GenerateResult {
   /**
    * Path to the checksums file or null if generation fails.
    */
-  checksumsFilePath: string | null;
+  checksumsFilePath: string | null
 }
 
 /**
@@ -69,19 +81,19 @@ interface CacheResult {
   /**
    * Indicates whether the file and its checksums are fully cached.
    */
-  isFullyCached: boolean;
+  isFullyCached: boolean
   /**
    * Checksums of the file and its dependencies.
    */
-  checksums: string;
+  checksums: string
   /**
    * Path to the cached PDF file.
    */
-  cachedPdfFilePath: string;
+  cachedPdfFilePath: string
   /**
    * Path to the cached checksums file.
    */
-  cachedChecksumsFilePath: string;
+  cachedChecksumsFilePath: string
 }
 
 /**
@@ -91,33 +103,33 @@ interface LatexIncludeCommand {
   /**
    * LaTeX command for inclusion.
    */
-  command: string;
+  command: string
   /**
    * Directories to search for files related to this command.
    */
-  directories: (string | null)[];
+  directories: (string | null)[]
   /**
    * Possible file extensions for this command.
    */
-  extensions: string[];
+  extensions: string[]
   /**
    * File names to exclude for this command.
    */
-  excludes: string[];
+  excludes: string[]
   /**
    * Indicates whether the command involves nested includes.
    */
-  hasIncludes: boolean;
+  hasIncludes: boolean
   /**
    * Indicates whether the target of the command is a directory.
    */
-  targetIsDirectory: boolean;
+  targetIsDirectory: boolean
 }
 
 /**
  * Type definition for checksums.
  */
-type Checksums = { [key: string]: string | Checksums };
+type Checksums = { [key: string]: string | Checksums }
 
 /**
  * Generates a PDF file from a LaTeX source file.
@@ -192,7 +204,7 @@ export const generatePdf = (texFilePath: string, options: GenerateOptions = {}):
  * @param {GenerateOptions} options - Generation options.
  * @returns {GenerateResult} - Result of SVG generation.
  */
-export const generateSvg = (texFilePath: string, options: GenerateOptions = {}): GenerateResult => {
+export const generateSvg = (texFilePath: string, options: SvgGenerateOptions = { optimize: true }): GenerateResult => {
   // Extract the file name and directory from the given LaTeX file path.
   const fileName = getFileName(texFilePath)
   const directory = path.dirname(texFilePath)
@@ -228,6 +240,19 @@ export const generateSvg = (texFilePath: string, options: GenerateOptions = {}):
 
   // Convert the PDF file to SVG using pdftocairo.
   svgFilePath = pdftocairo(path.dirname(pdfFilePath), `${fileName}.pdf`)
+  if (svgFilePath && options.optimize) {
+    const svgContent = fs.readFileSync(svgFilePath, { encoding: 'utf8' })
+    const { data: optimizedSvgContent } = optimize(svgContent, {
+      path: svgFilePath,
+      multipass: true,
+      floatPrecision: 9,
+      plugins: [
+        'preset-default',
+        forceUnit
+      ]
+    })
+    fs.writeFileSync(svgFilePath, optimizedSvgContent)
+  }
 
   // Return information about the generated SVG file.
   return { builtFilePath: svgFilePath, wasCached }
@@ -454,4 +479,32 @@ const calculateTexFileChecksums = (filePath: string, includeGraphicsDirectories:
   }
   // Return the calculated checksums.
   return checksums
+}
+
+/**
+ * An SVGO plugin that allows to force a given unit on width and height attributes of SVGs.
+ */
+const forceUnit: PluginConfig = {
+  name: 'forceUnit',
+  fn: (_root: XastRoot, params: any) => {
+    const requiredUnit = params?.unit ?? 'pt'
+    return {
+      element: {
+        enter: (node: XastElement, parentNode: XastParent) => {
+          if (node.name === 'svg' && parentNode.type === 'root') {
+            const attributes = ['width', 'height']
+            for (const attribute of attributes) {
+              let value = node.attributes[attribute]
+              if (!value || value.endsWith(requiredUnit)) {
+                continue
+              }
+              const unitRegex = /[0-9]+\.?[0-9]*(px|pt|cm|mm|in|em|ex|pc)?/g
+              value = value.replace(unitRegex, match => parseFloat(match).toString()) + requiredUnit
+              node.attributes[attribute] = value
+            }
+          }
+        }
+      }
+    }
+  }
 }

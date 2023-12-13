@@ -107,12 +107,12 @@ onMounted(async () => {
   await nextTick()
   setupDocument()
   resizeDotLines()
-  window.addEventListener('load', resizeDotLines)
+  // window.addEventListener('load', resizeDotLines)
   window.addEventListener('resize', resizeDotLines)
 })
 
 onUnmounted(() => {
-  window.removeEventListener('load', resizeDotLines)
+  // window.removeEventListener('load', resizeDotLines)
   window.removeEventListener('resize', resizeDotLines)
 })
 </script>
@@ -139,10 +139,6 @@ onUnmounted(() => {
 
   h4 {
     color: $titleColor;
-  }
-
-  img {
-    margin-bottom: 1rem;
   }
 
   ul li::marker,
@@ -289,7 +285,7 @@ onUnmounted(() => {
           font-weight: bold;
         }
 
-        :last-child {
+        > *:only-child {
           margin-bottom: 0;
         }
       }
@@ -301,11 +297,6 @@ onUnmounted(() => {
 
     ul li {
       list-style-type: '— ';
-
-      &:last-child,
-      &:last-child > p {
-        margin-bottom: 0;
-      }
     }
 
     .center {

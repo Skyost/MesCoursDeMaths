@@ -178,7 +178,8 @@ const extractImages = (
         extractedImageTexFilePath,
         {
           includeGraphicsDirectories,
-          cacheDirectory: resolver.resolve(sourceDirectoryPath, siteContentSettings.downloadDestinations.previousBuild, path.relative(sourceDirectoryPath, extractedImageTexFilePath))
+          cacheDirectory: resolver.resolve(sourceDirectoryPath, siteContentSettings.downloadDestinations.previousBuild, path.relative(sourceDirectoryPath, extractedImageTexFilePath)),
+          optimize: true
         }
       )
 
@@ -311,7 +312,8 @@ const resolveImageSrc = (
       imagePath,
       {
         includeGraphicsDirectories,
-        cacheDirectory: cacheDirectoryPath
+        cacheDirectory: cacheDirectoryPath,
+        optimize: true
       }
     )
 

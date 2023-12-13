@@ -172,9 +172,11 @@ export const siteContentSettings: SiteContentSettings = {
 
 \\setscratch{scale=1.5}
 
+% Graphics path :
 %s
 
 \\begin{document}
+  % Content :
   %s
 \\end{document}
 `,
@@ -214,6 +216,7 @@ export const siteContentSettings: SiteContentSettings = {
 \\usetikzlibrary{ext.transformations.mirror}
 \\usetikzlibrary{babel}
 
+% Graphics path :
 %s
 
 \\newcommand{\\dddots}[1]{\\makebox[#1]{\\dotfill}}
@@ -263,6 +266,7 @@ export const siteContentSettings: SiteContentSettings = {
 }
 
 \\begin{document}
+  % Content :
   %s
 \\end{document}
 `
