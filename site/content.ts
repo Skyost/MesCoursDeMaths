@@ -165,9 +165,9 @@ export const siteContentSettings: SiteContentSettings = {
     path.dirname(latexFilePath)
   ],
   picturesTemplate: {
-    scratch: `\\documentclass{standalone}
+    scratch: `\\documentclass[tikz]{standalone}
 
-\\usepackage{tikz}
+% Let's load all required packages for my Scratch scripts.
 \\usepackage{scratch3}
 
 \\setscratch{scale=1.5}
@@ -182,7 +182,7 @@ export const siteContentSettings: SiteContentSettings = {
 `,
     tikzpicture: `\\documentclass[tikz]{standalone}
 
-\\usepackage{tikz}
+% Let's load all required packages for my graphics.
 \\usepackage{fourier-otf}
 \\usepackage{fontspec}
 \\usepackage{tkz-euclide}
@@ -195,6 +195,7 @@ export const siteContentSettings: SiteContentSettings = {
 \\usepackage{xparse}
 \\usepackage[group-separator={\\;}, group-minimum-digits=4]{siunitx}
 
+% Options for xlop.
 \\opset{%
   dividendbridge,%
   carrysub,%
@@ -206,8 +207,10 @@ export const siteContentSettings: SiteContentSettings = {
   shiftdecimalsep=divisor%
 }
 
+% Switch math font.
 \\setmathfont{Erewhon Math}
 
+% Some tikz libraries.
 \\usetikzlibrary{angles}
 \\usetikzlibrary{patterns}
 \\usetikzlibrary{intersections}
@@ -216,9 +219,10 @@ export const siteContentSettings: SiteContentSettings = {
 \\usetikzlibrary{ext.transformations.mirror}
 \\usetikzlibrary{babel}
 
-% Graphics path :
+% Graphics path.
 %s
 
+% \\dddots command.
 \\newcommand{\\dddots}[1]{\\makebox[#1]{\\dotfill}}
 \\NewDocumentCommand{\\graphfonction}{O{1} O{1} m m m m O{\\x} O{f} O{0.5 below right}}{
   \\tikzgraph[#1][#2]{#3}{#4}{#5}{#6}
@@ -228,6 +232,7 @@ export const siteContentSettings: SiteContentSettings = {
   \\end{scope}
 }
 
+% \\tikzgraph command.
 \\NewDocumentCommand{\\tikzgraph}{O{1} O{1} m m m m}{
   \\coordinate (O) at (0,0);
 
@@ -256,6 +261,7 @@ export const siteContentSettings: SiteContentSettings = {
   \\draw[thick,->] (0,\\ymin) -- (0,\\ymax);
 }
 
+% 1.5x scale.
 \\tikzset{
   graphfonctionlabel/.style args={at #1 #2 with #3}{
     postaction={
@@ -266,7 +272,7 @@ export const siteContentSettings: SiteContentSettings = {
 }
 
 \\begin{document}
-  % Content :
+  % Content.
   %s
 \\end{document}
 `

@@ -247,7 +247,14 @@ export const generateSvg = (texFilePath: string, options: SvgGenerateOptions = {
       multipass: true,
       floatPrecision: 9,
       plugins: [
-        'preset-default',
+        {
+          name: 'preset-default',
+          params: {
+            overrides: {
+              removeViewBox: false
+            }
+          }
+        },
         forceUnit
       ]
     })
