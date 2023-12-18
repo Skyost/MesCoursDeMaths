@@ -45,4 +45,4 @@ export const getLevelUrl = (level: Level): string => `/cours/${level.id}/`
  * @param {Level} level - The level.
  * @returns {string} - The level image URL.
  */
-export const getLevelImage = (level: Level): string => `/images/levels/${level.id}.svg`
+export const getLevelImage = (level: Level): string => `/images/${level.id}/index.svg`

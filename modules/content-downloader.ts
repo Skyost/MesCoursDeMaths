@@ -10,6 +10,7 @@ import * as logger from '../utils/logger'
 import { authentication } from '../site/authentication'
 import { siteContentSettings } from '../site/content'
 import { siteMeta } from '../site/meta'
+import { debug } from '../site/debug'
 import type { ModuleOptions as CommitShaFileGeneratorModule } from './commit-sha-file-generator'
 
 /**
@@ -64,10 +65,12 @@ export default defineNuxtModule<ModuleOptions>({
     const srcDir = nuxt.options.srcDir
 
     let latestCommitShaFilename = null
-    if (options.latestCommitShaFileName) {
-      latestCommitShaFilename = options.latestCommitShaFileName
-    } else if ('commitShaFileGenerator' in nuxt.options) {
-      latestCommitShaFilename = (nuxt.options.commitShaFileGenerator as CommitShaFileGeneratorModule).fileName
+    if (!debug) {
+      if (options.latestCommitShaFileName) {
+        latestCommitShaFilename = options.latestCommitShaFileName
+      } else if ('commitShaFileGenerator' in nuxt.options) {
+        latestCommitShaFilename = (nuxt.options.commitShaFileGenerator as CommitShaFileGeneratorModule).fileName
+      }
     }
 
     await downloadPreviousBuild(resolver, srcDir, options)
@@ -140,33 +143,31 @@ async function downloadRemoteDirectory (resolver: Resolver, srcDir: string, late
   }
   const octokit = new Octokit({ auth: options.github.accessToken })
   if (latestCommitShaFile !== null) {
-    const latestCommitShaFilePath = resolver.resolve(srcDir, latestCommitShaFile)
-    if (!fs.existsSync(latestCommitShaFile)) {
-      logger.info(name, `Getting and saving the latest commit info of ${options.github.username}/${options.github.dataRepository}...`)
-      const response = await octokit.request('GET /repos/{owner}/{repo}/commits/{ref}', {
-        owner: options.github.username,
-        repo: options.github.dataRepository,
-        ref: 'main'
-      })
-      let latestCommitData = {
-        dataRepository: {
-          long: response.data.sha,
-          short: response.data.sha.substring(0, 7)
-        }
+    logger.info(name, `Getting and saving the latest commit info of ${options.github.username}/${options.github.dataRepository}...`)
+    const response = await octokit.request('GET /repos/{owner}/{repo}/commits/{ref}', {
+      owner: options.github.username,
+      repo: options.github.dataRepository,
+      ref: 'main'
+    })
+    let latestCommitData = {
+      dataRepository: {
+        long: response.data.sha,
+        short: response.data.sha.substring(0, 7)
       }
-      if (fs.existsSync(latestCommitShaFilePath)) {
-        latestCommitData = {
-          ...latestCommitData,
-          ...JSON.parse(fs.readFileSync(latestCommitShaFilePath, { encoding: 'utf8' }))
-        }
-      } else {
-        const fileDirectory = path.dirname(latestCommitShaFilePath)
-        if (!fs.existsSync(fileDirectory)) {
-          fs.mkdirSync(fileDirectory, { recursive: true })
-        }
-      }
-      fs.writeFileSync(latestCommitShaFilePath, JSON.stringify(latestCommitData))
     }
+    const latestCommitShaFilePath = resolver.resolve(srcDir, latestCommitShaFile)
+    if (fs.existsSync(latestCommitShaFilePath)) {
+      latestCommitData = {
+        ...latestCommitData,
+        ...JSON.parse(fs.readFileSync(latestCommitShaFilePath, { encoding: 'utf8' }))
+      }
+    } else {
+      const fileDirectory = path.dirname(latestCommitShaFilePath)
+      if (!fs.existsSync(fileDirectory)) {
+        fs.mkdirSync(fileDirectory, { recursive: true })
+      }
+    }
+    fs.writeFileSync(latestCommitShaFilePath, JSON.stringify(latestCommitData))
   }
 
   const directoryPath = resolver.resolve(srcDir, options.downloadDestinations.data)

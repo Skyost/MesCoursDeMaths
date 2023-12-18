@@ -25,5 +25,5 @@ export const getLessonUrl = (lesson: Lesson): string => {
  */
 export const getLessonImage = (lesson: Lesson): string => {
   const level = levels[lesson.level]
-  return `/images/lessons/${level.id}/${lesson.id}.svg`
+  return `/images/${level.id}/${lesson.id}.svg`
 }

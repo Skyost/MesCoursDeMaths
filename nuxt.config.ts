@@ -99,7 +99,10 @@ export default defineNuxtConfig({
   },
 
   linkChecker: {
-    failOnError: false
+    failOnError: false,
+    excludeLinks: [
+      '/pdf/**'
+    ]
   },
 
   cname: {
