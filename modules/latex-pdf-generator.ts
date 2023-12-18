@@ -128,7 +128,7 @@ const generatePdf = (
         const printVariant = options.generatePrintVariant(filePath, content)
         if (printVariant) {
           fs.writeFileSync(filePath, printVariant.content)
-          generateAndCopy(resolver, filePath, previousBuildDirectory, destinationDirectoryPath, options, printVariant.name)
+          generateAndCopy(resolver, filePath, previousBuildDirectory, destinationDirectoryPath, options, printVariant.name, ' (impression)')
           fs.writeFileSync(filePath, content)
         }
       }
@@ -145,6 +145,7 @@ const generatePdf = (
  * @param {string} destinationDirectoryPath Absolute path to the destination directory.
  * @param {ModuleOptions} options Module options.
  * @param {string | null} destinationFileName The destination directory.
+ * @param {string | null} variant Whether we're generating a variant.
  * @return {boolean} Whether the operation is a success.
  */
 const generateAndCopy = (
@@ -153,9 +154,10 @@ const generateAndCopy = (
   previousBuildDirectory: string | null,
   destinationDirectoryPath: string,
   options: ModuleOptions,
-  destinationFileName: string | null = null
+  destinationFileName: string | null = null,
+  variant: string | null = null
 ): boolean => {
-  logger.info(name, `Processing "${filePath}"...`)
+  logger.info(name, `Processing "${filePath}"${variant ?? ''}...`)
 
   // Generate PDF and checksums files.
   const { wasCached, builtFilePath, checksumsFilePath } = latex.generatePdf(

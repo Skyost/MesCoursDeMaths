@@ -167,12 +167,12 @@ export const siteContentSettings: SiteContentSettings = {
   picturesTemplate: {
     scratch: `\\documentclass[tikz]{standalone}
 
-% Let's load all required packages for my Scratch scripts.
+% Load all required packages for my Scratch scripts.
 \\usepackage{scratch3}
 
 \\setscratch{scale=1.5}
 
-% Graphics path :
+% Graphics path.
 %s
 
 \\begin{document}
@@ -182,7 +182,7 @@ export const siteContentSettings: SiteContentSettings = {
 `,
     tikzpicture: `\\documentclass[tikz]{standalone}
 
-% Let's load all required packages for my graphics.
+% Load all required packages for my graphics.
 \\usepackage{fourier-otf}
 \\usepackage{fontspec}
 \\usepackage{tkz-euclide}
@@ -210,7 +210,7 @@ export const siteContentSettings: SiteContentSettings = {
 % Switch math font.
 \\setmathfont{Erewhon Math}
 
-% Some tikz libraries.
+% Load some tikz libraries.
 \\usetikzlibrary{angles}
 \\usetikzlibrary{patterns}
 \\usetikzlibrary{intersections}

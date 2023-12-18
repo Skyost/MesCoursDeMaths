@@ -242,10 +242,11 @@ export const generateSvg = (texFilePath: string, options: SvgGenerateOptions = {
   svgFilePath = pdftocairo(path.dirname(pdfFilePath), `${fileName}.pdf`)
   if (svgFilePath && options.optimize) {
     const svgContent = fs.readFileSync(svgFilePath, { encoding: 'utf8' })
+    const size = fs.statSync(svgFilePath).size
     const { data: optimizedSvgContent } = optimize(svgContent, {
       path: svgFilePath,
       multipass: true,
-      floatPrecision: 9,
+      floatPrecision: size >= 100000 ? 2 : 5,
       plugins: [
         {
           name: 'preset-default',
@@ -495,10 +496,18 @@ const forceUnit: PluginConfig = {
   name: 'forceUnit',
   fn: (_root: XastRoot, params: any) => {
     const requiredUnit = params?.unit ?? 'pt'
+    const size: {[key: string]: string | null } = { width: null, height: null }
     return {
       element: {
         enter: (node: XastElement, parentNode: XastParent) => {
           if (node.name === 'svg' && parentNode.type === 'root') {
+            const viewBox = node.attributes.viewBox
+            if (viewBox) {
+              const parts = viewBox.split(' ')
+              node.attributes.width = parts[2] + requiredUnit
+              node.attributes.height = parts[3] + requiredUnit
+              return
+            }
             const attributes = ['width', 'height']
             for (const attribute of attributes) {
               let value = node.attributes[attribute]
@@ -506,7 +515,9 @@ const forceUnit: PluginConfig = {
                 continue
               }
               const unitRegex = /[0-9]+\.?[0-9]*(px|pt|cm|mm|in|em|ex|pc)?/g
-              value = value.replace(unitRegex, match => parseFloat(match).toString()) + requiredUnit
+              const number = value.replace(unitRegex, match => parseFloat(match).toString())
+              size[attribute] = number
+              value = number + requiredUnit
               node.attributes[attribute] = value
             }
           }
