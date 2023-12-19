@@ -41,7 +41,7 @@ import { siteMeta } from '~/site/meta'
               </a>
             </li>
           </ul>
-          <current-commit-sha />
+          <current-commit-sha data-repository-link="/prof/cours/" />
         </ski-column>
       </ski-columns>
     </ski-container>
