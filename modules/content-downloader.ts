@@ -64,18 +64,18 @@ export default defineNuxtModule<ModuleOptions>({
     const resolver = createResolver(import.meta.url)
     const srcDir = nuxt.options.srcDir
 
-    let latestCommitShaFilename = null
+    const contentDirectoryPath = resolver.resolve(srcDir, 'content')
+    let latestCommitShaFilePath = null
     if (!debug) {
       if (options.latestCommitShaFileName) {
-        latestCommitShaFilename = options.latestCommitShaFileName
+        latestCommitShaFilePath = resolver.resolve(contentDirectoryPath, options.latestCommitShaFileName)
       } else if ('commitShaFileGenerator' in nuxt.options) {
-        latestCommitShaFilename = (nuxt.options.commitShaFileGenerator as CommitShaFileGeneratorModule).fileName
+        latestCommitShaFilePath = resolver.resolve(contentDirectoryPath, (nuxt.options.commitShaFileGenerator as CommitShaFileGeneratorModule).fileName)
       }
     }
 
     await downloadPreviousBuild(resolver, srcDir, options)
-    if (await downloadRemoteDirectory(resolver, srcDir, latestCommitShaFilename, options)) {
-      const contentDirectoryPath = resolver.resolve(srcDir, 'content')
+    if (await downloadRemoteDirectory(resolver, srcDir, latestCommitShaFilePath, options)) {
       copyFilesIfNeeded(resolver, resolver.resolve(srcDir, options.downloadDestinations.data), contentDirectoryPath, options)
     }
   }
@@ -132,17 +132,22 @@ async function downloadPreviousBuild (resolver: Resolver, srcDir: string, option
  *
  * @param {Resolver} resolver The resolver instance.
  * @param {string} srcDir The source directory.
- * @param {string | null} latestCommitShaFile The latest commit sha file.
+ * @param {string | null} latestCommitShaFilePath The latest commit sha file path.
  * @param {ModuleOptions} options Module options.
  * @return {Promise<boolean>} Whether the download is a success.
  */
-async function downloadRemoteDirectory (resolver: Resolver, srcDir: string, latestCommitShaFile: string | null, options: ModuleOptions): Promise<boolean> {
+async function downloadRemoteDirectory (
+  resolver: Resolver,
+  srcDir: string,
+  latestCommitShaFilePath: string | null,
+  options: ModuleOptions
+): Promise<boolean> {
   if (options.github.repository === options.github.dataRepository) {
     copySync(resolver.resolve(srcDir, options.dataLatexDirectory), resolver.resolve(srcDir, options.downloadDestinations.data))
     return true
   }
   const octokit = new Octokit({ auth: options.github.accessToken })
-  if (latestCommitShaFile !== null) {
+  if (latestCommitShaFilePath) {
     logger.info(name, `Getting and saving the latest commit info of ${options.github.username}/${options.github.dataRepository}...`)
     const response = await octokit.request('GET /repos/{owner}/{repo}/commits/{ref}', {
       owner: options.github.username,
@@ -155,7 +160,6 @@ async function downloadRemoteDirectory (resolver: Resolver, srcDir: string, late
         short: response.data.sha.substring(0, 7)
       }
     }
-    const latestCommitShaFilePath = resolver.resolve(srcDir, latestCommitShaFile)
     if (fs.existsSync(latestCommitShaFilePath)) {
       latestCommitData = {
         ...latestCommitData,
