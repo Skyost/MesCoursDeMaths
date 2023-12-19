@@ -42,13 +42,15 @@ export default defineTransformer({
     )
 
     // Extract images from the .tex file content and return the modified content.
-    const assetsDirectoryPath = resolver.resolve(sourceDirectoryPath, 'node_modules', `.${name}`, siteContentSettings.latexAssetsDestinationDirectory)
+    const moduleDataDirectoryPath = resolver.resolve(sourceDirectoryPath, 'node_modules', `.${name}`)
+    const assetsDirectoryPath = resolver.resolve(moduleDataDirectoryPath, siteContentSettings.latexAssetsDestinationDirectory)
     const content = extractImages(
       resolver,
       rawContent,
       (assetName: string) => siteContentSettings.getLatexAssetDestination(assetsDirectoryPath, assetName, originalTexFilePath),
       filePath,
-      sourceDirectoryPath
+      sourceDirectoryPath,
+      moduleDataDirectoryPath
     )
 
     // Load the Pandoc redefinitions header content.
@@ -124,6 +126,7 @@ export default defineTransformer({
  * @param {string} getAssetDestinationPath - The function that allows to get the destination path of the asset.
  * @param {string} texFilePath - The absolute path of the LaTeX file.
  * @param {string} sourceDirectoryPath - The absolute path to the source directory.
+ * @param {string} moduleDataDirectoryPath - The absolute path to the module data directory.
  * @returns {string} - The modified LaTeX content with HTML-friendly image references.
  */
 const extractImages = (
@@ -131,7 +134,8 @@ const extractImages = (
   latexContent: string,
   getAssetDestinationPath: (assetName: string) => string,
   texFilePath: string,
-  sourceDirectoryPath: string
+  sourceDirectoryPath: string,
+  moduleDataDirectoryPath: string
 ): string => {
   // Clone the original LaTeX content.
   let result = latexContent
@@ -178,7 +182,7 @@ const extractImages = (
         extractedImageTexFilePath,
         {
           includeGraphicsDirectories,
-          cacheDirectory: resolver.resolve(sourceDirectoryPath, siteContentSettings.downloadDestinations.previousBuild, path.relative(sourceDirectoryPath, extractedImageTexFilePath)),
+          cacheDirectory: resolver.resolve(sourceDirectoryPath, siteContentSettings.downloadDestinations.previousBuild, path.dirname(path.relative(moduleDataDirectoryPath, extractedImageTexFilePath))),
           optimize: true
         }
       )
@@ -266,7 +270,7 @@ const replaceImages = (
             filePath,
             directories.map(includedGraphicDirectory => resolver.resolve(contentDirectoryPath, includedGraphicDirectory)),
             assetsDirectoryPath,
-            resolver.resolve(sourceDirectoryPath, siteContentSettings.downloadDestinations.previousBuild, directory, src + extension)
+            resolver.resolve(sourceDirectoryPath, siteContentSettings.downloadDestinations.previousBuild, directory)
           )
 
           // Format the resolved source as an absolute path.
