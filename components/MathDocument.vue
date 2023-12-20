@@ -106,15 +106,11 @@ const resizeDotLines = () => {
 onMounted(async () => {
   await nextTick()
   setupDocument()
-  resizeDotLines()
-  // window.addEventListener('load', resizeDotLines)
+  setTimeout(resizeDotLines, 200)
   window.addEventListener('resize', resizeDotLines)
 })
 
-onUnmounted(() => {
-  // window.removeEventListener('load', resizeDotLines)
-  window.removeEventListener('resize', resizeDotLines)
-})
+onUnmounted(() => window.removeEventListener('resize', resizeDotLines))
 </script>
 
 <template>
