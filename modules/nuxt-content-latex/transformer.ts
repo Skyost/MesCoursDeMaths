@@ -235,7 +235,7 @@ const replaceImages = (
   contentDirectoryPath: string
 ) => {
   // Possible image file extensions.
-  const extensions = ['', '.pdf', '.svg', '.png', '.jpeg', '.jpg', '.gif']
+  const extensions = ['', '.svg', '.tex', '.pdf', '.png', '.jpeg', '.jpg', '.gif']
 
   // Select all image elements in the HTML tree.
   const images = root.querySelectorAll('img')
@@ -312,8 +312,9 @@ const resolveImageSrc = (
   assetsDestinationDirectoryPath: string,
   cacheDirectoryPath: string
 ): string | null => {
+  const extension = path.extname(imagePath)
   // Check if the image has a PDF extension.
-  if (path.extname(imagePath) === '.pdf') {
+  if (extension === '.tex') {
     // Generate an SVG from the PDF.
     const { builtFilePath } = latex.generateSvg(
       imagePath,
@@ -331,6 +332,8 @@ const resolveImageSrc = (
 
     // Update the image path to the generated SVG.
     imagePath = builtFilePath
+  } else if (extension === '.pdf') {
+    imagePath = latex.pdftocairo(path.dirname(imagePath), path.basename(imagePath))
   }
 
   // Return the relative path from the assets destination directory.

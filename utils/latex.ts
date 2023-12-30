@@ -305,7 +305,7 @@ const latexmk = (directory: string, texFile: string, clean: boolean): string | n
  * @param {string} pdfFile - Path to the PDF file.
  * @returns {string} - Path to the generated SVG file.
  */
-const pdftocairo = (directory: string, pdfFile: string): string => {
+export const pdftocairo = (directory: string, pdfFile: string): string => {
   // Generate the desired SVG file name based on the PDF file name.
   const svgFile = `${getFileName(pdfFile)}.svg`
   // Generate the full path to the SVG file.
