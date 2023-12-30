@@ -179,7 +179,7 @@ const extractImages = (
       )
 
       // Generate SVG from the extracted image LaTeX file.
-      const { builtFilePath } = latex.generateSvg(
+      const { builtFilePath, wasCached } = latex.generateSvg(
         extractedImageTexFilePath,
         {
           includeGraphicsDirectories,
@@ -190,7 +190,8 @@ const extractImages = (
 
       // If SVG is generated successfully, replace the LaTeX block with an HTML-friendly image reference.
       if (builtFilePath) {
-        logger.success(name, `${blockType}[${(i + 1)}] -> ${builtFilePath} from ${texFilePath}.`)
+        const cachedDebugInfo = wasCached ? ' (was cached)' : ''
+        logger.success(name, `${blockType}[${(i + 1)}] -> ${builtFilePath} from ${texFilePath}${cachedDebugInfo}.`)
         result = result.replace(match[0], `\\includegraphics{${path.parse(builtFilePath).base}}`)
         fs.rmSync(extractedImageTexFilePath)
       }
