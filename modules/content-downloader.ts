@@ -172,6 +172,7 @@ async function downloadRemoteDirectory (
       }
     }
     fs.writeFileSync(latestCommitShaFilePath, JSON.stringify(latestCommitData))
+    logger.success(name, `Done, wrote in ${latestCommitShaFilePath}.`)
   }
 
   const directoryPath = resolver.resolve(srcDir, options.downloadDestinations.data)

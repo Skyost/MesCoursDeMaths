@@ -59,6 +59,6 @@ export default defineNuxtModule<ModuleOptions>({
     fs.mkdirSync(path.dirname(filePath), { recursive: true })
     fs.writeFileSync(filePath, JSON.stringify(latestCommitData))
 
-    logger.success(name, `Wrote latest commit info for ${long}.`)
+    logger.success(name, `Wrote latest commit info for ${long} in ${filePath}.`)
   }
 })
