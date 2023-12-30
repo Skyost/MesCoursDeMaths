@@ -90,6 +90,7 @@ export default defineTransformer({
       root,
       originalTexFilePath,
       filePath,
+      moduleDataDirectoryPath,
       assetsDirectoryPath,
       sourceDirectoryPath,
       contentDirectoryPath
@@ -218,6 +219,7 @@ const extractImages = (
  * @param {HTMLElement} root - The root of the HTML tree.
  * @param {string} originalTexFilePath - The absolute path of the original (not copied) LaTeX file.
  * @param {string} texFilePath - The path of the LaTeX file from the content directory.
+ * @param {string} moduleDataDirectoryPath - The absolute path to the module directory.
  * @param {string} assetsDirectoryPath - The absolute path to the asset directory.
  * @param {string} sourceDirectoryPath - The absolute path to the source directory.
  * @param {string} contentDirectoryPath - The absolute path to the content directory.
@@ -227,6 +229,7 @@ const replaceImages = (
   root: HTMLElement,
   originalTexFilePath: string,
   texFilePath: string,
+  moduleDataDirectoryPath: string,
   assetsDirectoryPath: string,
   sourceDirectoryPath: string,
   contentDirectoryPath: string
@@ -270,14 +273,14 @@ const replaceImages = (
             filePath,
             directories.map(includedGraphicDirectory => resolver.resolve(contentDirectoryPath, includedGraphicDirectory)),
             assetsDirectoryPath,
-            resolver.resolve(sourceDirectoryPath, siteContentSettings.downloadDestinations.previousBuild, directory)
+            resolver.resolve(sourceDirectoryPath, siteContentSettings.downloadDestinations.previousBuild, path.dirname(path.relative(moduleDataDirectoryPath, filePath)))
           )
 
           // Format the resolved source as an absolute path.
           if (resolvedSrc) {
             // Update the image source and alt attribute.
             image.setAttribute('src', resolvedSrc)
-            image.setAttribute('alt', src)
+            image.setAttribute('alt', getFileName(src))
 
             resolved = true
             logger.success(name, `Resolved image ${src} to ${resolvedSrc} in ${texFilePath}.`)
