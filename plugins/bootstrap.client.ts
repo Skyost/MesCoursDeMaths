@@ -1,5 +1,5 @@
-import * as collapse from 'bootstrap/js/dist/collapse'
-import * as modal from 'bootstrap/js/dist/modal'
+import collapse from 'bootstrap/js/dist/collapse'
+import modal from 'bootstrap/js/dist/modal'
 
 /**
  * Bootstrap plugin for Nuxt.
