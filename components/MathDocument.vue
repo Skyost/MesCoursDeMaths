@@ -26,15 +26,23 @@ const setupDocument = () => {
 
   const dotLines = root.value!.querySelectorAll<HTMLElement>('.dots')
   for (const dotLine of dotLines) {
-    const parent = dotLine.parentElement
-    const base = parent?.closest<HTMLElement>('.base')
-    if (base) {
-      base.style.width = 'initial'
+    const katexHtml = dotLine.closest<HTMLElement>('.katex-html')
+    const katex = katexHtml?.closest<HTMLElement>('.katex')
+    if (!katex || !katexHtml) {
+      continue
     }
-    const enclosing = parent?.closest<HTMLElement>('.enclosing')
-    if (enclosing) {
-      enclosing.style.display = 'inline-block'
-      enclosing.style.textAlign = 'center'
+
+    const parentEnclosing = dotLine.parentElement?.closest<HTMLElement>('.enclosing')
+    const element = document.createElement('span')
+    element.classList.add('dotline')
+    if (parentEnclosing && parentEnclosing.style.width) {
+      element.style.width = parentEnclosing.style.width
+    }
+
+    if (parentEnclosing) {
+      parentEnclosing.replaceWith(element)
+    } else {
+      katex.replaceWith(element)
     }
   }
 
@@ -86,31 +94,7 @@ const setupDocument = () => {
   }
 }
 
-const resizeDotLines = () => {
-  const dotLines = root.value!.querySelectorAll<HTMLElement>('.dots')
-  for (const dotLine of dotLines) {
-    dotLine.innerHTML = '. . . '
-    if (dotLine.parentElement) {
-      const originalHeight = dotLine.parentElement.offsetHeight
-      while (dotLine.parentElement.offsetHeight === originalHeight) {
-        if (!dotLine.parentElement.offsetWidth || dotLine.parentElement.offsetWidth <= 0) {
-          break
-        }
-        dotLine.innerHTML += '. '
-      }
-      dotLine.innerHTML = dotLine.innerHTML.substring(0, Math.max(0, dotLine.innerHTML.length - 2))
-    }
-  }
-}
-
-onMounted(async () => {
-  await nextTick()
-  setupDocument()
-  setTimeout(resizeDotLines, 200)
-  window.addEventListener('resize', resizeDotLines)
-})
-
-onUnmounted(() => window.removeEventListener('resize', resizeDotLines))
+onMounted(setupDocument)
 </script>
 
 <template>
@@ -256,8 +240,12 @@ onUnmounted(() => window.removeEventListener('resize', resizeDotLines))
       }
     }
 
-    .dots {
-      white-space: normal;
+    .dotline {
+      display: inline-block;
+      min-height: 1.5em;
+      width: 100%;
+      margin-right: 0.25rem;
+      border-bottom: 1.5px dotted var(--bs-body-color);
     }
 
     .framed {
