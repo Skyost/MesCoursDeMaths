@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { siteMeta } from '~/site/meta'
+
+const year = (new Date()).getFullYear()
 </script>
 
 <template>
@@ -8,7 +10,7 @@ import { siteMeta } from '~/site/meta'
       <ski-columns>
         <ski-column width="12" md="8" lg="6">
           <p class="mb-0">
-            Copyright &copy; 2023 — <strong v-text="siteMeta.author" />. Tous droits réservés.
+            Copyright &copy; {{ year }} — <strong v-text="siteMeta.author" />. Tous droits réservés.
             Voir les <nuxt-link to="/#licence">licences</nuxt-link>.
             <br>Accéder à l'<nuxt-link to="/prof/">espace enseignant</nuxt-link>.
           </p>
