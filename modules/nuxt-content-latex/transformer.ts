@@ -48,8 +48,10 @@ export default defineTransformer({
       filePath,
       {
         pandocHeader,
+        pandocArguments: ['--shift-heading-level-by=1'],
         getExtractedImageCacheDirectoryPath: (_extractedFrom, extractedImageTexFilePath) => path.resolve(sourceDirectoryPath, siteContentSettings.downloadDestinations.previousBuild, path.dirname(path.relative(moduleDataDirectoryPath, extractedImageTexFilePath))),
         getExtractedImageTargetDirectory: (_extractedFrom, assetName) => siteContentSettings.getLatexAssetDestinationDirectoryPath(assetsRootDirectoryPath, assetName, originalTexFilePath),
+        getIncludeGraphicsDirectories: siteContentSettings.getIncludeGraphicsDirectories,
         assetsRootDirectoryPath,
         getResolvedImageCacheDirectoryPath: resolvedImageTexFilePath => path.resolve(sourceDirectoryPath, siteContentSettings.downloadDestinations.previousBuild, path.dirname(path.relative(moduleDataDirectoryPath, resolvedImageTexFilePath))),
         renderMathElement,
