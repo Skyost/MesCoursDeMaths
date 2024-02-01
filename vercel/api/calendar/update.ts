@@ -2,7 +2,7 @@
 
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { siteMeta } from '../../../site/meta'
-import { createOctokitFromRequest, allowCors, loadCalendar, type Calendar } from '../_utils'
+import { createOctokitFromRequest, allowCors, loadCalendar, type Calendar } from '../_utils.js'
 
 export default async function handler (request: VercelRequest, response: VercelResponse) {
   if (!allowCors(request, response)) {

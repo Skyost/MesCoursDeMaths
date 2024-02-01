@@ -5,6 +5,7 @@ import path from 'path'
 import { createResolver, defineNuxtModule, type Resolver } from '@nuxt/kit'
 import * as logger from '../../utils/logger'
 import { siteContentSettings } from '../../site/content'
+import { name } from './common'
 
 /**
  * Options for this module.
@@ -17,11 +18,6 @@ export interface ModuleOptions {
   isAsset: (filePath: string) => boolean,
   getLatexAssetDestination: (assetDirectoryPath: string, filePath: string) => string
 }
-
-/**
- * The name of the module.
- */
-export const name = 'nuxt-content-latex'
 
 /**
  * Nuxt module for transforming .tex files in Nuxt content.
@@ -37,7 +33,7 @@ export default defineNuxtModule<ModuleOptions>({
     directory: siteContentSettings.downloadDestinations.data,
     assetsDestinationDirectoryName: siteContentSettings.latexAssetsDestinationDirectory,
     isAsset: siteContentSettings.isAsset,
-    getLatexAssetDestination: (assetDirectoryPath: string, filePath: string) => siteContentSettings.getLatexAssetDestination(assetDirectoryPath, filePath, null)
+    getLatexAssetDestination: (assetDirectoryPath: string, filePath: string) => siteContentSettings.getLatexAssetDestinationDirectoryPath(assetDirectoryPath, filePath, null)
   },
   setup (options, nuxt) {
     const resolver = createResolver(import.meta.url)
@@ -48,6 +44,7 @@ export default defineNuxtModule<ModuleOptions>({
     nuxt.options.nitro.externals.inline.push(resolver.resolve('.'))
 
     // Register a hook to modify content context and add a transformer for .tex files.
+    // @ts-ignore
     nuxt.hook('content:context', (contentContext) => {
       contentContext.transformers.push(resolver.resolve('transformer.ts'))
     })
@@ -96,7 +93,8 @@ const processAssets = (
     // Check if the file extension is included in the allowed extensions.
     if (options.isAsset(filePath)) {
       // Calculate the destination path.
-      const destinationPath = options.getLatexAssetDestination(assetsDestinationPath, filePath)
+      const destinationDirectoryPath = options.getLatexAssetDestination(assetsDestinationPath, filePath)
+      const destinationPath = resolver.resolve(destinationDirectoryPath, path.parse(filePath).base)
 
       // Ensure destination directory exists.
       fs.mkdirSync(path.dirname(destinationPath), { recursive: true })

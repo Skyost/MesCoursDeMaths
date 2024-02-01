@@ -2,8 +2,8 @@
 
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { siteMeta } from '../../../site/meta'
-import { createOctokitFromRequest, allowCors } from '../_utils'
-import { siteContentSettings } from '~/site/content'
+import { createOctokitFromRequest, allowCors } from '../_utils.js'
+import { siteContentSettings } from '../../../site/content'
 
 export default async function handler (request: VercelRequest, response: VercelResponse) {
   if (!allowCors(request, response)) {

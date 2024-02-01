@@ -1,14 +1,12 @@
-import { spawnSync } from 'child_process'
 import path from 'path'
 import fs from 'fs'
 // @ts-ignore
 import { defineTransformer } from '@nuxt/content/transformers'
-import { HTMLElement, parse } from 'node-html-parser'
-import katex from 'katex'
-import { createResolver, type Resolver } from '@nuxt/kit'
-import { name } from './index'
+import { HTMLElement } from 'node-html-parser'
+import * as latex from 'that-latex-lib'
+import { name } from './common'
+import { debug } from '~/site/debug'
 import { getFileName, normalizeString } from '~/utils/utils'
-import * as latex from '~/utils/latex'
 import * as logger from '~/utils/logger'
 import { siteContentSettings } from '~/site/content'
 import type { LinkedResource } from '~/types'
@@ -21,79 +19,45 @@ export default defineTransformer({
   extensions: ['.tex'],
   // @ts-ignore
   parse (_id: string, rawContent: string) {
-    // Resolver for creating absolute paths.
-    const resolver = createResolver(import.meta.url)
-
     // Absolute path to the source directory.
     const sourceDirectoryPath = path.resolve('./')
 
     // Absolute path to the content directory.
-    const contentDirectoryPath = resolver.resolve(sourceDirectoryPath, 'content')
+    const contentDirectoryPath = path.resolve(sourceDirectoryPath, 'content')
 
     // Absolute path to the .tex file.
-    const filePath = resolver.resolve(sourceDirectoryPath, _id.replaceAll(':', '/'))
+    const filePath = path.resolve(sourceDirectoryPath, _id.replaceAll(':', '/'))
     logger.info(name, `Processing ${filePath}...`)
 
     // Absolute path to the original Latex file.
-    const originalTexFilePath = resolver.resolve(
+    const originalTexFilePath = path.resolve(
       sourceDirectoryPath,
       siteContentSettings.downloadDestinations.data,
       path.relative(contentDirectoryPath, filePath)
     )
 
     // Extract images from the .tex file content and return the modified content.
-    const moduleDataDirectoryPath = resolver.resolve(sourceDirectoryPath, 'node_modules', `.${name}`)
-    const assetsDirectoryPath = resolver.resolve(moduleDataDirectoryPath, siteContentSettings.latexAssetsDestinationDirectory)
-    const content = extractImages(
-      resolver,
-      rawContent,
-      (assetName: string) => siteContentSettings.getLatexAssetDestination(assetsDirectoryPath, assetName, originalTexFilePath),
-      filePath,
-      sourceDirectoryPath,
-      moduleDataDirectoryPath
-    )
+    const moduleDataDirectoryPath = path.resolve(sourceDirectoryPath, 'node_modules', `.${name}`)
+    const assetsRootDirectoryPath = path.resolve(moduleDataDirectoryPath, siteContentSettings.latexAssetsDestinationDirectory)
 
     // Load the Pandoc redefinitions header content.
-    const pandocHeader = fs.readFileSync(resolver.resolve(sourceDirectoryPath, siteContentSettings.downloadDestinations.data, siteContentSettings.dataLatexDirectory, siteContentSettings.pandocRedefinitions), { encoding: 'utf8' })
-
-    // Run Pandoc to convert the .tex content to HTML.
-    const pandocResult = spawnSync(
-      'pandoc',
-      [
-        '-f',
-        'latex-auto_identifiers',
-        '-t',
-        'html',
-        '--shift-heading-level-by=1',
-        '--gladtex',
-        '--html-q-tags'
-      ],
-      {
-        env: process.env,
-        cwd: path.resolve(path.dirname(filePath)),
-        encoding: 'utf8',
-        input: pandocHeader + content
-      }
-    )
-
-    // Throw an error if the Pandoc transformation fails.
-    if (pandocResult.status !== 0) {
-      throw pandocResult.stderr
-    }
+    const pandocHeader = fs.readFileSync(path.resolve(sourceDirectoryPath, siteContentSettings.downloadDestinations.data, siteContentSettings.dataLatexDirectory, siteContentSettings.pandocRedefinitions), { encoding: 'utf8' })
 
     // Parse the Pandoc HTML output.
-    const root = parse(pandocResult.stdout)
-
-    // Replace images in the HTML content.
-    replaceImages(
-      resolver,
-      root,
-      originalTexFilePath,
+    const root = latex.transformToHtml(
       filePath,
-      moduleDataDirectoryPath,
-      assetsDirectoryPath,
-      sourceDirectoryPath,
-      contentDirectoryPath
+      {
+        pandocHeader,
+        getExtractedImageCacheDirectoryPath: (_extractedFrom, extractedImageTexFilePath) => path.resolve(sourceDirectoryPath, siteContentSettings.downloadDestinations.previousBuild, path.dirname(path.relative(moduleDataDirectoryPath, extractedImageTexFilePath))),
+        getExtractedImageTargetDirectory: (_extractedFrom, assetName) => siteContentSettings.getLatexAssetDestinationDirectoryPath(assetsRootDirectoryPath, assetName, originalTexFilePath),
+        assetsRootDirectoryPath,
+        getResolvedImageCacheDirectoryPath: resolvedImageTexFilePath => path.resolve(sourceDirectoryPath, siteContentSettings.downloadDestinations.previousBuild, path.dirname(path.relative(moduleDataDirectoryPath, resolvedImageTexFilePath))),
+        renderMathElement,
+        imagesTemplate: siteContentSettings.picturesTemplate,
+        generateIfExists: !debug
+      },
+      true,
+      rawContent
     )
 
     // Remove empty titles from the HTML content.
@@ -105,9 +69,6 @@ export default defineTransformer({
     // Adjust columns size in the HTML content.
     adjustColSize(root)
 
-    // Render math elements in the HTML content.
-    renderMath(root)
-
     logger.success(name, `Successfully processed ${filePath} !`)
 
     // Return the parsed content object.
@@ -118,228 +79,6 @@ export default defineTransformer({
     }
   }
 })
-
-/**
- * Extract images from LaTeX content and replace them with HTML-friendly references.
- *
- * @param {Resolver} resolver - The resolver for creating absolute paths.
- * @param {string} latexContent - The content of the LaTeX file.
- * @param {string} getAssetDestinationPath - The function that allows to get the destination path of the asset.
- * @param {string} texFilePath - The absolute path of the LaTeX file.
- * @param {string} sourceDirectoryPath - The absolute path to the source directory.
- * @param {string} moduleDataDirectoryPath - The absolute path to the module data directory.
- * @returns {string} - The modified LaTeX content with HTML-friendly image references.
- */
-const extractImages = (
-  resolver: Resolver,
-  latexContent: string,
-  getAssetDestinationPath: (assetName: string) => string,
-  texFilePath: string,
-  sourceDirectoryPath: string,
-  moduleDataDirectoryPath: string
-): string => {
-  // Clone the original LaTeX content.
-  let result = latexContent
-
-  // Process each block type specified in the pictures template.
-  for (const blockType of Object.keys(siteContentSettings.picturesTemplate)) {
-    // Regular expression to match the block type content in LaTeX.
-    const regex = new RegExp(`\\\\begin{${blockType}}([\\s\\S]*?)\\\\end{${blockType}}`, 'sg')
-
-    // Initial match.
-    let match = regex.exec(result)
-
-    // Counter for naming extracted images.
-    let i = 0
-
-    // Process all matches for the current block type.
-    while (match) {
-      // Generate a unique filename for the extracted image.
-      const fileName = `${blockType}-${(i + 1)}.tex`
-
-      // Destination path for the extracted image LaTeX file.
-      const extractedImageTexFilePath = getAssetDestinationPath(fileName)
-
-      // Read the template for the current block type.
-      const template = siteContentSettings.picturesTemplate[blockType]
-
-      // Create directories if they don't exist.
-      fs.mkdirSync(path.dirname(extractedImageTexFilePath), { recursive: true })
-
-      // Write the template content with the matched block content to the extracted image LaTeX file.
-      const includeGraphicsDirectories = siteContentSettings.getIncludeGraphicsDirectories(extractedImageTexFilePath)
-      fs.writeFileSync(
-        extractedImageTexFilePath,
-        template
-          .replace('%s', includeGraphicsDirectories
-            .map(directory => `\\graphicspath{${directory.replaceAll('\\', '\\\\')}}`)
-            .join('\n')
-          )
-          .replace('%s', match[0])
-      )
-
-      // Generate SVG from the extracted image LaTeX file.
-      const { builtFilePath, wasCached } = latex.generateSvg(
-        extractedImageTexFilePath,
-        {
-          includeGraphicsDirectories,
-          cacheDirectory: resolver.resolve(sourceDirectoryPath, siteContentSettings.downloadDestinations.previousBuild, path.dirname(path.relative(moduleDataDirectoryPath, extractedImageTexFilePath))),
-          optimize: true
-        }
-      )
-
-      // If SVG is generated successfully, replace the LaTeX block with an HTML-friendly image reference.
-      if (builtFilePath) {
-        const cachedDebugInfo = wasCached ? ' (was cached)' : ''
-        logger.success(name, `${blockType}[${(i + 1)}] -> ${builtFilePath} from ${texFilePath}${cachedDebugInfo}.`)
-        result = result.replace(match[0], `\\includegraphics{${path.parse(builtFilePath).base}}`)
-        fs.rmSync(extractedImageTexFilePath)
-      }
-
-      // Move to the next match.
-      match = regex.exec(latexContent)
-
-      // Increment the counter.
-      i++
-    }
-
-    // Log the number of extracted images for the current block type.
-    if (i > 0) {
-      logger.success(name, `Extracted ${i} images of type ${blockType} from ${texFilePath}.`)
-    }
-  }
-
-  // Return the modified LaTeX content.
-  return result
-}
-
-/**
- * Replace LaTeX image references in the HTML tree with resolved image sources.
- *
- * @param {Resolver} resolver - The resolver for creating absolute paths.
- * @param {HTMLElement} root - The root of the HTML tree.
- * @param {string} originalTexFilePath - The absolute path of the original (not copied) LaTeX file.
- * @param {string} texFilePath - The path of the LaTeX file from the content directory.
- * @param {string} moduleDataDirectoryPath - The absolute path to the module directory.
- * @param {string} assetsDirectoryPath - The absolute path to the asset directory.
- * @param {string} sourceDirectoryPath - The absolute path to the source directory.
- * @param {string} contentDirectoryPath - The absolute path to the content directory.
- */
-const replaceImages = (
-  resolver: Resolver,
-  root: HTMLElement,
-  originalTexFilePath: string,
-  texFilePath: string,
-  moduleDataDirectoryPath: string,
-  assetsDirectoryPath: string,
-  sourceDirectoryPath: string,
-  contentDirectoryPath: string
-) => {
-  // Possible image file extensions.
-  const extensions = ['', '.svg', '.tex', '.pdf', '.png', '.jpeg', '.jpg', '.gif']
-
-  // Select all image elements in the HTML tree.
-  const images = root.querySelectorAll('img')
-
-  // Process each image element.
-  for (const image of images) {
-    // Get the source attribute of the image.
-    const src = image.getAttribute('src')
-
-    // Skip if the source attribute is missing.
-    if (!src) {
-      continue
-    }
-
-    // Directories to search for the image.
-    const directories = siteContentSettings.getIncludeGraphicsDirectories(originalTexFilePath)
-
-    // Try resolving the image from various directories and extensions.
-    for (const directory of directories) {
-      let resolved = false
-
-      // Try different file extensions.
-      for (const extension of extensions) {
-        // Get the destination path of the image in the assets directory.
-        const filePath = siteContentSettings.getLatexAssetDestination(
-          assetsDirectoryPath,
-          directory + '/' + src + extension,
-          null
-        )
-
-        // Check if the file exists.
-        if (fs.existsSync(filePath)) {
-          // Resolve the image source.
-          const resolvedSrc = resolveImageSrc(
-            filePath,
-            directories.map(includedGraphicDirectory => resolver.resolve(contentDirectoryPath, includedGraphicDirectory)),
-            assetsDirectoryPath,
-            resolver.resolve(sourceDirectoryPath, siteContentSettings.downloadDestinations.previousBuild, path.dirname(path.relative(moduleDataDirectoryPath, filePath)))
-          )
-
-          // Format the resolved source as an absolute path.
-          if (resolvedSrc) {
-            // Update the image source and alt attribute.
-            image.setAttribute('src', resolvedSrc)
-            image.setAttribute('alt', getFileName(src))
-
-            resolved = true
-            logger.success(name, `Resolved image ${src} to ${resolvedSrc} in ${texFilePath}.`)
-            break
-          }
-        }
-      }
-
-      // Break the outer loop if the image is resolved.
-      if (resolved) {
-        break
-      }
-    }
-  }
-}
-
-/**
- * Resolve the source of an image file.
- *
- * @param {string} imagePath - The path to the image file.
- * @param {string[]} includeGraphicsDirectories - Directories for including graphics.
- * @param {string} assetsDestinationDirectoryPath - The destination directory for assets.
- * @param {string} cacheDirectoryPath - The path to the cache directory.
- * @returns {string | null} - The resolved source of the image or null if not resolved.
- */
-const resolveImageSrc = (
-  imagePath: string,
-  includeGraphicsDirectories: string[],
-  assetsDestinationDirectoryPath: string,
-  cacheDirectoryPath: string
-): string | null => {
-  const extension = path.extname(imagePath)
-  // Check if the image has a PDF extension.
-  if (extension === '.tex') {
-    // Generate an SVG from the PDF.
-    const { builtFilePath } = latex.generateSvg(
-      imagePath,
-      {
-        includeGraphicsDirectories,
-        cacheDirectory: cacheDirectoryPath,
-        optimize: true
-      }
-    )
-
-    // If the PDF couldn't be converted to SVG, return null.
-    if (!builtFilePath) {
-      return null
-    }
-
-    // Update the image path to the generated SVG.
-    imagePath = builtFilePath
-  } else if (extension === '.pdf') {
-    imagePath = latex.pdftocairo(path.dirname(imagePath), path.basename(imagePath))
-  }
-
-  // Return the relative path from the assets destination directory.
-  return '/' + path.relative(path.dirname(assetsDestinationDirectoryPath), imagePath).replace(/\\/g, '/')
-}
 
 /**
  * Remove empty titles (h2, h3, h4) from the HTML root element.
@@ -408,33 +147,22 @@ const adjustColSize = (root: HTMLElement) => {
 }
 
 /**
- * Render LaTeX math equations using KaTeX and replace corresponding HTML elements.
- *
- * @param {HTMLElement} root - The root HTML element.
+ * Renders a given math element.
+ * @param {HTMLElement} element The element.
+ * @returns {string} The result.
  */
-const renderMath = (root: HTMLElement) => {
-  const mathElements = root.querySelectorAll('eq')
-  for (const mathElement of mathElements) {
-    // Get the trimmed text content.
-    const text = mathElement.text.trim()
-
-    // Replace the math element with the rendered KaTeX HTML.
-    mathElement.replaceWith(
-      katex.renderToString(text, {
-        displayMode: mathElement.getAttribute('env') === 'displaymath', // Determine if it's a display math environment.
-        output: 'html',
-        trust: true,
-        strict: (errorCode: any) => errorCode === 'htmlExtension' ? 'ignore' : 'warn',
-        macros: {
-          '\\parallelslant': '\\mathbin{\\!/\\mkern-5mu/\\!}',
-          '\\ensuremath': '#1',
-          '\\dotfillline': '\\htmlClass{dots}{}',
-          '\\dotfillsize': '\\htmlStyle{width: #1}{\\dotfillline}'
-        }
-      })
-    )
-  }
-}
+const renderMathElement = (element: HTMLElement): string => latex.renderMathElement(
+  element,
+  {
+    '\\parallelslant': '\\mathbin{\\!/\\mkern-5mu/\\!}',
+    '\\ensuremath': '#1',
+    '\\dotfillline': '\\htmlClass{dots}{}',
+    '\\dotfillsize': '\\htmlStyle{width: #1}{\\dotfillline}'
+  },
+  math => math
+    .replace(/(\\left *|\\right *)*\\VERT/g, '$1 | $1 | $1 |')
+    .replace(/\\overset{(.*)}&{(.*)}/g, '&\\overset{$1}{$2}')
+)
 
 /**
  * Extract header information from the HTML structure of a LaTeX document.

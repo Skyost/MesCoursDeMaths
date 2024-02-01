@@ -2,8 +2,8 @@
 
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { siteMeta } from '../../../site/meta'
-import { createOctokitFromRequest, allowCors } from '../_utils'
-import { siteContentSettings } from '~/site/content'
+import { createOctokitFromRequest, allowCors } from '../_utils.js'
+import { siteContentSettings } from '../../../site/content'
 
 export interface APILessonsGetEntry {
   name: string,

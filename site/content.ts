@@ -53,7 +53,7 @@ interface SiteContentSettings {
    * Function to get the destination for LaTeX assets.
    * @type {(assetDirectoryPath: string, filePath: string, extractedFrom: string | null) => string}
    */
-  getLatexAssetDestination: (assetDirectoryPath: string, filePath: string, extractedFrom: string | null) => string
+  getLatexAssetDestinationDirectoryPath: (assetDirectoryPath: string, filePath: string, extractedFrom: string | null) => string
 
   /**
    * Function to generate a print variant of a LaTeX file.
@@ -115,13 +115,12 @@ export const siteContentSettings: SiteContentSettings = {
   dataLatexDirectory: 'latex',
   latexPdfDestinationDirectory: 'pdf',
   latexAssetsDestinationDirectory: 'images',
-  getLatexAssetDestination: (assetsDirectoryPath: string, filePath: string, extractedFrom: string | null): string => {
+  getLatexAssetDestinationDirectoryPath: (assetsDirectoryPath: string, filePath: string, extractedFrom: string | null): string => {
     if (extractedFrom) {
       return path.resolve(
         assetsDirectoryPath,
         path.basename(path.dirname(extractedFrom)),
-        getFileName(extractedFrom),
-        path.parse(filePath).base
+        getFileName(extractedFrom)
       )
     }
     const parent = path.dirname(filePath)
@@ -129,8 +128,7 @@ export const siteContentSettings: SiteContentSettings = {
     return path.resolve(
       assetsDirectoryPath,
       level,
-      path.basename(parent),
-      path.parse(filePath).base
+      path.basename(parent)
     )
   },
   isAsset: (filePath: string) => {
@@ -173,11 +171,11 @@ export const siteContentSettings: SiteContentSettings = {
 \\setscratch{scale=1.5}
 
 % Graphics path.
-%s
+{graphicspath}
 
 \\begin{document}
   % Content :
-  %s
+  {extractedContent}
 \\end{document}
 `,
     tikzpicture: `\\documentclass[tikz]{standalone}
@@ -220,7 +218,7 @@ export const siteContentSettings: SiteContentSettings = {
 \\usetikzlibrary{babel}
 
 % Graphics path.
-%s
+{graphicspath}
 
 % \\dddots command.
 \\newcommand{\\dddots}[1]{\\makebox[#1]{\\dotfill}}
@@ -273,7 +271,7 @@ export const siteContentSettings: SiteContentSettings = {
 
 \\begin{document}
   % Content.
-  %s
+  {extractedContent}
 \\end{document}
 `
   },

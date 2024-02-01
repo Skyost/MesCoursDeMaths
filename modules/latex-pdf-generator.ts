@@ -3,7 +3,7 @@
 import fs from 'fs'
 import path from 'path'
 import { createResolver, defineNuxtModule, type Resolver } from '@nuxt/kit'
-import * as latex from '../utils/latex'
+import * as latex from 'that-latex-lib'
 import * as logger from '../utils/logger'
 import { siteContentSettings } from '../site/content'
 import { debug } from '../site/debug'
@@ -164,7 +164,7 @@ const generateAndCopy = (
     filePath,
     {
       includeGraphicsDirectories: options.getIncludeGraphicsDirectories(filePath),
-      cacheDirectory: previousBuildDirectory == null ? undefined : previousBuildDirectory,
+      cacheDirectoryPath: previousBuildDirectory == null ? undefined : previousBuildDirectory,
       cachedFileName: options.renameFile(destinationFileName ?? getFileName(filePath))
     }
   )

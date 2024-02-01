@@ -2,7 +2,7 @@
 
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { createOAuthAppAuth, type WebFlowAuthOptions } from '@octokit/auth-oauth-app'
-import { encrypt } from '../_utils'
+import { encrypt } from '../_utils.js'
 import { authentication } from '../../../site/authentication'
 import { debug } from '../../../site/debug'
 import { siteMeta } from '../../../site/meta'

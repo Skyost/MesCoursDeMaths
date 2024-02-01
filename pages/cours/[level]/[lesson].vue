@@ -60,12 +60,14 @@ const onMathDocumentMounted = () => useNavigationEntry(lessonNavigationEntry(les
           </ski-button>
         </div>
       </div>
-      <math-document
-        :title="lessonContent!.name"
-        :color="level!.color"
-        :body="lessonContent!.body"
-        @vue:mounted="onMathDocumentMounted"
-      />
+      <main>
+        <math-document
+          :title="lessonContent!.name"
+          :color="level!.color"
+          :body="lessonContent!.body"
+          @vue:mounted="onMathDocumentMounted"
+        />
+      </main>
     </div>
     <div v-else>
       <error-display :change-title="true" :error="error ?? 404" />
@@ -91,10 +93,5 @@ const onMathDocumentMounted = () => useNavigationEntry(lessonNavigationEntry(les
   &:last-of-type {
     margin-bottom: 24px;
   }
-}
-
-.copyright {
-  font-size: 0.75em;
-  color: #939393;
 }
 </style>

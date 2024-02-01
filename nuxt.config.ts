@@ -55,7 +55,7 @@ export default defineNuxtConfig({
     '@nuxt/content',
     '@nuxtjs/google-fonts',
     'nuxt-link-checker',
-    'nuxt-simple-sitemap',
+    '@nuxtjs/sitemap',
     'nuxt-simple-robots'
   ],
 

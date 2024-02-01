@@ -1,7 +1,7 @@
 // noinspection ES6PreferShortImport
 
 import 'dotenv/config'
-import crypto from 'crypto'
+import * as crypto from 'crypto'
 import type { IncomingHttpHeaders } from 'http'
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { Octokit } from '@octokit/core'
