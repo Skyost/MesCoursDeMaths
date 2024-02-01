@@ -2,7 +2,7 @@
 
 import path from 'path'
 import fs from 'fs'
-import { getFileName } from '../utils/utils'
+import { getFileName } from '../utils/utils.js'
 import type { LinkedResource } from '../types'
 
 /**

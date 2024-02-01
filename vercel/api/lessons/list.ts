@@ -1,9 +1,9 @@
 // noinspection ES6PreferShortImport
 
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import { siteMeta } from '../../../site/meta'
+import { siteMeta } from '../../../site/meta.js'
 import { createOctokitFromRequest, allowCors } from '../_utils.js'
-import { siteContentSettings } from '../../../site/content'
+import { siteContentSettings } from '../../../site/content.js'
 
 export interface APILessonsListEntry {
   name: string,

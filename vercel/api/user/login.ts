@@ -3,10 +3,10 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { createOAuthAppAuth, type WebFlowAuthOptions } from '@octokit/auth-oauth-app'
 import { encrypt } from '../_utils.js'
-import { authentication } from '../../../site/authentication'
-import { debug } from '../../../site/debug'
-import { siteMeta } from '../../../site/meta'
-import { cookieExpirationDays } from '../../../site/cookie'
+import { authentication } from '../../../site/authentication.js'
+import { debug } from '../../../site/debug.js'
+import { siteMeta } from '../../../site/meta.js'
+import { cookieExpirationDays } from '../../../site/cookie.js'
 
 export default async function handler (request: VercelRequest, response: VercelResponse) {
   if (request.query.code && request.query.state) {

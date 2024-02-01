@@ -5,8 +5,8 @@ import * as crypto from 'crypto'
 import type { IncomingHttpHeaders } from 'http'
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { Octokit } from '@octokit/core'
-import { siteMeta } from '../../site/meta'
-import { authentication } from '../../site/authentication'
+import { siteMeta } from '../../site/meta.js'
+import { authentication } from '../../site/authentication.js'
 
 export interface Calendar {
   data: { [key: string]: string },

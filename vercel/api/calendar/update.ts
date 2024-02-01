@@ -1,7 +1,7 @@
 // noinspection ES6PreferShortImport
 
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import { siteMeta } from '../../../site/meta'
+import { siteMeta } from '../../../site/meta.js'
 import { createOctokitFromRequest, allowCors, loadCalendar, type Calendar } from '../_utils.js'
 
 export default async function handler (request: VercelRequest, response: VercelResponse) {
