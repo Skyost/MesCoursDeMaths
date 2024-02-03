@@ -165,7 +165,23 @@ const generateAndCopy = (
     {
       includeGraphicsDirectories: options.getIncludeGraphicsDirectories(filePath),
       cacheDirectoryPath: previousBuildDirectory == null ? undefined : previousBuildDirectory,
-      cachedFileName: options.renameFile(destinationFileName ?? getFileName(filePath))
+      cachedFileName: options.renameFile(destinationFileName ?? getFileName(filePath)),
+      checksumsCalculator: (texFilePath, includeGraphicsDirectories) => latex.calculateTexFileChecksums(
+        texFilePath,
+        includeGraphicsDirectories,
+        null,
+        [
+          ...latex.defaultLatexIncludeCommands,
+          {
+            command: 'documentclass',
+            directories: [],
+            extensions: ['.cls'],
+            excludes: [],
+            hasIncludes: true,
+            targetIsDirectory: false
+          }
+        ]
+      )
     }
   )
 
