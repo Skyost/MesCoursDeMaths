@@ -1,6 +1,6 @@
 import { defineNuxtConfig } from 'nuxt/config'
 import StylelintPlugin from 'vite-plugin-stylelint'
-import eslintPlugin from 'vite-plugin-eslint'
+import eslintPlugin from '@nabla/vite-plugin-eslint'
 import 'dotenv/config'
 import { siteMeta } from './site/meta'
 import { debug } from './site/debug'
