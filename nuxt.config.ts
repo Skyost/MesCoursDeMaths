@@ -46,7 +46,7 @@ export default defineNuxtConfig({
   },
 
   modules: [
-    '~/modules/cname-generator',
+    'nuxt-cname-generator',
     '~/modules/commit-sha-file-generator',
     '~/modules/content-downloader',
     '~/modules/latex-pdf-generator',
@@ -110,7 +110,7 @@ export default defineNuxtConfig({
   },
 
   cname: {
-    hostname: url
+    host: url
   },
 
   experimental: {

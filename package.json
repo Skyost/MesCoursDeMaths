@@ -49,6 +49,7 @@
     "gray-matter": "^4.0.3",
     "node-html-parser": "^6.1.12",
     "nuxt": "^3.10.0",
+    "nuxt-cname-generator": "^1.0.1",
     "nuxt-link-checker": "^2.1.11",
     "nuxt-simple-robots": "^3.1.10",
     "sass": "^1.70.0",
