@@ -4,12 +4,17 @@ import fs from 'fs'
 import { defineTransformer } from '@nuxt/content/transformers'
 import { HTMLElement } from 'node-html-parser'
 import * as latex from 'that-latex-lib'
+import { consola } from 'consola'
 import { name } from './common'
 import { debug } from '~/site/debug'
 import { getFileName, normalizeString } from '~/utils/utils'
-import * as logger from '~/utils/logger'
 import { siteContentSettings } from '~/site/content'
 import type { LinkedResource } from '~/types'
+
+/**
+ * The logger instance.
+ */
+const logger = consola.withTag(name)
 
 /**
  * Nuxt content transformer for .tex files.
@@ -27,7 +32,7 @@ export default defineTransformer({
 
     // Absolute path to the .tex file.
     const filePath = path.resolve(sourceDirectoryPath, _id.replaceAll(':', '/'))
-    logger.info(name, `Processing ${filePath}...`)
+    logger.info(`Processing ${filePath}...`)
 
     // Absolute path to the original Latex file.
     const originalTexFilePath = path.resolve(
@@ -71,7 +76,7 @@ export default defineTransformer({
     // Adjust columns size in the HTML content.
     adjustColSize(root)
 
-    logger.success(name, `Successfully processed ${filePath} !`)
+    logger.success(`Successfully processed ${filePath} !`)
 
     // Return the parsed content object.
     return {

@@ -2,9 +2,8 @@
 
 import fs from 'fs'
 import path from 'path'
-import { createResolver, defineNuxtModule, type Resolver } from '@nuxt/kit'
+import { createResolver, defineNuxtModule, type Resolver, useLogger } from '@nuxt/kit'
 import * as latex from 'that-latex-lib'
-import * as logger from '../utils/logger'
 import { siteContentSettings } from '../site/content'
 import { debug } from '../site/debug'
 import { getFileName } from '../utils/utils'
@@ -29,6 +28,11 @@ export interface ModuleOptions {
  * The name of the module.
  */
 const name = 'latex-pdf-generator'
+
+/**
+ * The logger instance.
+ */
+const logger = useLogger(name)
 
 /**
  * Nuxt module to compile Latex files into PDF.
@@ -102,7 +106,7 @@ const generatePdf = (
 
     // Ignore specified files and directories.
     if (ignores.includes(filePath) || !fs.existsSync(filePath)) {
-      logger.info(name, `Ignored ${filePath}.`)
+      logger.info(`Ignored ${filePath}.`)
       continue
     }
 
@@ -157,7 +161,7 @@ const generateAndCopy = (
   destinationFileName: string | null = null,
   variant: string | null = null
 ): boolean => {
-  logger.info(name, `Processing "${filePath}"${variant ?? ''}...`)
+  logger.info(`Processing "${filePath}"${variant ?? ''}...`)
 
   // Generate PDF and checksums files.
   const { wasCached, builtFilePath, checksumsFilePath } = latex.generatePdf(
@@ -211,12 +215,12 @@ const generateAndCopy = (
     }
 
     if (wasCached) {
-      logger.success(name, `Fully cached PDF found in ${previousBuildDirectory}.`)
+      logger.success(`Fully cached PDF found in ${previousBuildDirectory}.`)
     } else {
-      logger.success(name, previousBuildDirectory ? `File was not cached in ${previousBuildDirectory} but has been generated with success.` : 'Done.')
+      logger.success(previousBuildDirectory ? `File was not cached in ${previousBuildDirectory} but has been generated with success.` : 'Done.')
     }
     return true
   }
-  logger.fatal(name, 'Error.')
+  logger.fatal('Error.')
   return false
 }

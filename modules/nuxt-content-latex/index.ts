@@ -2,10 +2,14 @@
 
 import fs from 'fs'
 import path from 'path'
-import { createResolver, defineNuxtModule, type Resolver } from '@nuxt/kit'
-import * as logger from '../../utils/logger'
+import { createResolver, defineNuxtModule, type Resolver, useLogger } from '@nuxt/kit'
 import { siteContentSettings } from '../../site/content'
 import { name } from './common'
+
+/**
+ * The logger instance.
+ */
+const logger = useLogger(name)
 
 /**
  * Options for this module.
@@ -104,7 +108,7 @@ const processAssets = (
         fs.copyFileSync(filePath, destinationPath)
 
         // Log the successful copying of an asset file.
-        logger.success(name, `${filePath} -> ${destinationPath}`)
+        logger.success(`${filePath} -> ${destinationPath}`)
       }
     }
   }

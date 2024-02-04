@@ -4,9 +4,8 @@ import fs from 'fs'
 import path from 'path'
 import AdmZip from 'adm-zip'
 import { Octokit } from '@octokit/core'
-import { createResolver, defineNuxtModule, type Resolver } from '@nuxt/kit'
+import { createResolver, defineNuxtModule, type Resolver, useLogger } from '@nuxt/kit'
 import { copySync } from 'fs-extra'
-import * as logger from '../utils/logger'
 import { authentication } from '../site/authentication'
 import { siteContentSettings } from '../site/content'
 import { siteMeta } from '../site/meta'
@@ -37,6 +36,11 @@ export interface ModuleOptions {
 }
 
 const name = 'content-downloader'
+
+/**
+ * The logger instance.
+ */
+const logger = useLogger(name)
 
 /**
  * Nuxt module for downloading the website content.
@@ -95,7 +99,7 @@ async function downloadPreviousBuild (resolver: Resolver, srcDir: string, option
       return true
     }
 
-    logger.info(name, `Downloading and unzipping the previous build at ${options.github.username}/${options.github.repository}@gh-pages...`)
+    logger.info(`Downloading and unzipping the previous build at ${options.github.username}/${options.github.repository}@gh-pages...`)
     // We create the Octokit instance.
     const octokit = new Octokit()
     const response = await octokit.request('GET /repos/{owner}/{repo}/zipball/{ref}', {
@@ -119,10 +123,10 @@ async function downloadPreviousBuild (resolver: Resolver, srcDir: string, option
 
     // Then we can rename the main entry into the destination folder name.
     fs.renameSync(resolver.resolve(parentPath, zipRootDir), resolver.resolve(parentPath, path.basename(directoryPath)))
-    logger.success(name, 'Done.')
+    logger.success('Done.')
     return true
   } catch (exception) {
-    logger.warn(name, exception)
+    logger.warn(exception)
   }
   return false
 }
@@ -148,7 +152,7 @@ async function downloadRemoteDirectory (
   }
   const octokit = new Octokit({ auth: options.github.accessToken })
   if (latestCommitShaFilePath) {
-    logger.info(name, `Getting and saving the latest commit info of ${options.github.username}/${options.github.dataRepository}...`)
+    logger.info(`Getting and saving the latest commit info of ${options.github.username}/${options.github.dataRepository}...`)
     const response = await octokit.request('GET /repos/{owner}/{repo}/commits/{ref}', {
       owner: options.github.username,
       repo: options.github.dataRepository,
@@ -172,12 +176,12 @@ async function downloadRemoteDirectory (
       }
     }
     fs.writeFileSync(latestCommitShaFilePath, JSON.stringify(latestCommitData))
-    logger.success(name, `Done, wrote in ${latestCommitShaFilePath}.`)
+    logger.success(`Done, wrote in ${latestCommitShaFilePath}.`)
   }
 
   const directoryPath = resolver.resolve(srcDir, options.downloadDestinations.data)
   if (!fs.existsSync(directoryPath)) {
-    logger.info(name, `Downloading and unzipping ${options.github.username}/${options.github.dataRepository}...`)
+    logger.info(`Downloading and unzipping ${options.github.username}/${options.github.dataRepository}...`)
     const response = await octokit.request('GET /repos/{owner}/{repo}/zipball/{ref}', {
       owner: options.github.username,
       repo: options.github.dataRepository,
@@ -194,7 +198,7 @@ async function downloadRemoteDirectory (
     zip.extractEntryTo(`${zipRootDir}${options.dataLatexDirectory}/`, parentPath)
 
     fs.renameSync(resolver.resolve(parentPath, zipRootDir), resolver.resolve(parentPath, path.basename(directoryPath)))
-    logger.success(name, 'Done.')
+    logger.success('Done.')
   }
   return true
 }
@@ -234,7 +238,7 @@ const copyFilesIfNeeded = (
     // Ignore specified files and directories.
     const destinationPath = resolver.resolve(destinationDirectoryPath, path.parse(file).base)
     if (options.shouldCopyDownloadedFileToContent(filePath) && !fs.existsSync(destinationPath)) {
-      logger.info(name, `Copied ${filePath} to ${destinationPath}.`)
+      logger.info(`Copied ${filePath} to ${destinationPath}.`)
       fs.mkdirSync(path.dirname(destinationPath), { recursive: true })
       fs.copyFileSync(filePath, destinationPath)
     }
