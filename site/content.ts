@@ -168,7 +168,7 @@ export const siteContentSettings: SiteContentSettings = {
 % Load all required packages for my Scratch scripts.
 \\usepackage{scratch3}
 
-\\setscratch{scale=1.5}
+\\setscratch{scale=3.0}
 
 % Graphics path.
 {graphicspath}
@@ -259,14 +259,14 @@ export const siteContentSettings: SiteContentSettings = {
   \\draw[thick,->] (0,\\ymin) -- (0,\\ymax);
 }
 
-% 1.5x scale.
+% 3x scale.
 \\tikzset{
   graphfonctionlabel/.style args={at #1 #2 with #3}{
     postaction={
       decorate, decoration={markings, mark= at position #1 with \\node [#2] {#3};}
     }
   },
-  every picture/.append style={scale=1.5, every node/.style={scale=1.5}}
+  every picture/.append style={scale=3.0, every node/.style={scale=3.0}}
 }
 
 \\begin{document}
@@ -297,10 +297,13 @@ export const siteContentSettings: SiteContentSettings = {
         if (file.startsWith(prefix) && file.endsWith('.tex') && file !== fileName) {
           const relativePath = path.relative(path.resolve(sourceDirectoryPath, siteContentSettings.downloadDestinations.data, siteContentSettings.dataLatexDirectory), latexFilePath)
           const baseUrl = path.dirname(relativePath).replace('\\', '/')
-          result.push({
-            title: getLinkedResourceTitle(prefix, file),
-            url: `/${siteContentSettings.latexPdfDestinationDirectory}/${baseUrl}/${siteContentSettings.filterFileName(getFileName(file))}.pdf`
-          })
+          const title = getLinkedResourceTitle(prefix, file)
+          if (title) {
+            result.push({
+              title,
+              url: `/${siteContentSettings.latexPdfDestinationDirectory}/${baseUrl}/${siteContentSettings.filterFileName(getFileName(file))}.pdf`
+            })
+          }
         }
       }
       return result
@@ -322,14 +325,6 @@ const getLinkedResourceTitle = (prefix: string, fileName: string) => {
     {
       fileNameRegex: RegExp(prefix + /-interrogation/.source),
       buildTitle: (_: RegExpExecArray) => 'Interrogation'
-    },
-    {
-      fileNameRegex: RegExp(prefix + /-interrogation-a/.source),
-      buildTitle: (_: RegExpExecArray) => 'Interrogation A'
-    },
-    {
-      fileNameRegex: RegExp(prefix + /-interrogation-b/.source),
-      buildTitle: (_: RegExpExecArray) => 'Interrogation B'
     }
   ]
   for (const resourceType of resourceTypes) {
@@ -338,5 +333,5 @@ const getLinkedResourceTitle = (prefix: string, fileName: string) => {
       return resourceType.buildTitle(match)
     }
   }
-  return fileName
+  return null
 }
