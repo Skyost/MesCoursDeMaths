@@ -298,7 +298,7 @@ export const siteContentSettings: SiteContentSettings = {
         if (file.startsWith(prefix) && file.endsWith('.tex') && file !== fileName) {
           const relativePath = path.relative(path.resolve(sourceDirectoryPath, siteContentSettings.downloadDestinations.data, siteContentSettings.dataLatexDirectory), latexFilePath)
           const baseUrl = path.dirname(relativePath).replace('\\', '/')
-          if (prefix + '.tex' === file) {
+          if (fileName + '.tex' === file) {
             result.push({
               title: 'Télécharger le PDF',
               url: buildUrl(baseUrl, file),
