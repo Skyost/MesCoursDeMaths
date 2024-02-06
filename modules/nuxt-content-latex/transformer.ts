@@ -204,8 +204,7 @@ const getHeader = (filePath: string, root: HTMLElement, linkedResources: LinkedR
 
   // Get and parse linked resources.
   const linkedResourceWithoutPdf = [...linkedResources]
-  const parsedFileName = path.parse(filePath).base
-  const pdfIndex = linkedResources.findIndex(resource => resource.title === parsedFileName)
+  const pdfIndex = linkedResources.findIndex(resource => resource.isCurrentFile)
   if (pdfIndex !== -1) {
     header.pdf = linkedResourceWithoutPdf[pdfIndex].url
     linkedResourceWithoutPdf.splice(pdfIndex, 1)

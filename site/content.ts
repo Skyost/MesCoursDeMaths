@@ -168,7 +168,7 @@ export const siteContentSettings: SiteContentSettings = {
 % Load all required packages for my Scratch scripts.
 \\usepackage{scratch3}
 
-\\setscratch{scale=3.0}
+\\setscratch{scale=2.25}
 
 % Graphics path.
 {graphicspath}
@@ -259,14 +259,14 @@ export const siteContentSettings: SiteContentSettings = {
   \\draw[thick,->] (0,\\ymin) -- (0,\\ymax);
 }
 
-% 3x scale.
+% 2.25x scale.
 \\tikzset{
   graphfonctionlabel/.style args={at #1 #2 with #3}{
     postaction={
       decorate, decoration={markings, mark= at position #1 with \\node [#2] {#3};}
     }
   },
-  every picture/.append style={scale=3.0, every node/.style={scale=3.0}}
+  every picture/.append style={scale=2.25, every node/.style={scale=2.25}}
 }
 
 \\begin{document}
@@ -292,16 +292,24 @@ export const siteContentSettings: SiteContentSettings = {
       const result = []
       const prefix = siteContentSettings.filterFileName(fileName)
       const files = fs.readdirSync(path.dirname(latexFilePath))
+      const buildUrl = (baseUrl: string, file: string) => `/${siteContentSettings.latexPdfDestinationDirectory}/${baseUrl}/${siteContentSettings.filterFileName(getFileName(file))}.pdf`
       for (const file of files) {
         // We don't check for ignores here as there is no match in my setup.
         if (file.startsWith(prefix) && file.endsWith('.tex') && file !== fileName) {
           const relativePath = path.relative(path.resolve(sourceDirectoryPath, siteContentSettings.downloadDestinations.data, siteContentSettings.dataLatexDirectory), latexFilePath)
           const baseUrl = path.dirname(relativePath).replace('\\', '/')
+          if (prefix + '.tex' === file) {
+            result.push({
+              title: 'Télécharger le PDF',
+              url: buildUrl(baseUrl, file),
+              isCurrentFile: true
+            })
+          }
           const title = getLinkedResourceTitle(prefix, file)
           if (title) {
             result.push({
               title,
-              url: `/${siteContentSettings.latexPdfDestinationDirectory}/${baseUrl}/${siteContentSettings.filterFileName(getFileName(file))}.pdf`
+              url: buildUrl(baseUrl, file)
             })
           }
         }

@@ -13,6 +13,11 @@ interface LinkedResource {
    * URL pointing to the resource.
    */
   url: string
+  /**
+   * Whether the linked resource represents the current lesson.
+   * Only the first is taken into account.
+   */
+  isCurrentFile?: boolean
 }
 
 /**
