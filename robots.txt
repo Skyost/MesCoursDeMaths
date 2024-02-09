@@ -1,0 +1,5 @@
+# START nuxt-simple-robots (indexable)
+User-agent: *
+
+Sitemap: https://mes-cours-de-maths.fr/sitemap.xml
+# END nuxt-simple-robots

@@ -1,0 +1,1 @@
+import{d as e,a as o,c as a,n as s}from"./entry.ahDXewXk.js";const p=e({name:"SkiIcon",__name:"Icon",props:{icon:{}},setup(c){return(n,r)=>(o(),a("i",{class:s(["bi",`bi-${n.icon}`])},null,2))}});export{p as _};
