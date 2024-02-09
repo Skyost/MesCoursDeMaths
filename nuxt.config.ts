@@ -102,6 +102,9 @@ export default defineNuxtConfig({
     failOnError: false,
     excludeLinks: [
       '/pdf/**'
+    ],
+    skipInspections: [
+      'link-text'
     ]
   },
 
