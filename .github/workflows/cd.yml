@@ -35,9 +35,9 @@ jobs:
         node: [ latest ]
     steps:
       - name: Checkout 🛎
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup Node.js ${{ matrix.node }} 🏗
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
           cache: 'npm'
@@ -50,7 +50,7 @@ jobs:
           GITHUB_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
           GITHUB_PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
       - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@v4.4.1
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: dist
           branch: gh-pages
