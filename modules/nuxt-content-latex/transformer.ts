@@ -49,7 +49,7 @@ export default defineTransformer({
     const pandocHeader = fs.readFileSync(path.resolve(sourceDirectoryPath, siteContentSettings.downloadDestinations.data, siteContentSettings.dataLatexDirectory, siteContentSettings.pandocRedefinitions), { encoding: 'utf8' })
 
     // Parse the Pandoc HTML output.
-    const root = latex.transformToHtml(
+    const { htmlResult: root } = latex.transformToHtml(
       filePath,
       {
         pandocHeader,
