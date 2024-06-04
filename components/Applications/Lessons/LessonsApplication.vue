@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import btoa from '@node-fetch/btoa-lite'
-import FileUploadButton, { FileContent } from '~/components/Applications/FileUploadButton.vue'
+import type { FileContent } from '~/components/Applications/FileUploadButton.vue';
+import FileUploadButton from '~/components/Applications/FileUploadButton.vue'
 import CodeEditor from '~/components/Applications/Lessons/CodeEditor.vue'
-import { APILessonsListEntry } from '~/vercel/api/lessons/list'
-import { APILessonsGetEntry } from '~/vercel/api/lessons/get'
+import type { APILessonsListEntry } from '~/vercel/api/lessons/list'
+import type { APILessonsGetEntry } from '~/vercel/api/lessons/get'
 import { base64Decode } from '~/utils/utils'
 
 const runtimeConfig = useRuntimeConfig()

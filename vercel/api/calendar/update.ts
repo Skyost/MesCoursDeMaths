@@ -19,7 +19,8 @@ export default async function handler (request: VercelRequest, response: VercelR
   const calendar: Calendar = (await loadCalendar(octokit)) ?? { data: {}, sha: '' }
   const date = request.body.date.toString()
   if (request.body.content.length === 0) {
-    delete calendar.data[date]
+    const { [date]: _, ...withoutDate } = calendar.data;
+    calendar.data = withoutDate
   } else {
     calendar.data[date] = request.body.content
   }

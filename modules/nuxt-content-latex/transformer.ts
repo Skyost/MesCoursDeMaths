@@ -1,8 +1,7 @@
 import path from 'path'
 import fs from 'fs'
-// @ts-ignore
 import { defineTransformer } from '@nuxt/content/transformers'
-import { HTMLElement } from 'node-html-parser'
+import type { HTMLElement } from 'node-html-parser'
 import * as latex from 'that-latex-lib'
 import { consola } from 'consola'
 import { name } from './common'
@@ -22,7 +21,7 @@ const logger = consola.withTag(name)
 export default defineTransformer({
   name: 'latex',
   extensions: ['.tex'],
-  // @ts-ignore
+  // @ts-expect-error Pasted from the docs.
   parse (_id: string, rawContent: string) {
     // Absolute path to the source directory.
     const sourceDirectoryPath = path.resolve('./')

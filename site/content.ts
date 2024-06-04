@@ -184,8 +184,6 @@ export const siteContentSettings: SiteContentSettings = {
 \\usepackage{fourier-otf}
 \\usepackage{fontspec}
 \\usepackage{tkz-euclide}
-\\usepackage{pgfplots}
-\\usepackage{pgf-pie}
 \\usepackage{graphicx}
 \\usepackage{gensymb}
 \\usepackage{xlop}

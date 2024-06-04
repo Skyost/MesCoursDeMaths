@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import FileUploadButton, { FileContent } from '~/components/Applications/FileUploadButton.vue'
+import type { FileContent } from '~/components/Applications/FileUploadButton.vue';
+import FileUploadButton from '~/components/Applications/FileUploadButton.vue'
 import WhiteboardCanvas from '~/components/Applications/Whiteboard/WhiteboardCanvas.vue'
 import TextDraggable from '~/components/Applications/Whiteboard/TextDraggable.vue'
 import PdfDraggable from '~/components/Applications/Whiteboard/PdfDraggable.vue'

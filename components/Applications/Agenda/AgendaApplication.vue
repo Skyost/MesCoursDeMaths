@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { marked } from 'marked'
-import { ComponentPublicInstance } from 'vue'
+import type { ComponentPublicInstance } from 'vue'
 import CodeEditor from '~/components/Applications/Lessons/CodeEditor.vue'
 import Calendar from '~/components/Applications/Agenda/Calendar.vue'
 
@@ -19,7 +19,7 @@ const dateModal = ref<ComponentPublicInstance | null>(null)
 const modalBackdrop = ref<HTMLElement | null>(null)
 const editor = ref<InstanceType<typeof CodeEditor> | null>(null)
 
-const modalTitle = computed(() => currentDate.value === null ? null : new Date(currentDate.value).toLocaleString('default', { day: 'numeric', month: 'numeric', year: 'numeric' }))
+const modalTitle = computed<string | undefined>(() => currentDate.value === null ? undefined : new Date(currentDate.value).toLocaleString('default', { day: 'numeric', month: 'numeric', year: 'numeric' }))
 const modalHtmlContent = computed(() => modalMarkdownContent.value == null ? null : marked.parse(modalMarkdownContent.value))
 
 const onDayClicked = async (date: string) => {
@@ -87,7 +87,7 @@ onUnmounted(() => {
       id="date-modal"
       ref="dateModal"
       :title="modalTitle"
-      :close-button="null"
+      :close-button="undefined"
       :show-footer="!modalLoading"
       size="lg"
       data-bs-backdrop="false"

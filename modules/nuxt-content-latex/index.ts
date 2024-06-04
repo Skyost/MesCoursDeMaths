@@ -48,7 +48,7 @@ export default defineNuxtModule<ModuleOptions>({
     nuxt.options.nitro.externals.inline.push(resolver.resolve('.'))
 
     // Register a hook to modify content context and add a transformer for .tex files.
-    // @ts-ignore
+    // @ts-expect-error Because we're using a custom hook.
     nuxt.hook('content:context', (contentContext) => {
       contentContext.transformers.push(resolver.resolve('transformer.ts'))
     })

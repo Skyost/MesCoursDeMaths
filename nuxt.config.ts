@@ -46,6 +46,7 @@ export default defineNuxtConfig({
   },
 
   modules: [
+    '@nuxt/eslint',
     'nuxt-cname-generator',
     '~/modules/commit-sha-file-generator',
     '~/modules/content-downloader',
