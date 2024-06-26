@@ -1,0 +1,1 @@
+import{x as r,a as o,c as s,y as t}from"./CgVAych-.js";const c={};function n(e,a){return o(),s("ul",null,[t(e.$slots,"default")])}const f=r(c,[["render",n]]);export{f as default};
