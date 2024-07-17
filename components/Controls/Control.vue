@@ -5,6 +5,7 @@ withDefaults(
     to?: string
     href?: string
     text: string
+    active?: boolean
   }>(),
   {
     iconId: 'arrow-left'
@@ -17,6 +18,7 @@ withDefaults(
     variant="light"
     :to="to"
     :href="href"
+    :active="active"
   >
     <icon
       v-if="iconId"

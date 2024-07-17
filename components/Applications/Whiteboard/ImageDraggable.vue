@@ -2,10 +2,12 @@
 import Draggable from '~/components/Applications/Whiteboard/Draggable.vue'
 
 withDefaults(defineProps<{
-  index?: number
+  defaultX?: number
+  defaultY?: number
   data: string
 }>(), {
-  index: 0
+  defaultX: 10,
+  defaultY: 10
 })
 
 const emit = defineEmits<{ (event: 'closed'): void }>()
@@ -15,8 +17,8 @@ const emit = defineEmits<{ (event: 'closed'): void }>()
   <draggable
     title="Image"
     class="draggable-image"
-    :default-x="300 + index * 10"
-    :default-y="300 + index * 10"
+    :default-x="defaultX"
+    :default-y="defaultY"
     @closed="emit('closed')"
   >
     <img

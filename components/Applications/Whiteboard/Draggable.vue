@@ -8,10 +8,12 @@ const props = withDefaults(defineProps<{
   defaultY: 10
 })
 
-const emit = defineEmits<{ (event: 'closed'): void }>()
+const emit = defineEmits<{ (event: 'closed' | 'resized'): void }>()
 const x = ref(props.defaultX)
 const y = ref(props.defaultY)
 const root = ref<HTMLElement | null>(null)
+const resizeObserver = new ResizeObserver(() => emit('resized'))
+
 let deltaX = 0
 let deltaY = 0
 
@@ -39,6 +41,9 @@ const stopDragging = () => {
   root.value!.style.removeProperty('width')
   root.value!.style.removeProperty('height')
 }
+
+onMounted(() => resizeObserver.observe(root.value!))
+onBeforeUnmount(() => resizeObserver.unobserve(root.value!))
 
 const close = () => {
   root.value!.remove()

@@ -1,15 +1,21 @@
 <script setup lang="ts">
 import Draggable from '~/components/Applications/Whiteboard/Draggable.vue'
 
-withDefaults(defineProps<{ index?: number }>(), { index: 0 })
+withDefaults(defineProps<{
+  defaultX?: number
+  defaultY?: number
+}>(), {
+  defaultX: 10,
+  defaultY: 10
+})
 </script>
 
 <template>
   <draggable
     class="draggable-text"
     title="Texte"
-    :default-x="100 + index * 10"
-    :default-y="100 + index * 10"
+    :default-x="defaultX"
+    :default-y="defaultY"
   >
     <textarea />
   </draggable>

@@ -39,6 +39,13 @@ export default defineNuxtConfig({
   ],
 
   vite: {
+    optimizeDeps: {
+      esbuildOptions: {
+        supported: {
+          'top-level-await': true
+        }
+      }
+    },
     plugins: [
       StylelintPlugin(),
       eslintPlugin()

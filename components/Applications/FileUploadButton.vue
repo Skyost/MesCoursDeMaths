@@ -23,6 +23,7 @@ const promptForFile = () => {
     if (files && files.length > 0) {
       const content = await blobAsDataUrl(files[0])
       emit('loaded', { file: files[0], content })
+      fileInput.value!.value = ''
     }
   }
   fileInput.value!.click()

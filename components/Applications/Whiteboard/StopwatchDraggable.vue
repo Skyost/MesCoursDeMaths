@@ -1,7 +1,13 @@
 <script setup lang="ts">
 import Draggable from '~/components/Applications/Whiteboard/Draggable.vue'
 
-withDefaults(defineProps<{ index?: number }>(), { index: 0 })
+withDefaults(defineProps<{
+  defaultX?: number
+  defaultY?: number
+}>(), {
+  defaultX: 10,
+  defaultY: 10
+})
 
 const seconds = ref<number>(0)
 const interval = ref<ReturnType<typeof setInterval> | null>(null)
@@ -45,8 +51,8 @@ const changeSeconds = (newSeconds: number) => {
   <draggable
     class="draggable-stopwatch"
     title="Chronomètre"
-    :default-x="400 + index * 10"
-    :default-y="400 + index * 10"
+    :default-x="defaultX"
+    :default-y="defaultY"
     @closed="togglePlay"
   >
     <b-row class="h-100 ms-0 me-0">
@@ -55,7 +61,7 @@ const changeSeconds = (newSeconds: number) => {
         width="2"
       >
         <b-button
-          variant="success"
+          variant="light"
           @click="changeSeconds(seconds + 600)"
         >
           <icon name="bi:plus-lg" />
@@ -65,7 +71,7 @@ const changeSeconds = (newSeconds: number) => {
           v-text="tenMinuteCount"
         />
         <b-button
-          variant="danger"
+          variant="light"
           @click="changeSeconds(seconds - 600)"
         >
           <icon name="bi:dash-lg" />
@@ -76,7 +82,7 @@ const changeSeconds = (newSeconds: number) => {
         width="2"
       >
         <b-button
-          variant="success"
+          variant="light"
           @click="changeSeconds(seconds + 60)"
         >
           <icon name="bi:plus-lg" />
@@ -86,7 +92,7 @@ const changeSeconds = (newSeconds: number) => {
           v-text="minuteCount"
         />
         <b-button
-          variant="danger"
+          variant="light"
           @click="changeSeconds(seconds - 60)"
         >
           <icon name="bi:dash-lg" />
@@ -103,7 +109,7 @@ const changeSeconds = (newSeconds: number) => {
         width="2"
       >
         <b-button
-          variant="success"
+          variant="light"
           @click="changeSeconds(seconds + 10)"
         >
           <icon name="bi:plus-lg" />
@@ -113,7 +119,7 @@ const changeSeconds = (newSeconds: number) => {
           v-text="tenSecondCount"
         />
         <b-button
-          variant="danger"
+          variant="light"
           @click="changeSeconds(seconds - 10)"
         >
           <icon name="bi:dash-lg" />
@@ -124,7 +130,7 @@ const changeSeconds = (newSeconds: number) => {
         width="2"
       >
         <b-button
-          variant="success"
+          variant="light"
           @click="changeSeconds(seconds + 1)"
         >
           <icon name="bi:plus-lg" />
@@ -134,7 +140,7 @@ const changeSeconds = (newSeconds: number) => {
           v-text="secondCount"
         />
         <b-button
-          variant="danger"
+          variant="light"
           @click="changeSeconds(seconds - 1)"
         >
           <icon name="bi:dash-lg" />
