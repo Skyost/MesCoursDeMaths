@@ -63,7 +63,8 @@ const getCoordinates = (event: MouseEvent | TouchEvent) => {
       x = event.touches[0].clientX - rect.left
       y = event.touches[0].clientY - rect.top
     }
-  } else {
+  }
+  else {
     x = event.offsetX
     y = event.offsetY
   }
@@ -86,11 +87,14 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div ref="parent" class="parent">
+  <div
+    ref="parent"
+    class="parent"
+  >
     <canvas
       ref="canvas"
       class="canvas"
-      :class="{ 'enabled': enabled }"
+      :class="{ enabled: enabled }"
       @mousedown="onDrawStart"
       @mousemove="onDraw"
       @mouseup="onDrawEnd"
@@ -106,19 +110,36 @@ onUnmounted(() => {
       @pointerleave="onDrawEnd"
       @pointercancel="onDrawEnd"
     />
-    <div v-if="enabled" class="toolbox">
-      <ski-button variant="light" @click="toggleEraser">
-        <ski-icon :icon="tool === 'pen' ? 'eraser-fill' : 'pencil-fill'" /> {{ tool === 'pen' ? 'Gomme' : 'Crayon' }}
-      </ski-button>
-      <ski-button variant="light" @click="changeColor">
-        <input ref="drawColorInput" v-model="drawColor" type="color" hidden>
-        <ski-icon icon="palette-fill" />
+    <div
+      v-if="enabled"
+      class="toolbox"
+    >
+      <b-button
+        variant="light"
+        @click="toggleEraser"
+      >
+        <icon :name="tool === 'pen' ? 'bi:eraser-fill' : 'bi:pencil-fill'" /> {{ tool === 'pen' ? 'Gomme' : 'Crayon' }}
+      </b-button>
+      <b-button
+        variant="light"
+        @click="changeColor"
+      >
+        <input
+          ref="drawColorInput"
+          v-model="drawColor"
+          type="color"
+          hidden
+        >
+        <icon name="bi:palette-fill" />
         Couleur
-      </ski-button>
-      <ski-button variant="light" @click="clearCanvas">
-        <ski-icon icon="trash-fill" />
+      </b-button>
+      <b-button
+        variant="light"
+        @click="clearCanvas"
+      >
+        <icon name="bi:trash-fill" />
         Effacer
-      </ski-button>
+      </b-button>
     </div>
   </div>
 </template>

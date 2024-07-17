@@ -6,47 +6,76 @@ const year = (new Date()).getFullYear()
 
 <template>
   <footer class="page-footer">
-    <ski-container class="pb-md-5">
-      <ski-columns>
-        <ski-column width="12" md="8" lg="6">
+    <b-container class="pb-md-5">
+      <b-row>
+        <b-col
+          cols="12"
+          md="8"
+          lg="6"
+        >
           <p class="mb-0">
             Copyright &copy; {{ year }} — <strong v-text="siteMeta.author" />. Tous droits réservés.
             Voir les <nuxt-link to="/#licence">licences</nuxt-link>.
             <br>Accéder à l'<nuxt-link to="/prof/">espace enseignant</nuxt-link>.
           </p>
-        </ski-column>
-        <ski-column width="12" md="4" lg="6" class="mt-3 mt-md-0 text-md-end">
+        </b-col>
+        <b-col
+          cols="12"
+          md="4"
+          lg="6"
+          class="mt-3 mt-md-0 text-md-end"
+        >
           <ul class="logos flex-md-row-reverse">
             <li>
               <a href="https://www.latex-project.org/">
-                <img src="/images/technologies/latex.svg" alt="LaTeX" title="LaTeX">
+                <img
+                  src="/images/technologies/latex.svg"
+                  alt="LaTeX"
+                  title="LaTeX"
+                >
               </a>
             </li>
             <li>
               <a href="https://vuejs.org/">
-                <img src="/images/technologies/vue.svg" alt="Vue" title="Vue">
+                <img
+                  src="/images/technologies/vue.svg"
+                  alt="Vue"
+                  title="Vue"
+                >
               </a>
             </li>
             <li>
               <a href="https://nuxtjs.org/">
-                <img src="/images/technologies/nuxt.svg" alt="Nuxt" title="Nuxt">
+                <img
+                  src="/images/technologies/nuxt.svg"
+                  alt="Nuxt"
+                  title="Nuxt"
+                >
               </a>
             </li>
             <li>
               <a href="https://vercel.com">
-                <img src="/images/technologies/vercel.svg" alt="Vercel" title="Vercel">
+                <img
+                  src="/images/technologies/vercel.svg"
+                  alt="Vercel"
+                  title="Vercel"
+                >
               </a>
             </li>
             <li>
               <a href="https://github.com">
-                <img src="/images/technologies/github.svg" alt="Github" title="Github">
+                <img
+                  src="/images/technologies/github.svg"
+                  alt="Github"
+                  title="Github"
+                >
               </a>
             </li>
           </ul>
           <current-commit-sha data-repository-link="/prof/cours/" />
-        </ski-column>
-      </ski-columns>
-    </ski-container>
+        </b-col>
+      </b-row>
+    </b-container>
   </footer>
 </template>
 

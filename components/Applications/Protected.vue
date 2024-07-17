@@ -20,10 +20,20 @@ const { url: oauthUrl } = oauthAuthorizationUrl({
     <slot v-if="accessToken" />
     <div v-else>
       <div class="text-center">
-        <img class="avatar" :src="`https://github.com/${siteMeta.github.username}.png`" alt="Github">
+        <img
+          class="avatar"
+          :src="`https://github.com/${siteMeta.github.username}.png`"
+          alt="Github"
+        >
       </div>
-      <div class="alert alert-primary d-flex align-items-center" role="alert">
-        <ski-icon icon="person-fill" class="fs-2" />
+      <div
+        class="alert alert-primary d-flex align-items-center"
+        role="alert"
+      >
+        <icon
+          name="bi:person-fill"
+          class="fs-2"
+        />
         <div class="ms-2">
           Vous devez vous connecter via Github pour continuer.
           <br><strong>Attention.</strong> Vous devez avoir accès au dépôt <code v-text="`${siteMeta.github.username}/${siteMeta.github.dataRepository}`" />.
@@ -31,14 +41,15 @@ const { url: oauthUrl } = oauthAuthorizationUrl({
       </div>
       <client-only>
         <div class="text-center mt-3 mb-5">
-          <ski-button
+          <b-button
             class="d-inline-flex align-items-center btn-lg"
             type="submit"
             :href="oauthUrl"
+            variant="dark"
           >
-            <ski-icon icon="github" />
+            <icon name="bi:github" />
             <span class="ms-2">Connexion avec Github</span>
-          </ski-button>
+          </b-button>
         </div>
       </client-only>
     </div>

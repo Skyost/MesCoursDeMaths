@@ -9,11 +9,11 @@ import { siteMeta } from '../../site/meta.js'
 import { authentication } from '../../site/authentication.js'
 
 export interface Calendar {
-  data: { [key: string]: string },
+  data: { [key: string]: string }
   sha: string
 }
 
-export async function loadCalendar (octokit: Octokit): Promise<Calendar | null> {
+export async function loadCalendar(octokit: Octokit): Promise<Calendar | null> {
   let githubResponse: any
   try {
     githubResponse = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
@@ -21,7 +21,8 @@ export async function loadCalendar (octokit: Octokit): Promise<Calendar | null> 
       repo: siteMeta.github.dataRepository,
       path: 'calendar.json'
     })
-  } catch (ex) {
+  }
+  catch (ex) {
     githubResponse = ex
   }
   if (githubResponse.status === 404) {
@@ -31,7 +32,7 @@ export async function loadCalendar (octokit: Octokit): Promise<Calendar | null> 
   return { data: JSON.parse(content), sha: githubResponse.data.sha }
 }
 
-export function allowCors (request: VercelRequest, response: VercelResponse): boolean {
+export function allowCors(request: VercelRequest, response: VercelResponse): boolean {
   response.setHeader('Access-Control-Allow-Credentials', 'true')
   response.setHeader('Access-Control-Allow-Origin', siteMeta.url)
   response.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT')
@@ -48,21 +49,21 @@ export function allowCors (request: VercelRequest, response: VercelResponse): bo
 
 const algorithm = 'AES-256-ECB'
 
-export function encrypt (text: string): string {
+export function encrypt(text: string): string {
   const cipher = crypto.createCipheriv(algorithm, authentication.encryptionKey, null)
   let encrypted = cipher.update(text, 'utf8', 'base64')
   encrypted += cipher.final('base64')
   return encrypted
 }
 
-export function decrypt (text: string): string {
+export function decrypt(text: string): string {
   const decipher = crypto.createDecipheriv(algorithm, authentication.encryptionKey, null)
   let decrypted = decipher.update(text, 'base64', 'utf8')
   decrypted += decipher.final('utf8')
   return decrypted
 }
 
-export function createOctokitFromRequest (request: VercelRequest, response: VercelResponse) : Octokit | null {
+export function createOctokitFromRequest(request: VercelRequest, response: VercelResponse): Octokit | null {
   const accessToken = readAccessTokenFromHeaders(request.headers)
   if (!accessToken) {
     response.status(401).send('Pas de jeton d\'accès.')
@@ -71,7 +72,7 @@ export function createOctokitFromRequest (request: VercelRequest, response: Verc
   return new Octokit({ auth: decrypt(accessToken) })
 }
 
-function readAccessTokenFromHeaders (headers: IncomingHttpHeaders) {
+function readAccessTokenFromHeaders(headers: IncomingHttpHeaders) {
   if (!('authorization' in headers) || !headers.authorization!.startsWith('Bearer ')) {
     return null
   }

@@ -6,13 +6,13 @@ import { createOctokitFromRequest, allowCors } from '../_utils.js'
 import { siteContentSettings } from '../../../site/content.js'
 
 export interface APILessonsGetEntry {
-  name: string,
-  path: string,
-  sha: string,
+  name: string
+  path: string
+  sha: string
   content: string
 }
 
-export default async function handler (request: VercelRequest, response: VercelResponse) {
+export default async function handler(request: VercelRequest, response: VercelResponse) {
   if (!allowCors(request, response)) {
     return
   }

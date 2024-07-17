@@ -1,14 +1,14 @@
 <script setup lang="ts">
 const props = withDefaults(defineProps<{
-  title: string,
-  defaultX?: number,
+  title: string
+  defaultX?: number
   defaultY?: number
 }>(), {
   defaultX: 10,
   defaultY: 10
 })
 
-const emit = defineEmits<{(event: 'closed'): void}>()
+const emit = defineEmits<{ (event: 'closed'): void }>()
 const x = ref(props.defaultX)
 const y = ref(props.defaultY)
 const root = ref<HTMLElement | null>(null)
@@ -47,10 +47,25 @@ const close = () => {
 </script>
 
 <template>
-  <div ref="root" class="draggable card" :style="{'top': `${y}px`, 'left': `${x}px`}">
-    <header class="card-header bg-dark text-white" @mousedown="dragMouseDown">
-      <span class="card-title" v-text="title" />
-      <button type="button" class="margin-left-auto btn-close btn-close-white" aria-label="Fermer" @click="close" />
+  <div
+    ref="root"
+    class="draggable card"
+    :style="{ top: `${y}px`, left: `${x}px` }"
+  >
+    <header
+      class="card-header bg-dark text-white"
+      @mousedown="dragMouseDown"
+    >
+      <span
+        class="card-title"
+        v-text="title"
+      />
+      <button
+        type="button"
+        class="margin-left-auto btn-close btn-close-white"
+        aria-label="Fermer"
+        @click="close"
+      />
     </header>
     <div class="card-body">
       <slot />

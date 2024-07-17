@@ -4,14 +4,18 @@ import { siteMeta } from '~/site/meta'
 
 <template>
   <header class="page-header-parent">
-    <ski-container class="page-header">
-      <img class="page-header-image main" src="/images/main.svg" :alt="siteMeta.title">
+    <b-container class="page-header">
+      <img
+        class="page-header-image main"
+        src="/images/main.svg"
+        :alt="siteMeta.title"
+      >
       <client-only>
         <div class="page-header-navigation">
           <page-navigation />
         </div>
       </client-only>
-    </ski-container>
+    </b-container>
   </header>
 </template>
 

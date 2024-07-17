@@ -2,13 +2,13 @@
 import Draggable from '~/components/Applications/Whiteboard/Draggable.vue'
 
 withDefaults(defineProps<{
-  index?: number,
+  index?: number
   data: string
 }>(), {
   index: 0
 })
 
-const emit = defineEmits<{(event: 'closed'): void}>()
+const emit = defineEmits<{ (event: 'closed'): void }>()
 </script>
 
 <template>
@@ -19,7 +19,10 @@ const emit = defineEmits<{(event: 'closed'): void}>()
     :default-y="200 + index * 10"
     @closed="emit('closed')"
   >
-    <object :data="data" type="application/pdf" />
+    <object
+      :data="data"
+      type="application/pdf"
+    />
   </draggable>
 </template>
 

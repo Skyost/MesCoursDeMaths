@@ -1,8 +1,8 @@
 <template>
   <div class="page-content-parent">
-    <ski-container class="page-content">
+    <b-container class="page-content">
       <slot />
-    </ski-container>
+    </b-container>
   </div>
 </template>
 

@@ -5,7 +5,7 @@ import type { Level } from '~/types'
  * @const {{[key: string]: Level}}
  * @export
  */
-export const levels: {[key: string]: Level} = {
+export const levels: { [key: string]: Level } = {
   sixieme: {
     id: 'sixieme',
     name: 'Sixième',

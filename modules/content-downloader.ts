@@ -19,19 +19,19 @@ import type { ModuleOptions as CommitShaFileGeneratorModule } from './commit-sha
  */
 export interface ModuleOptions {
   github: {
-    accessToken: string,
-    username: string,
-    repository: string,
+    accessToken: string
+    username: string
+    repository: string
     dataRepository: string
-  },
+  }
   downloadDestinations: {
-    previousBuild: string,
+    previousBuild: string
     data: string
-  },
-  previousBuildDirectories: string[],
-  dataLatexDirectory: string,
+  }
+  previousBuildDirectories: string[]
+  dataLatexDirectory: string
   latestCommitShaFileName: string | null
-  shouldCopyDownloadedFileToContent: (filePath: string) => boolean,
+  shouldCopyDownloadedFileToContent: (filePath: string) => boolean
   renameFile(file: string): string
 }
 
@@ -73,7 +73,8 @@ export default defineNuxtModule<ModuleOptions>({
     if (!debug) {
       if (options.latestCommitShaFileName) {
         latestCommitShaFilePath = resolver.resolve(contentDirectoryPath, options.latestCommitShaFileName)
-      } else if ('commitShaFileGenerator' in nuxt.options) {
+      }
+      else if ('commitShaFileGenerator' in nuxt.options) {
         latestCommitShaFilePath = resolver.resolve(contentDirectoryPath, (nuxt.options.commitShaFileGenerator as CommitShaFileGeneratorModule).fileName)
       }
     }
@@ -92,7 +93,7 @@ export default defineNuxtModule<ModuleOptions>({
  * @param {ModuleOptions} options The module options.
  * @return {Promise<boolean>} Whether the download is a success.
  */
-async function downloadPreviousBuild (resolver: Resolver, srcDir: string, options: ModuleOptions): Promise<boolean> {
+async function downloadPreviousBuild(resolver: Resolver, srcDir: string, options: ModuleOptions): Promise<boolean> {
   try {
     const directoryPath = resolver.resolve(srcDir, options.downloadDestinations.previousBuild)
     if (fs.existsSync(directoryPath)) {
@@ -125,7 +126,8 @@ async function downloadPreviousBuild (resolver: Resolver, srcDir: string, option
     fs.renameSync(resolver.resolve(parentPath, zipRootDir), resolver.resolve(parentPath, path.basename(directoryPath)))
     logger.success('Done.')
     return true
-  } catch (exception) {
+  }
+  catch (exception) {
     logger.warn(exception)
   }
   return false
@@ -140,7 +142,7 @@ async function downloadPreviousBuild (resolver: Resolver, srcDir: string, option
  * @param {ModuleOptions} options Module options.
  * @return {Promise<boolean>} Whether the download is a success.
  */
-async function downloadRemoteDirectory (
+async function downloadRemoteDirectory(
   resolver: Resolver,
   srcDir: string,
   latestCommitShaFilePath: string | null,
@@ -169,7 +171,8 @@ async function downloadRemoteDirectory (
         ...latestCommitData,
         ...JSON.parse(fs.readFileSync(latestCommitShaFilePath, { encoding: 'utf8' }))
       }
-    } else {
+    }
+    else {
       const fileDirectory = path.dirname(latestCommitShaFilePath)
       if (!fs.existsSync(fileDirectory)) {
         fs.mkdirSync(fileDirectory, { recursive: true })

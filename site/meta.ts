@@ -7,41 +7,41 @@ interface SiteMeta {
    * Title of the website.
    * @type {string}
    */
-  title: string;
+  title: string
 
   /**
    * Description of the website.
    * @type {string}
    */
-  description: string;
+  description: string
 
   /**
    * Author of the website.
    * @type {string}
    */
-  author: string;
+  author: string
 
   /**
    * URL of the website.
    * @type {string}
    */
-  url: string;
+  url: string
 
   /**
    * Vercel API URL associated with the website.
    * @type {string}
    */
-  apiUrl: string;
+  apiUrl: string
 
   /**
    * GitHub information for the website.
    * @type {{ username: string, repository: string, dataRepository: string }}
    */
   github: {
-    username: string;
-    repository: string;
-    dataRepository: string;
-  };
+    username: string
+    repository: string
+    dataRepository: string
+  }
 }
 
 /**

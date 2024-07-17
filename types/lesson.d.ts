@@ -29,19 +29,19 @@ export interface Lesson {
   /**
    * Identifier for the lesson.
    */
-  id: string
+  'id': string
   /**
    * Name or title of the lesson.
    */
-  name: string
+  'name': string
   /**
    * Lesson number (chapter).
    */
-  number: number
+  'number': number
   /**
    * Level of the lesson.
    */
-  level: LevelId
+  'level': LevelId
   /**
    * Title used for the webpage.
    */
@@ -57,7 +57,7 @@ export interface Lesson {
   /**
    * Optional PDF file associated with the lesson.
    */
-  pdf?: string
+  'pdf'?: string
 }
 
 /**

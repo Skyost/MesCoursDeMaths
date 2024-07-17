@@ -1,9 +1,9 @@
 <script setup lang="ts">
 withDefaults(defineProps<{
-  color?: string,
-  to: string,
-  subtitle?: string | undefined,
-  title?: string | undefined,
+  color?: string
+  to: string
+  subtitle?: string | undefined
+  title?: string | undefined
   image?: string | undefined
 }>(), {
   color: 'blue',
@@ -14,17 +14,36 @@ withDefaults(defineProps<{
 </script>
 
 <template>
-  <nuxt-link class="image-card" :class="color" :to="to">
-    <ski-columns>
-      <ski-column v-if="image" width="3">
-        <img class="image" :src="image" :alt="title || subtitle">
-      </ski-column>
-      <ski-column :width="image ? '9' : '12'">
-        <span v-if="subtitle" class="subtitle" v-text="subtitle" />
-        <h2 v-if="title" class="title" v-text="title" />
+  <nuxt-link
+    class="image-card"
+    :class="color"
+    :to="to"
+  >
+    <b-row>
+      <b-col
+        v-if="image"
+        cols="3"
+      >
+        <img
+          class="image"
+          :src="image"
+          :alt="title || subtitle"
+        >
+      </b-col>
+      <b-col :cols="image ? '9' : '12'">
+        <span
+          v-if="subtitle"
+          class="subtitle"
+          v-text="subtitle"
+        />
+        <h2
+          v-if="title"
+          class="title"
+          v-text="title"
+        />
         <slot />
-      </ski-column>
-    </ski-columns>
+      </b-col>
+    </b-row>
   </nuxt-link>
 </template>
 

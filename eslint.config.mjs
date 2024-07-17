@@ -7,4 +7,8 @@ export default withNuxt({
     'import/first': 'off',
     'vue/no-v-html': 'off'
   }
+}).override('nuxt/stylistic', {
+  rules: {
+    '@stylistic/comma-dangle': ['error', 'never']
+  }
 })

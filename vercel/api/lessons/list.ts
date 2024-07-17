@@ -6,13 +6,13 @@ import { createOctokitFromRequest, allowCors } from '../_utils.js'
 import { siteContentSettings } from '../../../site/content.js'
 
 export interface APILessonsListEntry {
-  name: string,
-  path: string,
-  sha: string,
+  name: string
+  path: string
+  sha: string
   type: string
 }
 
-export default async function handler (request: VercelRequest, response: VercelResponse) {
+export default async function handler(request: VercelRequest, response: VercelResponse) {
   if (!allowCors(request, response)) {
     return
   }
@@ -45,7 +45,8 @@ export default async function handler (request: VercelRequest, response: VercelR
       if (b.type !== 'dir') {
         return -1
       }
-    } else if (b.type === 'dir') {
+    }
+    else if (b.type === 'dir') {
       return 1
     }
     if (a.name < b.name) {

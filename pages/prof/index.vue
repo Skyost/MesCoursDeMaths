@@ -40,6 +40,7 @@ const applications = [
 const logout = () => {
   const accessToken = useAccessToken()
   accessToken.value = null
+  location.reload()
 }
 
 onMounted(async () => {
@@ -49,7 +50,8 @@ onMounted(async () => {
     let expiration
     if ('expiration' in route.query) {
       expiration = new Date(parseInt(route.query.expiration!.toString()))
-    } else {
+    }
+    else {
       expiration = new Date()
       expiration.setDate(expiration.getDate() + cookieExpirationDays)
     }
@@ -59,6 +61,7 @@ onMounted(async () => {
 
     const router = useRouter()
     await router.replace({ path: route.path.endsWith('/') ? route.path : (route.path + '/'), query: undefined })
+    location.reload()
   }
 })
 
@@ -70,13 +73,16 @@ useNavigationEntry(teacherNavigationEntry)
     <protected>
       <page-head title="Accès enseignant" />
       <div class="text-end mb-3">
-        <ski-button variant="light" @click="logout">
-          <ski-icon icon="box-arrow-left" /> Déconnexion
-        </ski-button>
+        <b-button
+          variant="light"
+          @click="logout"
+        >
+          <icon name="bi:box-arrow-left" /> Déconnexion
+        </b-button>
       </div>
       <h1>Accès enseignant</h1>
-      <ski-columns class="justify-content-center">
-        <ski-column
+      <b-row class="justify-content-center">
+        <b-col
           v-for="application in applications"
           :key="application.id"
           xs="12"
@@ -91,8 +97,8 @@ useNavigationEntry(teacherNavigationEntry)
             :to="application.url"
             :image="application.image"
           />
-        </ski-column>
-      </ski-columns>
+        </b-col>
+      </b-row>
     </protected>
   </div>
 </template>

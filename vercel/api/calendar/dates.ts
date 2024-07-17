@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { createOctokitFromRequest, allowCors, loadCalendar } from '../_utils.js'
 
-export default async function handler (request: VercelRequest, response: VercelResponse) {
+export default async function handler(request: VercelRequest, response: VercelResponse) {
   if (!allowCors(request, response)) {
     return
   }

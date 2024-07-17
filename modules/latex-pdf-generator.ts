@@ -14,13 +14,13 @@ import { getFileName } from '../utils/utils'
  * @interface
  */
 export interface ModuleOptions {
-  directory: string,
-  previousBuildDirectory: string,
-  destinationDirectory: string,
-  generatePrintVariant: (filePath: string, fileContent: string) => null | { name: string, content: string },
-  ignores: string[],
-  getIncludeGraphicsDirectories: (latexFilePath: string) => string[],
-  moveFiles: boolean,
+  directory: string
+  previousBuildDirectory: string
+  destinationDirectory: string
+  generatePrintVariant: (filePath: string, fileContent: string) => null | { name: string, content: string }
+  ignores: string[]
+  getIncludeGraphicsDirectories: (latexFilePath: string) => string[]
+  moveFiles: boolean
   renameFile(file: string): string
 }
 
@@ -74,7 +74,8 @@ export default defineNuxtModule<ModuleOptions>({
     nuxt.options.nitro.publicAssets = nuxt.options.nitro.publicAssets || []
     nuxt.options.nitro.publicAssets.push({
       baseURL: `/${options.destinationDirectory}/`,
-      dir: destinationDirectoryPath
+      dir: destinationDirectoryPath,
+      fallthrough: true
     })
   }
 })
@@ -216,7 +217,8 @@ const generateAndCopy = (
 
     if (wasCached) {
       logger.success(`Fully cached PDF found in ${previousBuildDirectory}.`)
-    } else {
+    }
+    else {
       logger.success(previousBuildDirectory ? `File was not cached in ${previousBuildDirectory} but has been generated with success.` : 'Done.')
     }
     return true

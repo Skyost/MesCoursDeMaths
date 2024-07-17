@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import type { FileContent } from '~/components/Applications/FileUploadButton.vue';
+import type { FileContent } from '~/components/Applications/FileUploadButton.vue'
 import FileUploadButton from '~/components/Applications/FileUploadButton.vue'
 import WhiteboardCanvas from '~/components/Applications/Whiteboard/WhiteboardCanvas.vue'
 import TextDraggable from '~/components/Applications/Whiteboard/TextDraggable.vue'
 import PdfDraggable from '~/components/Applications/Whiteboard/PdfDraggable.vue'
 import ImageDraggable from '~/components/Applications/Whiteboard/ImageDraggable.vue'
 import StopwatchDraggable from '~/components/Applications/Whiteboard/StopwatchDraggable.vue'
+import BackToApplications from '~/components/Applications/BackToApplications.vue'
+import Control from '~/components/Controls/Control.vue'
 
 const textCount = ref<number>(0)
 const stopwatchCount = ref<number>(0)
@@ -19,21 +21,50 @@ const onImageLoaded = (data: FileContent) => imagesData.value.push(data.content)
 
 <template>
   <div>
-    <div class="text-end">
-      <ski-button variant="light" :class="{active: isDrawing}" @click="isDrawing = !isDrawing">
-        <ski-icon :icon="isDrawing ? 'pencil-fill' : 'pencil'" /> Crayon
-      </ski-button>
-      <ski-button variant="light" @click="textCount += 1">
-        <ski-icon icon="card-text" /> Texte
-      </ski-button>
-      <file-upload-button icon="file-pdf-fill" text="Document PDF" accept="application/pdf" @loaded="onPdfLoaded" />
-      <file-upload-button icon="card-image" text="Image" accept="image/*" @loaded="onImageLoaded" />
-      <ski-button variant="light" @click="stopwatchCount += 1">
-        <ski-icon icon="stopwatch-fill" /> Chronomètre
-      </ski-button>
-    </div>
-    <whiteboard-canvas class="whiteboard-canvas" :enabled="isDrawing" />
-    <input ref="fileInput" type="file" hidden>
+    <controls>
+      <controls-section>
+        <controls-section-title />
+        <back-to-applications />
+      </controls-section>
+      <controls-section>
+        <controls-section-title
+          title="Canevas"
+          icon-id="easel2"
+        />
+        <control
+          :class="{ active: isDrawing }"
+          :icon-id="isDrawing ? 'pencil-fill' : 'pencil'"
+          text="Crayon"
+          @click="isDrawing = !isDrawing"
+        />
+        <control
+          icon-id="card-text"
+          text="Texte"
+          @click="textCount += 1"
+        />
+        <file-upload-button
+          icon-id="file-pdf-fill"
+          text="Document PDF"
+          accept="application/pdf"
+          @loaded="onPdfLoaded"
+        />
+        <file-upload-button
+          icon-id="card-image"
+          text="Image"
+          accept="image/*"
+          @loaded="onImageLoaded"
+        />
+        <control
+          icon-id="stopwatch"
+          text="Chronomètre"
+          @click="stopwatchCount += 1"
+        />
+      </controls-section>
+    </controls>
+    <whiteboard-canvas
+      class="whiteboard-canvas"
+      :enabled="isDrawing"
+    />
     <text-draggable
       v-for="i in textCount"
       :key="`text-${i}`"

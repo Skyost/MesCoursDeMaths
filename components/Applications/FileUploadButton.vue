@@ -1,17 +1,18 @@
 <script setup lang="ts">
 import { blobAsDataUrl } from '~/utils/utils'
+import Control from '~/components/Controls/Control.vue'
 
 export interface FileContent {
-  file: File,
+  file: File
   content: string
 }
 
 defineProps<{
-  accept?: string,
-  icon: string,
+  accept?: string
+  iconId: string
   text: string
 }>()
-const emit = defineEmits<{(event: 'loaded', file: FileContent): void}>()
+const emit = defineEmits<{ (event: 'loaded', file: FileContent): void }>()
 
 const fileInput = ref<HTMLInputElement | null>(null)
 
@@ -30,9 +31,17 @@ const promptForFile = () => {
 
 <template>
   <span>
-    <input ref="fileInput" type="file" :accept="accept" hidden>
-    <ski-button variant="light" @click="promptForFile">
-      <ski-icon :icon="icon" /> {{ text }}
-    </ski-button>
+    <input
+      ref="fileInput"
+      type="file"
+      :accept="accept"
+      hidden
+    >
+    <control
+      variant="light"
+      :icon-id="iconId"
+      :text="text"
+      @click="promptForFile"
+    />
   </span>
 </template>

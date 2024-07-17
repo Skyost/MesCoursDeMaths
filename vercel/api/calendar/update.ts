@@ -4,7 +4,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { siteMeta } from '../../../site/meta.js'
 import { createOctokitFromRequest, allowCors, loadCalendar, type Calendar } from '../_utils.js'
 
-export default async function handler (request: VercelRequest, response: VercelResponse) {
+export default async function handler(request: VercelRequest, response: VercelResponse) {
   if (!allowCors(request, response)) {
     return
   }
@@ -19,9 +19,10 @@ export default async function handler (request: VercelRequest, response: VercelR
   const calendar: Calendar = (await loadCalendar(octokit)) ?? { data: {}, sha: '' }
   const date = request.body.date.toString()
   if (request.body.content.length === 0) {
-    const { [date]: _, ...withoutDate } = calendar.data;
+    const { [date]: _, ...withoutDate } = calendar.data
     calendar.data = withoutDate
-  } else {
+  }
+  else {
     calendar.data[date] = request.body.content
   }
   const githubResponse = await octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {

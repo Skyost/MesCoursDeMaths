@@ -1,7 +1,6 @@
 import { defineNuxtConfig } from 'nuxt/config'
 import StylelintPlugin from 'vite-plugin-stylelint'
 import eslintPlugin from '@nabla/vite-plugin-eslint'
-import 'dotenv/config'
 import { siteMeta } from './site/meta'
 import { debug } from './site/debug'
 import { authentication } from './site/authentication'
@@ -16,6 +15,7 @@ if (debug) {
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
   ssr: true,
+  compatibilityDate: '2024-07-01',
 
   app: {
     head: {
@@ -52,24 +52,35 @@ export default defineNuxtConfig({
     '~/modules/content-downloader',
     '~/modules/latex-pdf-generator',
     '~/modules/nuxt-content-latex',
-    'skimple-components/nuxt',
+    '@bootstrap-vue-next/nuxt',
     '@nuxt/content',
     '@nuxtjs/google-fonts',
     'nuxt-link-checker',
     '@nuxtjs/sitemap',
-    'nuxt-simple-robots'
+    '@nuxtjs/robots',
+    '@nuxt/icon'
+    // '@nuxt/image'
   ],
 
-  runtimeConfig: {
-    public: {
-      url,
-      apiUrl,
-      githubClientId: authentication.clientId
+  nitro: {
+    prerender: {
+      routes: ['/']
+    }
+  },
+
+  eslint: {
+    config: {
+      stylistic: true
     }
   },
 
   content: {
     watch: false
+  },
+
+  icon: {
+    provider: 'iconify',
+    class: 'vue-icon'
   },
 
   googleFonts: {
@@ -80,13 +91,8 @@ export default defineNuxtConfig({
     }
   },
 
-  skimpleComponents: {
-    bootstrapCss: false,
-    bootstrapJs: false
-  },
-
   site: {
-    url,
+    url: siteMeta.url,
     name: siteMeta.title,
     trailingSlash: true
   },
@@ -114,7 +120,15 @@ export default defineNuxtConfig({
   },
 
   cname: {
-    host: url
+    host: siteMeta.url
+  },
+
+  runtimeConfig: {
+    public: {
+      githubClientId: authentication.clientId,
+      url,
+      apiUrl
+    }
   },
 
   experimental: {

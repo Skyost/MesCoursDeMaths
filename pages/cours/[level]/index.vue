@@ -15,6 +15,7 @@ export const levelNavigationEntry = (level: Level) => {
 import { levelsNavigationEntry } from '~/pages/cours/index.vue'
 import { getLessonImage, getLessonSubtitle, getLessonUrl } from '~/site/lessons'
 import { siteContentSettings } from '~/site/content'
+import Control from '~/components/Controls/Control.vue'
 
 const route = useRoute()
 const level: Level | undefined = levels[route.params.level.toString()]
@@ -42,14 +43,17 @@ if (level) {
       <spinner />
     </div>
     <div v-else-if="level && lessons">
-      <div class="text-end mb-3">
-        <ski-button variant="light" :to="`/cours/`">
-          <ski-icon icon="arrow-left" /> Retourner à la liste des niveaux
-        </ski-button>
-      </div>
+      <controls>
+        <controls-section>
+          <control
+            to="/cours/"
+            text="Retourner à la liste des niveaux"
+          />
+        </controls-section>
+      </controls>
       <h1 v-text="title" />
-      <ski-columns class="justify-content-center">
-        <ski-column
+      <b-row class="justify-content-center">
+        <b-col
           v-for="lesson in lessons"
           :key="lesson.id"
           xs="12"
@@ -64,11 +68,14 @@ if (level) {
             :to="getLessonUrl(lesson)"
             :image="getLessonImage(lesson)"
           />
-        </ski-column>
-      </ski-columns>
+        </b-col>
+      </b-row>
     </div>
     <div v-else>
-      <error-display :change-title="true" :error="error ?? 404" />
+      <error-display
+        :change-title="true"
+        :error="error ?? 404"
+      />
     </div>
   </div>
 </template>

@@ -8,7 +8,7 @@ import { debug } from '../../../site/debug.js'
 import { siteMeta } from '../../../site/meta.js'
 import { cookieExpirationDays } from '../../../site/cookie.js'
 
-export default async function handler (request: VercelRequest, response: VercelResponse) {
+export default async function handler(request: VercelRequest, response: VercelResponse) {
   if (request.query.code && request.query.state) {
     const auth = createOAuthAppAuth({
       clientId: authentication.clientId,
@@ -30,10 +30,11 @@ export default async function handler (request: VercelRequest, response: VercelR
         expiration: expiration.getTime().toString()
       })
       response.redirect(`${url}/prof/?${params}`)
-    } else {
-      response.status(500).send("Erreur provenant sûrement d'une mauvaise configuration.")
+    }
+    else {
+      response.status(500).send('Erreur provenant sûrement d\'une mauvaise configuration.')
     }
     return
   }
-  response.status(401).send("Votre requête doit contenir un 'code' provenant de Github.")
+  response.status(401).send('Votre requête doit contenir un \'code\' provenant de Github.')
 }

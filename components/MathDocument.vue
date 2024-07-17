@@ -2,8 +2,8 @@
 import html2canvas from 'html2canvas'
 
 withDefaults(defineProps<{
-  title: string,
-  body: string,
+  title: string
+  body: string
   color?: string
 }>(), {
   color: 'red'
@@ -41,7 +41,8 @@ const setupDocument = () => {
 
     if (parentEnclosing) {
       parentEnclosing.replaceWith(element)
-    } else {
+    }
+    else {
       katex.replaceWith(element)
     }
   }
@@ -50,22 +51,36 @@ const setupDocument = () => {
   let scrollCollapse
   for (let i = 0; i < exercises.length; i++) {
     const exercise = exercises[i]
-    if (exercise.nextElementSibling && exercise.nextElementSibling.classList.contains('bubble-correction')) {
-      exercise.nextElementSibling.id = `correction-${i + 1}`
-      exercise.nextElementSibling.classList.add('collapse')
-      const correction = document.createElement('span')
-      correction.classList.add('button-exercice')
-      correction.classList.add('button-correction')
-      correction.setAttribute('data-bs-toggle', 'collapse')
-      correction.setAttribute('data-bs-target', `#correction-${i + 1}`)
-      correction.innerHTML = '<i class="bi bi-chevron-down"></i> <span class="show">Voir</span><span class="hide">Cacher</span> la correction'
-      if (route.hash === `#correction-${i + 1}`) {
-        scrollCollapse = exercise.nextElementSibling
-        scrollCollapse.classList.add('show')
-      } else {
-        correction.classList.add('collapsed')
+    const correction = exercise.nextElementSibling
+    if (correction && correction.classList.contains('bubble-correction')) {
+      const id = `correction-${i + 1}`
+      const expanded = route.hash === `#${id}`
+      const details = document.createElement('details')
+      details.setAttribute('id', id)
+      details.innerHTML = correction.outerHTML
+      correction.parentNode?.insertBefore(details, correction)
+      correction.remove()
+      const summary = document.createElement('summary')
+      summary.classList.add('button-exercice', 'button-correction')
+      summary.textContent = 'Correction'
+      details.insertBefore(summary, details.firstChild)
+      if (expanded) {
+        details.setAttribute('open', 'true')
+        scrollCollapse = details
       }
-      exercise.parentNode?.insertBefore(correction, exercise.nextSibling)
+      details.addEventListener('click', (event) => {
+        if (details.hasAttribute('open')) {
+          event.preventDefault()
+          details.classList.add('closing')
+        }
+      })
+      details.addEventListener('animationend', (event) => {
+        console.log(event.animationName)
+        if (event.animationName === 'close') {
+          details.removeAttribute('open')
+          details.classList.remove('closing')
+        }
+      })
     }
 
     const print = document.createElement('span')
@@ -85,7 +100,7 @@ const setupDocument = () => {
         }, 100)
       }
     }
-    print.innerHTML = '<i class="bi bi-printer-fill"></i> Imprimer'
+    print.innerHTML = '<i class="iconify i-bi:printer-fill vue-icon" aria-hidden="true"></i> Imprimer'
     exercise.parentNode?.insertBefore(print, exercise.nextSibling)
     exercise.style.marginBottom = 'calc(1.6em + 1.5rem)'
   }
@@ -98,9 +113,17 @@ onMounted(setupDocument)
 </script>
 
 <template>
-  <div ref="root" class="math-document" :class="color">
+  <div
+    ref="root"
+    class="math-document"
+    :class="color"
+  >
     <h1 v-html="title" />
-    <div class="math-document-content" v-html="body" />
+    <icon name="bi:printer-fill" class="d-none" />
+    <div
+      class="math-document-content"
+      v-html="body"
+    />
   </div>
 </template>
 
@@ -113,7 +136,7 @@ onMounted(setupDocument)
   background-color: $backgroundColor;
   border: 0 solid $titleColor;
   border-left-width: 6px;
-  padding: calc(20px + 0.6em + 4px) 20px calc(20px - 1rem) 20px;
+  padding: calc(20px + 0.6em + 4px) 20px calc(20px - 1rem);
   margin-bottom: 1.5rem;
   transition: background-color 200ms;
 
@@ -207,32 +230,6 @@ onMounted(setupDocument)
 
       &.button-correction {
         float: left;
-
-        .bi-chevron-down::before {
-          transition: transform 200ms;
-        }
-
-        .show {
-          display: none;
-        }
-
-        .hide {
-          display: inline;
-        }
-
-        &.collapsed {
-          .show {
-            display: inline;
-          }
-
-          .hide {
-            display: none;
-          }
-
-          .bi-chevron-down::before {
-            transform: rotate(-90deg);
-          }
-        }
       }
 
       &.button-print {
@@ -281,6 +278,26 @@ onMounted(setupDocument)
 
     ul li {
       list-style-type: '— ';
+    }
+
+    details[id^='correction'] {
+      &[open] > *:not(summary) {
+        animation: open 0.5s;
+      }
+
+      &.closing > *:not(summary) {
+        animation: close 0.25s !important;
+      }
+
+      @keyframes open {
+        0% { opacity: 0 }
+        100% { opacity: 1 }
+      }
+
+      @keyframes close {
+        0% { opacity: 1 }
+        100% { opacity: 0 }
+      }
     }
 
     .center {

@@ -5,7 +5,7 @@ import { siteMeta } from '../../../site/meta.js'
 import { createOctokitFromRequest, allowCors } from '../_utils.js'
 import { siteContentSettings } from '../../../site/content.js'
 
-export default async function handler (request: VercelRequest, response: VercelResponse) {
+export default async function handler(request: VercelRequest, response: VercelResponse) {
   if (!allowCors(request, response)) {
     return
   }

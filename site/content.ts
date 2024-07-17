@@ -15,9 +15,9 @@ interface SiteContentSettings {
    * @type {{ previousBuild: string, data: string }}
    */
   downloadDestinations: {
-    previousBuild: string;
-    data: string;
-  };
+    previousBuild: string
+    data: string
+  }
 
   /**
    * Function to determine whether to copy downloaded files to content.

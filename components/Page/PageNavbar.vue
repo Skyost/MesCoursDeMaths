@@ -1,19 +1,39 @@
 <template>
-  <ski-navbar color="primary" class="navbar-dark">
-    <ski-navbar-collapse id="page-navbar-collapse">
-      <page-navbar-brand class="d-none d-lg-inline" />
-      <ski-navbar-items class="ms-auto">
-        <ski-navbar-item class="page-navbar-item" to="/" :active="$route.path === '/'">
-          <ski-icon icon="house-door-fill" /> Accueil
-        </ski-navbar-item>
-        <ski-navbar-item class="page-navbar-item" to="/cours/" :active="$route.path.startsWith('/cours')">
-          <ski-icon icon="bookmark-fill" /> Accéder aux cours
-        </ski-navbar-item>
-      </ski-navbar-items>
-    </ski-navbar-collapse>
+  <b-navbar
+    data-bs-theme="dark"
+    v-b-color-mode="'dark'"
+    toggleable="lg"
+    variant="primary"
+  >
+    <page-navbar-brand class="d-none d-lg-inline" />
+    <b-navbar-toggle target="page-navbar-collapse" />
+    <b-collapse
+      id="page-navbar-collapse"
+      is-nav
+    >
+      <b-navbar-nav class="ms-auto">
+        <b-nav-item
+          class="page-navbar-item"
+          to="/"
+          :active="$route.path === '/'"
+        >
+          <icon name="bi:house-door-fill" /> Accueil
+        </b-nav-item>
+        <b-nav-item
+          class="page-navbar-item"
+          to="/cours/"
+          :active="$route.path.startsWith('/cours')"
+        >
+          <icon name="bi:bookmark-fill" /> Accéder aux cours
+        </b-nav-item>
+      </b-navbar-nav>
+    </b-collapse>
     <page-navbar-brand class="mobile-navbar-brand" />
-  </ski-navbar>
+  </b-navbar>
 </template>
+
+<script setup lang="ts">
+</script>
 
 <style lang="scss" scoped>
 @import 'assets/bootstrap-mixins';

@@ -16,6 +16,7 @@ import { levelsNavigationEntry } from '~/pages/cours/index.vue'
 import { levelNavigationEntry } from '~/pages/cours/[level]/index.vue'
 import { getLevelUrl, levels } from '~/site/levels'
 import { siteContentSettings } from '~/site/content'
+import Control from '~/components/Controls/Control.vue'
 
 const route = useRoute()
 const level: Level | undefined = levels[route.params.level.toString()]
@@ -43,23 +44,33 @@ const onMathDocumentMounted = () => useNavigationEntry(lessonNavigationEntry(les
       <spinner />
     </div>
     <div v-else-if="level && lessonContent">
-      <div>
-        <div class="lesson-control-buttons">
-          <span class="title"><ski-icon icon="list" /> Navigation</span>
-          <ski-button variant="light" :to="getLevelUrl(level)">
-            <ski-icon icon="arrow-left" /> Retourner à la liste des cours
-          </ski-button>
-          <ski-button v-if="lessonContent.pdf" variant="light" :href="lessonContent.pdf">
-            <ski-icon icon="file-earmark-pdf-fill" /> Télécharger le PDF
-          </ski-button>
-        </div>
-        <div v-if="lessonContent['linked-resources'].length > 0" class="lesson-control-buttons">
-          <span class="title"><ski-icon icon="paperclip" /> Ressources associées</span>
-          <ski-button v-for="resource in lessonContent['linked-resources']" :key="resource.url" :href="resource.url" variant="light">
-            <ski-icon v-if="resource.url.endsWith('.pdf')" icon="file-earmark-pdf-fill" /> {{ resource.title }}
-          </ski-button>
-        </div>
-      </div>
+      <controls>
+        <controls-section>
+          <controls-section-title />
+          <control
+            :to="getLevelUrl(level)"
+            text="Retourner à la liste des cours"
+          />
+          <control
+            :href="lessonContent.pdf"
+            text="Télécharger le PDF"
+            icon-id="file-earmark-pdf-fill"
+          />
+        </controls-section>
+        <controls-section v-if="lessonContent['linked-resources'].length > 0">
+          <controls-section-title
+            icon-id="paperclip"
+            title="Ressources associées"
+          />
+          <control
+            v-for="resource in lessonContent['linked-resources']"
+            :key="resource.url"
+            :href="resource.url"
+            :icon-id="resource.url.endsWith('.pdf') ? 'file-earmark-pdf-fill' : null"
+            :text="resource.title"
+          />
+        </controls-section>
+      </controls>
       <main>
         <math-document
           :title="lessonContent!.name"
@@ -70,7 +81,10 @@ const onMathDocumentMounted = () => useNavigationEntry(lessonNavigationEntry(les
       </main>
     </div>
     <div v-else>
-      <error-display :change-title="true" :error="error ?? 404" />
+      <error-display
+        :change-title="true"
+        :error="error ?? 404"
+      />
     </div>
   </div>
 </template>
@@ -80,7 +94,7 @@ const onMathDocumentMounted = () => useNavigationEntry(lessonNavigationEntry(les
   display: flex;
   flex-flow: row wrap;
   justify-content: flex-end;
-  gap: 8px 8px;
+  gap: 8px;
   margin-bottom: 1rem;
 
   .title {

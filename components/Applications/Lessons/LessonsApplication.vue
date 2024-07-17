@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import btoa from '@node-fetch/btoa-lite'
-import type { FileContent } from '~/components/Applications/FileUploadButton.vue';
+import type { FileContent } from '~/components/Applications/FileUploadButton.vue'
 import FileUploadButton from '~/components/Applications/FileUploadButton.vue'
 import CodeEditor from '~/components/Applications/Lessons/CodeEditor.vue'
+import BackToApplications from '~/components/Applications/BackToApplications.vue'
+import Control from '~/components/Controls/Control.vue'
 import type { APILessonsListEntry } from '~/vercel/api/lessons/list'
 import type { APILessonsGetEntry } from '~/vercel/api/lessons/get'
 import { base64Decode } from '~/utils/utils'
@@ -29,7 +31,8 @@ const onFileLoaded = async (event: FileContent) => {
   if (isFileNameValid(name)) {
     await saveFileContent(currentDirectory.value + name, event.content.split(',')[1])
     await refreshFileList()
-  } else {
+  }
+  else {
     window.alert('Nom de fichier invalide !')
   }
 }
@@ -43,7 +46,8 @@ const createNewFile = async () => {
   if (isFileNameValid(name)) {
     await saveFileContent(currentDirectory.value + name, '')
     await refreshFileList()
-  } else {
+  }
+  else {
     window.alert('Nom de fichier invalide !')
   }
 }
@@ -134,7 +138,8 @@ const request = async (callback: () => Promise<any>) => {
   loading.value = true
   try {
     await callback()
-  } catch (ex: any) {
+  }
+  catch (ex: any) {
     exception.value = ex
   }
   loading.value = false
@@ -159,30 +164,72 @@ onMounted(refreshFileList)
 
 <template>
   <div class="file-browser">
-    <div class="text-end mb-3">
-      <ski-button v-if="exception" variant="light" @click="refreshFileList">
-        <ski-icon icon="arrow-clockwise" /> Recharger
-      </ski-button>
-      <ski-button v-if="currentDirectory.length !== 0 && currentFile === null && !loading" variant="light" @click="goToParent">
-        <ski-icon icon="arrow-90deg-up" /> Dossier parent
-      </ski-button>
-      <ski-button v-if="currentFile === null && !loading" variant="light" @click="createNewFile">
-        <ski-icon icon="file-earmark-plus-fill" /> Nouveau
-      </ski-button>
-      <file-upload-button v-if="currentFile === null && !loading" icon="cloud-upload-fill" text="Uploader" accept=".tex" @loaded="onFileLoaded" />
-      <ski-button v-if="currentFile !== null && !loading" variant="light" @click="saveFileContent(currentFile.path, btoa(editor!.document), currentFile.sha)">
-        <ski-icon icon="cloud-download-fill" /> Enregistrer
-      </ski-button>
-      <ski-button v-if="currentFile !== null && !loading" variant="light" @click="currentFile = null">
-        <ski-icon icon="x-lg" /> Fermer
-      </ski-button>
-    </div>
+    <controls>
+      <controls-section>
+        <controls-section-title />
+        <back-to-applications />
+        <control
+          v-if="currentDirectory.length !== 0 && currentFile === null && !loading"
+          icon-id="arrow-90deg-up"
+          text="Dossier parent"
+          @click="goToParent"
+        />
+      </controls-section>
+      <controls-section v-if="exception || !loading">
+        <controls-section-title
+          title="Opérations"
+          icon-id="mouse"
+        />
+        <control
+          v-if="exception"
+          icon-id="arrow-clockwise"
+          text="Recharger"
+          @click="refreshFileList"
+        />
+        <control
+          v-if="currentFile === null && !loading"
+          icon-id="file-earmark-plus-fill"
+          text="Nouveau"
+          @click="createNewFile"
+        />
+        <file-upload-button
+          v-if="currentFile === null && !loading"
+          icon-id="cloud-upload-fill"
+          text="Uploader"
+          accept=".tex"
+          @loaded="onFileLoaded"
+        />
+        <control
+          v-if="currentFile !== null && !loading"
+          icon-id="cloud-download-fill"
+          text="Enregistrer"
+          @click="saveFileContent(currentFile.path, btoa(editor!.document), currentFile.sha)"
+        />
+        <control
+          v-if="currentFile !== null && !loading"
+          icon-id="x-lg"
+          text="Fermer"
+          @click="currentFile = null"
+        />
+      </controls-section>
+    </controls>
     <h1>Cours</h1>
-    <div v-if="exception" class="p-5 text-center">
+    <div
+      v-if="exception"
+      class="p-5 text-center"
+    >
       <p v-text="exception" />
-      <ski-button variant="link" @click="refreshFileList">Recharger</ski-button>
+      <b-button
+        variant="link"
+        @click="refreshFileList"
+      >
+        Recharger
+      </b-button>
     </div>
-    <div v-else-if="loading" class="mt-5 mb-5 text-center">
+    <div
+      v-else-if="loading"
+      class="mt-5 mb-5 text-center"
+    >
       <spinner />
     </div>
     <div
@@ -201,20 +248,36 @@ onMounted(refreshFileList)
         class="item"
         @click="goToParent"
       >
-        <ski-icon icon="arrow-90deg-up" /> Dossier parent
+        <icon name="bi:arrow-90deg-up" /> Dossier parent
       </div>
-      <div v-for="(file, index) in fileList" :key="index" class="d-flex">
-        <div class="item flex-grow-1" @click="onFileClicked(file)">
-          <ski-icon :icon="file.type === 'dir' ? 'folder-fill' : 'file-earmark-fill'" /> {{ file.name }}
+      <div
+        v-for="(file, index) in fileList"
+        :key="index"
+        class="d-flex"
+      >
+        <div
+          class="item flex-grow-1"
+          @click="onFileClicked(file)"
+        >
+          <icon :name="file.type === 'dir' ? 'bi:folder-fill' : 'bi:file-earmark-fill'" /> {{ file.name }}
         </div>
-        <ski-button variant="success" @click="renameFile(file)">
-          <ski-icon icon="cursor-text" />
-        </ski-button>
-        <ski-button variant="danger" @click="deleteFile(file)">
-          <ski-icon icon="trash-fill" />
-        </ski-button>
+        <b-button
+          variant="success"
+          @click="renameFile(file)"
+        >
+          <icon name="bi:cursor-text" />
+        </b-button>
+        <b-button
+          variant="danger"
+          @click="deleteFile(file)"
+        >
+          <icon name="bi:trash-fill" />
+        </b-button>
       </div>
-      <span class="d-block text-end text-muted p-3" v-text="currentPath" />
+      <span
+        class="d-block text-end text-muted p-3"
+        v-text="currentPath"
+      />
     </div>
   </div>
 </template>

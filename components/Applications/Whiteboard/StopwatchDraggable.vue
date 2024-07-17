@@ -22,7 +22,8 @@ const togglePlay = () => {
           interval.value = null
         }
       }, 1000)
-    } else {
+    }
+    else {
       clearInterval(interval.value!)
       interval.value = null
     }
@@ -48,52 +49,109 @@ const changeSeconds = (newSeconds: number) => {
     :default-y="400 + index * 10"
     @closed="togglePlay"
   >
-    <ski-columns class="h-100 ms-0 me-0">
-      <ski-column class="duration-column" width="2">
-        <ski-button variant="success" @click="changeSeconds(seconds + 600)">
-          <ski-icon icon="plus-lg" />
-        </ski-button>
-        <span class="duration" v-text="tenMinuteCount" />
-        <ski-button variant="danger" @click="changeSeconds(seconds - 600)">
-          <ski-icon icon="dash-lg" />
-        </ski-button>
-      </ski-column>
-      <ski-column class="duration-column" width="2">
-        <ski-button variant="success" @click="changeSeconds(seconds + 60)">
-          <ski-icon icon="plus-lg" />
-        </ski-button>
-        <span class="duration" v-text="minuteCount" />
-        <ski-button variant="danger" @click="changeSeconds(seconds - 60)">
-          <ski-icon icon="dash-lg" />
-        </ski-button>
-      </ski-column>
-      <ski-column class="duration-column" width="auto">
+    <b-row class="h-100 ms-0 me-0">
+      <b-col
+        class="duration-column"
+        width="2"
+      >
+        <b-button
+          variant="success"
+          @click="changeSeconds(seconds + 600)"
+        >
+          <icon name="bi:plus-lg" />
+        </b-button>
+        <span
+          class="duration"
+          v-text="tenMinuteCount"
+        />
+        <b-button
+          variant="danger"
+          @click="changeSeconds(seconds - 600)"
+        >
+          <icon name="bi:dash-lg" />
+        </b-button>
+      </b-col>
+      <b-col
+        class="duration-column"
+        width="2"
+      >
+        <b-button
+          variant="success"
+          @click="changeSeconds(seconds + 60)"
+        >
+          <icon name="bi:plus-lg" />
+        </b-button>
+        <span
+          class="duration"
+          v-text="minuteCount"
+        />
+        <b-button
+          variant="danger"
+          @click="changeSeconds(seconds - 60)"
+        >
+          <icon name="bi:dash-lg" />
+        </b-button>
+      </b-col>
+      <b-col
+        class="duration-column"
+        width="auto"
+      >
         <span class="duration">:</span>
-      </ski-column>
-      <ski-column class="duration-column" width="2">
-        <ski-button variant="success" @click="changeSeconds(seconds + 10)">
-          <ski-icon icon="plus-lg" />
-        </ski-button>
-        <span class="duration" v-text="tenSecondCount" />
-        <ski-button variant="danger" @click="changeSeconds(seconds - 10)">
-          <ski-icon icon="dash-lg" />
-        </ski-button>
-      </ski-column>
-      <ski-column class="duration-column" width="2">
-        <ski-button variant="success" @click="changeSeconds(seconds + 1)">
-          <ski-icon icon="plus-lg" />
-        </ski-button>
-        <span class="duration" v-text="secondCount" />
-        <ski-button variant="danger" @click="changeSeconds(seconds - 1)">
-          <ski-icon icon="dash-lg" />
-        </ski-button>
-      </ski-column>
-      <ski-column class="ms-auto p-0 d-flex justify-content-center" width="1">
-        <ski-button :disabled="seconds <= 0" @click="togglePlay">
-          <ski-icon :icon="isPaused ? 'play-fill' : 'pause'" />
-        </ski-button>
-      </ski-column>
-    </ski-columns>
+      </b-col>
+      <b-col
+        class="duration-column"
+        width="2"
+      >
+        <b-button
+          variant="success"
+          @click="changeSeconds(seconds + 10)"
+        >
+          <icon name="bi:plus-lg" />
+        </b-button>
+        <span
+          class="duration"
+          v-text="tenSecondCount"
+        />
+        <b-button
+          variant="danger"
+          @click="changeSeconds(seconds - 10)"
+        >
+          <icon name="bi:dash-lg" />
+        </b-button>
+      </b-col>
+      <b-col
+        class="duration-column"
+        width="2"
+      >
+        <b-button
+          variant="success"
+          @click="changeSeconds(seconds + 1)"
+        >
+          <icon name="bi:plus-lg" />
+        </b-button>
+        <span
+          class="duration"
+          v-text="secondCount"
+        />
+        <b-button
+          variant="danger"
+          @click="changeSeconds(seconds - 1)"
+        >
+          <icon name="bi:dash-lg" />
+        </b-button>
+      </b-col>
+      <b-col
+        class="ms-auto p-0 d-flex justify-content-center"
+        width="1"
+      >
+        <b-button
+          :disabled="seconds <= 0"
+          @click="togglePlay"
+        >
+          <icon :name="isPaused ? 'bi:play-fill' : 'bi:pause'" />
+        </b-button>
+      </b-col>
+    </b-row>
   </draggable>
 </template>
 

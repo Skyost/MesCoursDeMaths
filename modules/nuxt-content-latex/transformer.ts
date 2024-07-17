@@ -22,7 +22,7 @@ export default defineTransformer({
   name: 'latex',
   extensions: ['.tex'],
   // @ts-expect-error Pasted from the docs.
-  parse (_id: string, rawContent: string) {
+  parse(_id: string, rawContent: string) {
     // Absolute path to the source directory.
     const sourceDirectoryPath = path.resolve('./')
 
@@ -139,7 +139,8 @@ const adjustColSize = (root: HTMLElement) => {
         const size = parseFloat(sizeElement.text.trim())
         columns[0].setAttribute('style', `--column-size: ${size};`)
         columns[1].setAttribute('style', `--column-size: ${1 - size};`)
-      } else {
+      }
+      else {
         columns[0].classList.remove('col')
         columns[1].classList.remove('col')
         columns[0].classList.add('col-12')

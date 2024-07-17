@@ -1,5 +1,4 @@
 import path from 'path'
-import crypto from 'crypto'
 
 /**
  * Normalizes a string by removing diacritics and converting to lowercase.
@@ -16,17 +15,6 @@ export const normalizeString = (string: string): string => string.normalize('NFD
  * @returns {string} - Filename.
  */
 export const getFileName = (file: string): string => path.parse(file).name
-
-/**
- * Generates an MD5 checksum for a given string.
- *
- * @param {string} string - Input string.
- * @returns {string} - MD5 checksum.
- */
-export const generateChecksum = (string: string): string => crypto
-  .createHash('md5')
-  .update(string, 'utf8')
-  .digest('hex')
 
 /**
  * Decodes a base 64 encoded string.

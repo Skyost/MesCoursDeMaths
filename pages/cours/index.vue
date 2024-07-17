@@ -16,8 +16,11 @@ useNavigationEntry(levelsNavigationEntry)
   <div>
     <page-head title="Liste des niveaux" />
     <h1>Liste des niveaux</h1>
-    <ski-columns v-if="Object.keys(levels).length > 0" class="justify-content-center">
-      <ski-column
+    <b-row
+      v-if="Object.keys(levels).length > 0"
+      class="justify-content-center"
+    >
+      <b-col
         v-for="level in levels"
         :key="level.id"
         xs="12"
@@ -32,7 +35,7 @@ useNavigationEntry(levelsNavigationEntry)
           :to="getLevelUrl(level)"
           :image="getLevelImage(level)"
         />
-      </ski-column>
-    </ski-columns>
+      </b-col>
+    </b-row>
   </div>
 </template>

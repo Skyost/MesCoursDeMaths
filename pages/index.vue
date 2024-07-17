@@ -55,9 +55,11 @@ useNavigationEntry(homeNavigationEntry)
   <div>
     <page-head title="Accueil" />
     <section>
-      <h1 class="centered">Bienvenue !</h1>
-      <ski-columns>
-        <ski-column
+      <h1 class="centered">
+        Bienvenue !
+      </h1>
+      <b-row>
+        <b-col
           class="d-flex align-items-center"
           xs="12"
           lg="10"
@@ -69,32 +71,40 @@ useNavigationEntry(homeNavigationEntry)
               exercices et des activités de découverte.
             </p>
             <p class="mb-0">
-              Tout cela vous est accessible dès maintenant via la <nuxt-link to="/cours/">liste des cours</nuxt-link>,
+              Tout cela vous est accessible dès maintenant via la <nuxt-link to="/cours/">
+                liste des cours
+              </nuxt-link>,
               donc allez y jeter un œil ! De plus, sachez que ce site web est totalement open-source,
               et ses contenus peuvent tout à fait être réutilisés.
               Pour plus d'informations, rendez-vous <a href="#licence">ci-dessous</a> !
             </p>
           </div>
-        </ski-column>
-        <ski-column
+        </b-col>
+        <b-col
           class="d-flex align-items-center justify-content-center"
           xs="12"
           lg="2"
         >
-          <img class="column-image welcome-image" src="/images/index/welcome.svg" alt="Bienvenue">
-        </ski-column>
-      </ski-columns>
+          <img
+            class="column-image welcome-image"
+            src="/images/index/welcome.svg"
+            alt="Bienvenue"
+          >
+        </b-col>
+      </b-row>
     </section>
     <hr>
     <section>
-      <h2 class="centered">Liens utiles</h2>
+      <h2 class="centered">
+        Liens utiles
+      </h2>
       <div class="text-center">
         <p>
           Voici quelques sites et pages dont je recommande la visite.
         </p>
       </div>
-      <ski-columns class="justify-content-center">
-        <ski-column
+      <b-row class="justify-content-center">
+        <b-col
           v-for="link in links"
           :key="link.id"
           xs="12"
@@ -107,22 +117,34 @@ useNavigationEntry(homeNavigationEntry)
             :subtitle="link.name"
             :image="link.image"
           >
-            <p class="mt-1 mb-0" v-text="link.text" />
+            <p
+              class="mt-1 mb-0"
+              v-text="link.text"
+            />
           </image-card>
-        </ski-column>
-      </ski-columns>
+        </b-col>
+      </b-row>
     </section>
     <hr>
-    <h2 id="licence" class="centered">Licence</h2>
-    <ski-columns>
-      <ski-column
+    <h2
+      id="licence"
+      class="centered"
+    >
+      Licence
+    </h2>
+    <b-row>
+      <b-col
         class="d-none d-md-flex align-items-center"
         xs="12"
         md="2"
       >
-        <img class="column-image" src="/images/index/license.svg" alt="Licence">
-      </ski-column>
-      <ski-column
+        <img
+          class="column-image"
+          src="/images/index/license.svg"
+          alt="Licence"
+        >
+      </b-col>
+      <b-col
         class="d-flex align-items-center"
         xs="12"
         md="10"
@@ -141,8 +163,8 @@ useNavigationEntry(homeNavigationEntry)
             <a href="https://www.freepik.com">FreePik</a> et de <a href="https://www.flaticon.com/">FlatIcon</a>.
           </p>
         </div>
-      </ski-column>
-    </ski-columns>
+      </b-col>
+    </b-row>
   </div>
 </template>
 

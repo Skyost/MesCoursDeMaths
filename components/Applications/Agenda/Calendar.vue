@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const props = defineProps<{ dates: string[] }>()
 
-const emit = defineEmits<{(event: 'dayclick', date: string): void}>()
+const emit = defineEmits<{ (event: 'dayclick', date: string): void }>()
 
 const month = ref<number>(new Date().getMonth())
 const year = ref<number>(new Date().getFullYear())
@@ -90,7 +90,7 @@ const getColDayClass = (week: number, dayOfWeek: number) => {
   const yyyymmdd = formatDate(date)
   return {
     'has-content': props.dates.includes(yyyymmdd),
-    disabled: date.getMonth() !== month.value
+    'disabled': date.getMonth() !== month.value
   }
 }
 
@@ -103,35 +103,49 @@ const formatDate = (date: Date) => {
 
 <template>
   <div>
-    <ski-columns>
-      <ski-column width="3" md="2">
-        <ski-button @click="goToPreviousMonth">
-          <ski-icon icon="arrow-left" />
-        </ski-button>
-      </ski-column>
-      <ski-column width="6" md="8" class="col-month">
-        <span class="month" v-text="formattedMonth" />
-      </ski-column>
-      <ski-column width="3" md="2" class="text-end">
-        <ski-button @click="goToNextMonth">
-          <ski-icon icon="arrow-right" />
-        </ski-button>
-      </ski-column>
-    </ski-columns>
-    <ski-columns>
-      <ski-column
+    <b-row>
+      <b-col
+        width="3"
+        md="2"
+      >
+        <b-button @click="goToPreviousMonth">
+          <icon name="bi:arrow-left" />
+        </b-button>
+      </b-col>
+      <b-col
+        width="6"
+        md="8"
+        class="col-month"
+      >
+        <span
+          class="month"
+          v-text="formattedMonth"
+        />
+      </b-col>
+      <b-col
+        width="3"
+        md="2"
+        class="text-end"
+      >
+        <b-button @click="goToNextMonth">
+          <icon name="bi:arrow-right" />
+        </b-button>
+      </b-col>
+    </b-row>
+    <b-row>
+      <b-col
         v-for="dayOfWeek in 7"
         :key="`day-of-week-${dayOfWeek}`"
         class="col-weekday d-none d-md-block"
       >
         {{ formatDayOfWeek(dayOfWeek) }}
-      </ski-column>
-    </ski-columns>
-    <ski-columns
+      </b-col>
+    </b-row>
+    <b-row
       v-for="week in weeks"
       :key="`week-${week}`"
     >
-      <ski-column
+      <b-col
         v-for="dayOfWeek in 7"
         :key="`day-${week}-${dayOfWeek}`"
         class="col-day"
@@ -142,8 +156,8 @@ const formatDate = (date: Date) => {
           @click="onDayClicked(week - 1, dayOfWeek)"
           v-text="formatDayOfMonth(week - 1, dayOfWeek)"
         />
-      </ski-column>
-    </ski-columns>
+      </b-col>
+    </b-row>
   </div>
 </template>
 

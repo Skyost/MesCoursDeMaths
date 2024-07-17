@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { marked } from 'marked'
-import type { ComponentPublicInstance } from 'vue'
 import CodeEditor from '~/components/Applications/Lessons/CodeEditor.vue'
 import Calendar from '~/components/Applications/Agenda/Calendar.vue'
+import BackToApplications from '~/components/Applications/BackToApplications.vue'
 
 const runtimeConfig = useRuntimeConfig()
 const authorizationHeaders = useAuthorizationHeaders()
@@ -12,10 +12,10 @@ const { pending, data, error, refresh } = useLazyFetch<{ [key: string]: any }>(`
 })
 
 const currentDate = ref<string | null>(null)
+const modalShow = ref<boolean>(false)
 const modalLoading = ref<boolean>(false)
 const modalMarkdownContent = ref<string | null>(null)
 const modalEdit = ref<boolean>(false)
-const dateModal = ref<ComponentPublicInstance | null>(null)
 const modalBackdrop = ref<HTMLElement | null>(null)
 const editor = ref<InstanceType<typeof CodeEditor> | null>(null)
 
@@ -23,11 +23,9 @@ const modalTitle = computed<string | undefined>(() => currentDate.value === null
 const modalHtmlContent = computed(() => modalMarkdownContent.value == null ? null : marked.parse(modalMarkdownContent.value))
 
 const onDayClicked = async (date: string) => {
-  const bootstrap = await import('bootstrap')
   currentDate.value = date
-  const modal = new bootstrap.Modal(dateModal.value!.$el)
   modalLoading.value = true
-  modal.show()
+  modalShow.value = true
   if (data.value && 'dates' in data.value && data.value.dates.includes(date)) {
     const response = await $fetch<{ [key: string]: string }>(`${runtimeConfig.public.apiUrl}/calendar/get`, {
       params: { date },
@@ -67,33 +65,33 @@ const onModalHidden = async () => {
   document.querySelector<HTMLElement>('.page-header')!.style.removeProperty('z-index')
   modalBackdrop.value!.classList.remove('d-block')
 }
-
-onMounted(async () => {
-  await nextTick()
-  dateModal.value?.$el.addEventListener('show.bs.modal', onModalShown)
-  dateModal.value?.$el.addEventListener('hide.bs.modal', onModalHidden)
-})
-
-onUnmounted(() => {
-  dateModal.value?.$el.removeEventListener('show.bs.modal', onModalShown)
-  dateModal.value?.$el.removeEventListener('hide.bs.modal', onModalHidden)
-})
 </script>
 
 <template>
   <div>
-    <h1 v-if="!error">Agenda</h1>
-    <ski-modal
+    <div v-if="!error">
+      <controls>
+        <controls-section>
+          <back-to-applications />
+        </controls-section>
+      </controls>
+      <h1>Agenda</h1>
+    </div>
+    <b-modal
       id="date-modal"
-      ref="dateModal"
+      v-model="modalShow"
       :title="modalTitle"
       :close-button="undefined"
       :show-footer="!modalLoading"
       size="lg"
-      data-bs-backdrop="false"
-      data-bs-keyboard="false"
+      @show="onModalShown"
+      @hidden="onModalHidden"
+      @close="modalEdit = false"
     >
-      <div v-if="modalLoading" class="text-center">
+      <div
+        v-if="modalLoading"
+        class="text-center"
+      >
         <spinner />
       </div>
       <code-editor
@@ -103,34 +101,51 @@ onUnmounted(() => {
         :source-document="modalMarkdownContent === null ? '' : modalMarkdownContent"
         mode="markdown"
       />
-      <div v-else @dblclick="modalEdit = true">
-        <div v-if="modalHtmlContent" v-html="modalHtmlContent" />
+      <div
+        v-else
+        @dblclick="modalEdit = true"
+      >
+        <div
+          v-if="modalHtmlContent"
+          v-html="modalHtmlContent"
+        />
         <em v-else>Aucun contenu ici.</em>
       </div>
-      <template #buttons>
-        <ski-button
+      <template #footer="{ close }">
+        <b-button
           v-if="modalEdit && !modalLoading"
           variant="success"
           @click="saveContent"
         >
           Enregistrer
-        </ski-button>
-        <ski-button
+        </b-button>
+        <b-button
           v-if="!modalLoading"
           variant="secondary"
           data-bs-dismiss="modal"
-          @click="modalEdit = false"
+          @click="close"
         >
           Fermer
-        </ski-button>
+        </b-button>
       </template>
-    </ski-modal>
-    <div id="modal-backdrop" ref="modalBackdrop" />
+    </b-modal>
+    <div
+      id="modal-backdrop"
+      ref="modalBackdrop"
+    />
     <div v-if="pending">
       <spinner />
     </div>
-    <error-display v-else-if="error" :error="error" />
-    <calendar v-else-if="data" ref="calendar" :dates="data.dates" @dayclick="onDayClicked" />
+    <error-display
+      v-else-if="error"
+      :error="error"
+    />
+    <calendar
+      v-else-if="data"
+      ref="calendar"
+      :dates="data.dates"
+      @dayclick="onDayClicked"
+    />
   </div>
 </template>
 
