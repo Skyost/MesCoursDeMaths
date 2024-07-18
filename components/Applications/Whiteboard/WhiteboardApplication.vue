@@ -32,6 +32,10 @@ const useRandomBackground = ref<boolean>(false)
 
 const canvasHeight = ref<number | undefined>()
 
+const fullscreenApiSupported = computed<boolean>(() => {
+  return document && (document.fullscreenEnabled || document.mozFullscreenEnabled || document.webkitFullscreenEnabled || document.msFullscreenEnabled)
+})
+
 const toggleFullscreen = async () => {
   if (isFullscreen.value) {
     await document.exitFullscreen()
@@ -95,7 +99,7 @@ const createUniqueHash = () => new Date().getTime()
 
 const updateCanvasHeight = () => {
   if (import.meta.client && window && tools.value) {
-    canvasHeight.value = Math.max(100, window.innerHeight - tools.value!.$el.offsetHeight - 70)
+    canvasHeight.value = Math.max(100, window.innerHeight - tools.value!.$el.offsetHeight - (isFullscreen.value ? 70 : 0))
   }
 }
 
@@ -114,6 +118,7 @@ const getDefaultX = (draggable: 'clock' | 'image' | 'pdf' | 'stopwatch' | 'text'
       return 10 * index
   }
 }
+
 const getDefaultY = (index: number) => {
   return tools.value!.$el.offsetHeight + 24 + 10 * index
 }
@@ -154,12 +159,15 @@ if (import.meta.client) {
           :active="useRandomBackground"
           @click="useRandomBackground = !useRandomBackground"
         />
-        <control
-          icon-id="fullscreen"
-          text="Plein écran"
-          :active="isFullscreen"
-          @click="toggleFullscreen"
-        />
+        <client-only>
+          <control
+            v-if="fullscreenApiSupported"
+            icon-id="fullscreen"
+            text="Plein écran"
+            :active="isFullscreen"
+            @click="toggleFullscreen"
+          />
+        </client-only>
       </controls-section>
       <controls-section>
         <controls-section-title

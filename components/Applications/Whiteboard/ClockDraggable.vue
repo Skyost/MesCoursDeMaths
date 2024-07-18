@@ -14,27 +14,43 @@ const draggableElement = ref<ComponentPublicInstance | null>(null)
 const secondElement = ref<HTMLDivElement | null>(null)
 const minuteElement = ref<HTMLDivElement | null>(null)
 const hourElement = ref<HTMLDivElement | null>(null)
+const timeElement = ref<HTMLSpanElement | null>(null)
 
-const getSecondsToday = () => {
+let timeoutId: any | null = null
+let intervalId: any | null = null
+
+const getTodaySecondsElapsed = () => {
   const now = new Date()
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
-  return Math.round((now.getTime() - today.getTime()) / 1000)
+  return (now.getTime() - today.getTime()) / 1000
+}
+
+const getNextMinuteDelay = () => {
+  const now = new Date()
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes())
+  const plusOne = new Date(today.getTime() + 60 * 1000)
+  return plusOne.getTime() - now.getTime()
 }
 
 const onResized = () => {
   const element = draggableElement.value!.$el
   const body = element.querySelector('.clock-container')
-  const diameter = Math.min(body.offsetWidth, body.offsetHeight) - 40
+  const diameter = Math.min(body.offsetWidth, body.offsetHeight - timeElement.value!.offsetHeight)
   element.style.setProperty('--diameter', `${diameter}px`)
+}
+
+const updateTime = () => {
+  const now = new Date()
+  timeElement.value!.textContent = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0')
 }
 
 onMounted(async () => {
   await nextTick()
-  const currentSec = getSecondsToday()
+  const currentSec = getTodaySecondsElapsed()
 
   const seconds = (currentSec / 60) % 1
-  const minutes = (currentSec / 60 * 60) % 1
-  const hours = (currentSec / 60 * 60 * 12) % 1
+  const minutes = (currentSec / (60 * 60)) % 1
+  const hours = (currentSec / (60 * 60 * 12)) % 1
 
   const setTime = (left: number, hand: HTMLDivElement) => hand.style.animationDelay = (left * -1) + 's'
 
@@ -42,13 +58,29 @@ onMounted(async () => {
   setTime(60 * 60 * minutes, minuteElement.value!)
   setTime(60 * 60 * 12 * hours, hourElement.value!)
   onResized()
+
+  updateTime()
+  timeoutId = setTimeout(() => {
+    updateTime()
+    timeoutId = null
+    intervalId = setInterval(updateTime, 60 * 1000)
+  }, getNextMinuteDelay())
+})
+
+onBeforeUnmount(() => {
+  if (timeoutId) {
+    clearTimeout(timeoutId)
+  }
+  if (intervalId) {
+    clearInterval(intervalId)
+  }
 })
 </script>
 
 <template>
   <draggable
     ref="draggableElement"
-    class="draggable-text"
+    class="draggable-clock"
     title="Horloge"
     :default-x="defaultX"
     :default-y="defaultY"
@@ -76,6 +108,9 @@ onMounted(async () => {
           :class="`indicator-${i + 1}`"
         />
       </div>
+      <div class="text-center">
+        <span ref="timeElement">00:00</span>
+      </div>
     </div>
   </draggable>
 </template>
@@ -83,10 +118,24 @@ onMounted(async () => {
 <style lang="scss" scoped>
 @import 'assets/colors';
 
+$min-size: 300px;
+$hands-width: 2px;
+
+.draggable-clock :deep(.card-body) {
+  min-width: $min-size;
+  min-height: $min-size;
+}
+
 .clock-container {
   height: 100%;
   width: 100%;
-  padding: 20px;
+  min-width: calc($min-size - var(--bs-card-spacer-x) * 2);
+  min-height: calc($min-size - var(--bs-card-spacer-y) * 2);
+  display: flex;
+  flex-direction: column;
+  font-weight: bold;
+  font-size: 3em;
+  letter-spacing: 0.2em;
 
   .clock {
     margin: auto;
@@ -102,37 +151,44 @@ onMounted(async () => {
     .hour,
     .indicator {
       position: absolute;
-      left: calc(50% - 1px);
-      width: 2px;
+      width: $hands-width;
       background: $dark;
       transform-origin: bottom center;
       z-index: 2;
-      border-radius: 1px;
+      border-radius: calc($hands-width / 2);
+      top: 0;
+      left: calc(50% - ($hands-width / 2));
     }
 
     .second {
-      height: calc((100% / 2) - 10px);
-      margin-top: 10px;
+      $top-distance: 10px;
+
+      height: calc(50% - $top-distance);
+      margin-top: $top-distance;
       background: $primary;
       animation: time 60s infinite steps(60);
       z-index: 3;
     }
 
     .minute {
-      height: calc((100% / 2) - 20px);
-      margin-top: 20px;
+      $top-distance: 20px;
+
+      height: calc(50% - $top-distance);
+      margin-top: $top-distance;
       opacity: 0.75;
       animation: time 3600s linear infinite;
     }
 
     .hour {
-      height: calc((100% / 2) - 40px);
-      margin-top: 40px;
+      $top-distance: 40px;
+
+      height: calc(50% - $top-distance);
+      margin-top: $top-distance;
       animation: time 43200s linear infinite;
     }
 
     .indicator {
-      height: calc((100% / 2) - 2px);
+      height: 50%;
       border-top: 2px solid $dark;
       background: none;
 
@@ -144,19 +200,22 @@ onMounted(async () => {
 
       &:nth-of-type(5n) {
         opacity: 1;
-        height: calc((100% / 2) - 2px);
         border-top: 7px solid $primary;
       }
     }
 
     .axis {
-      background: $primary;
-      width: 5px;
-      height: 5px;
-      border-radius: 3px;
+      $size: 5px;
+
+      background: $dark;
+      width: $size;
+      height: $size;
+      border-radius: 100%;
       position: absolute;
       z-index: 4;
-      top: calc((100% / 2) - 3px);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
     }
   }
 }
