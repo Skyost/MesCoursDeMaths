@@ -124,6 +124,7 @@ $hands-width: 2px;
 .draggable-clock :deep(.card-body) {
   min-width: $min-size;
   min-height: $min-size;
+  z-index: 0;
 }
 
 .clock-container {
