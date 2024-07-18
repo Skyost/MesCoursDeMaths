@@ -10,7 +10,7 @@ withDefaults(defineProps<{
   defaultY: 10
 })
 
-const draggableElement = ref<ComponentPublicInstance | null>(null)
+const draggableComponent = ref<ComponentPublicInstance | null>(null)
 const secondElement = ref<HTMLDivElement | null>(null)
 const minuteElement = ref<HTMLDivElement | null>(null)
 const hourElement = ref<HTMLDivElement | null>(null)
@@ -33,7 +33,7 @@ const getNextMinuteDelay = () => {
 }
 
 const onResized = () => {
-  const element = draggableElement.value!.$el
+  const element = draggableComponent.value!.$el
   const body = element.querySelector('.clock-container')
   const diameter = Math.min(body.offsetWidth, body.offsetHeight - timeElement.value!.offsetHeight)
   element.style.setProperty('--diameter', `${diameter}px`)
@@ -79,7 +79,7 @@ onBeforeUnmount(() => {
 
 <template>
   <draggable
-    ref="draggableElement"
+    ref="draggableComponent"
     class="draggable-clock"
     title="Horloge"
     :default-x="defaultX"

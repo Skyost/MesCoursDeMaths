@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { VuePDF, usePDF } from '@tato30/vue-pdf'
 import { debounce } from 'perfect-debounce'
+import type { PDFDocumentProxy } from 'pdfjs-dist'
+import type { ComponentPublicInstance } from 'vue'
 import Draggable from '~/components/Applications/Whiteboard/Draggable.vue'
 
-const props = withDefaults(defineProps<{
+withDefaults(defineProps<{
   defaultX?: number
   defaultY?: number
   data: string
@@ -12,12 +13,16 @@ const props = withDefaults(defineProps<{
   defaultY: 10
 })
 
+const buttonsComponent = ref<ComponentPublicInstance | null>(null)
+const pdfContainerElement = ref<HTMLDivElement | null>(null)
+
+const height = ref<number>(100)
+const page = ref<number>(1)
+const pages = ref<number>(1)
+
 const emit = defineEmits<{ (event: 'closed'): void }>()
 
-const { pdf, pages } = usePDF(props.data)
-const page = ref<number>(1)
-const vuePdfComponent = ref<typeof VuePDF | null>(null)
-const refreshPdf = debounce(() => vuePdfComponent.value?.reload(), 50)
+const updatedPdfSize = debounce(() => height.value = Math.max(100, pdfContainerElement.value!.offsetHeight - buttonsComponent.value!.$el.offsetHeight), 50)
 </script>
 
 <template>
@@ -27,9 +32,9 @@ const refreshPdf = debounce(() => vuePdfComponent.value?.reload(), 50)
     :default-x="defaultX"
     :default-y="defaultY"
     @closed="emit('closed')"
-    @resized="refreshPdf"
+    @resized="updatedPdfSize"
   >
-    <b-row>
+    <b-row ref="buttonsComponent">
       <b-col
         cols="3"
         class="pe-0"
@@ -67,19 +72,35 @@ const refreshPdf = debounce(() => vuePdfComponent.value?.reload(), 50)
         </b-button>
       </b-col>
     </b-row>
-    <div class="m-auto">
-      <vue-p-d-f
+    <div
+      ref="pdfContainerElement"
+      class="pdf-container"
+    >
+      <vue-pdf-embed
         ref="vuePdfComponent"
-        :pdf="pdf"
+        :source="data"
         :page="page"
-        fit-parent
+        :height="height"
+        @loaded="(document: PDFDocumentProxy) => pages = document.numPages"
       />
     </div>
   </draggable>
 </template>
 
-<style lang="scss">
-.draggable-pdf .card-body {
+<style lang="scss" scoped>
+@import 'vue-pdf-embed/dist/style/index.css';
+
+.draggable-pdf :deep(.card-body) {
   padding: 0;
+}
+
+.pdf-container {
+  height: 100%;
+  min-height: 200px;
+
+  :deep(canvas) {
+    display: block;
+    margin: auto;
+  }
 }
 </style>
