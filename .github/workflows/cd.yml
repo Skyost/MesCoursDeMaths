@@ -42,7 +42,7 @@ jobs:
           node-version: ${{ matrix.node }}
           cache: 'npm'
       - name: Install dependencies 👨🏻‍💻
-        run: npm ci --loglevel verbose
+        run: npm ci && npm i nuxi -D
       - name: Generate ⚙️
         run: npm run generate
         env:
