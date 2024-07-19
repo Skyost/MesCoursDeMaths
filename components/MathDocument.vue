@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import html2canvas from 'html2canvas'
+import { loadIcon } from '@iconify/vue'
 
 withDefaults(defineProps<{
   title: string
@@ -13,7 +14,7 @@ const root = ref<HTMLElement | null>(null)
 
 const route = useRoute()
 
-const setupDocument = () => {
+const setupDocument = async () => {
   const tables = root.value!.querySelectorAll<HTMLElement>('table')
   for (const table of tables) {
     table.classList.add('table', 'table-bordered', 'table-hover')
@@ -48,6 +49,8 @@ const setupDocument = () => {
   }
 
   const exercises = root.value!.querySelectorAll<HTMLElement>('.bubble-exercice')
+  const printIcon = await loadIcon('bi:printer-fill')
+  const printIconHtml = `<svg height="${printIcon.height}" width="${printIcon.width}" aria-hidden="true">${printIcon.body}</svg>`
   let scrollCollapse
   for (let i = 0; i < exercises.length; i++) {
     const exercise = exercises[i]
@@ -100,7 +103,7 @@ const setupDocument = () => {
         }, 100)
       }
     }
-    print.innerHTML = '<i class="iconify i-bi:printer-fill vue-icon" aria-hidden="true"></i> Imprimer'
+    print.innerHTML = `${printIconHtml} Imprimer`
     exercise.parentNode?.insertBefore(print, exercise.nextSibling)
     exercise.style.marginBottom = 'calc(1.6em + 1.5rem)'
   }
@@ -119,7 +122,6 @@ onMounted(setupDocument)
     :class="color"
   >
     <h1 v-html="title" />
-    <icon name="bi:printer-fill" class="d-none" />
     <div
       class="math-document-content"
       v-html="body"
