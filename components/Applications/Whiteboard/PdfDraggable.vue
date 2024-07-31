@@ -88,8 +88,6 @@ const updatedPdfSize = debounce(() => height.value = Math.max(100, pdfContainerE
 </template>
 
 <style lang="scss" scoped>
-@import 'vue-pdf-embed/dist/style/index.css';
-
 .draggable-pdf :deep(.card-body) {
   padding: 0;
 }
