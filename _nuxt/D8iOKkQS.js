@@ -1,0 +1,1 @@
+import{a3 as n}from"./Q9v0dDp8.js";const i=()=>n("navigationEntries",()=>[]),u=a=>{let t;const e=i();for(let s=0;s<e.value.length;s++)if(e.value[s].depth===a.depth){t=s-1;break}t&&(e.value=t<0?[]:e.value.slice(0,t)),o(a)&&e.value.push(a)},o=a=>{const t=i().value;for(const e of t)if(e.to===a.to)return!1;return!0};export{i as a,u};
