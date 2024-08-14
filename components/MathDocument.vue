@@ -190,7 +190,7 @@ onMounted(setupDocument)
       padding-bottom: 0.2em;
       margin-bottom: 0.75em;
       counter-increment: headline-2;
-      counter-reset: headline-3;
+      counter-set: headline-3 0;
 
       &::before {
         content: counter(headline-2, upper-roman) ' - ';
