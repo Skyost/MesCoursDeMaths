@@ -6,23 +6,35 @@ import type { Level } from '~/types'
  * @export
  */
 export const levels: { [key: string]: Level } = {
-  sixieme: {
+  'sixieme': {
     id: 'sixieme',
     name: 'Sixième',
     number: 6,
     color: 'red'
   },
-  cinquieme: {
+  'cinquieme': {
     id: 'cinquieme',
     name: 'Cinquième',
     number: 5,
     color: 'blue'
   },
-  troisieme: {
+  'troisieme': {
     id: 'troisieme',
     name: 'Troisième',
     number: 3,
     color: 'amber'
+  },
+  'seconde': {
+    id: 'seconde',
+    name: 'Seconde',
+    number: 2,
+    color: 'indigo'
+  },
+  'premiere-stmg': {
+    id: 'premiere-stmg',
+    name: 'Première STMG',
+    number: 1,
+    color: 'pink'
   }
 }
 

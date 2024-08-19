@@ -1,8 +1,8 @@
 /**
  * Enumeration of possible levels for a math lesson.
- * @type {'sixieme' | 'cinquieme' | 'quatrieme' | 'troisieme'}
+ * @type {'sixieme' | 'cinquieme' | 'quatrieme' | 'troisieme' | 'seconde' | 'premiere-stmg'}
  */
-export type LevelId = 'sixieme' | 'cinquieme' | 'quatrieme' | 'troisieme'
+export type LevelId = 'sixieme' | 'cinquieme' | 'quatrieme' | 'troisieme' | 'seconde' | 'premiere-stmg'
 
 /**
  * Represents a level for a math lesson.

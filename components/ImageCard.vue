@@ -100,5 +100,15 @@ withDefaults(defineProps<{
     color: $yellow;
     border-bottom-color: $yellow;
   }
+
+  &.pink .subtitle {
+    color: #d81b60;
+    border-bottom-color: #d81b60;
+  }
+
+  &.indigo .subtitle {
+    color: #3949ab;
+    border-bottom-color: #3949ab;
+  }
 }
 </style>
