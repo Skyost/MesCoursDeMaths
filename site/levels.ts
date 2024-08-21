@@ -9,31 +9,31 @@ export const levels: { [key: string]: Level } = {
   'sixieme': {
     id: 'sixieme',
     name: 'Sixième',
-    number: 6,
+    short: '6e',
     color: 'red'
   },
   'cinquieme': {
     id: 'cinquieme',
     name: 'Cinquième',
-    number: 5,
+    short: '5e',
     color: 'blue'
   },
   'troisieme': {
     id: 'troisieme',
     name: 'Troisième',
-    number: 3,
+    short: '3e',
     color: 'amber'
   },
   'seconde': {
     id: 'seconde',
     name: 'Seconde',
-    number: 2,
+    short: '2nde',
     color: 'indigo'
   },
   'premiere-stmg': {
     id: 'premiere-stmg',
     name: 'Première STMG',
-    number: 1,
+    short: '1ère STMG',
     color: 'pink'
   }
 }
@@ -43,7 +43,7 @@ export const levels: { [key: string]: Level } = {
  * @param {Level} level - The level.
  * @returns {string} - The level subtitle.
  */
-export const getLevelSubtitle = (level: Level): string => `Cours de ${level.number}e`
+export const getLevelSubtitle = (level: Level): string => `Cours de ${level.short}`
 
 /**
  * Returns the URL for a given level.

@@ -23,10 +23,10 @@ export interface Level {
   name: string
 
   /**
-   * Numeric representation of the level (eg. 6, 5, 4 or 3).
-   * @type {number}
+   * Short representation of the level (eg. 6e).
+   * @type {string}
    */
-  number: number
+  short: string
 
   /**
    * Color associated with the level.

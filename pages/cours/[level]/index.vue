@@ -28,7 +28,7 @@ const { pending, data: lessons, error } = useLazyAsyncData(
     .find()
 )
 
-const title = computed(() => level ? `Cours de ${level.name.toLowerCase()}` : 'Liste des cours')
+const title = computed(() => level ? `Cours de ${level.name}` : 'Liste des cours')
 
 useNavigationEntry(levelsNavigationEntry)
 if (level) {
