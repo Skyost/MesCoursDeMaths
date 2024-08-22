@@ -75,6 +75,9 @@ withDefaults(defineProps<{
     text-transform: uppercase;
     font-weight: lighter;
     border-bottom: 1px solid white;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 
   &:hover {
