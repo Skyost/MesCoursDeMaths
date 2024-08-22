@@ -29,7 +29,8 @@ const setupDocument = async () => {
   for (const dotLine of dotLines) {
     const katexHtml = dotLine.closest<HTMLElement>('.katex-html')
     const katex = katexHtml?.closest<HTMLElement>('.katex')
-    if (!katex || !katexHtml) {
+    const base = dotLine?.closest<HTMLElement>('.base')
+    if (!katex || !katexHtml || !base) {
       continue
     }
 
@@ -44,7 +45,24 @@ const setupDocument = async () => {
       parentEnclosing.replaceWith(element)
     }
     else {
-      katex.replaceWith(element)
+      const baseCount = katex.getElementsByTagName('base')
+      const parentText = katex.parentElement?.textContent
+      const katexText = katex.textContent
+      if (parentText && katexText) {
+        const index = parentText.indexOf(katexText)
+        if (index !== -1) {
+          const after = parentText.substring(index + katexText.length)
+          if (after === '.') {
+            katex.nextSibling.remove()
+          }
+        }
+      }
+      if (baseCount <= 1) {
+        katex.replaceWith(element)
+      }
+      else {
+        base.replaceWith(element)
+      }
     }
   }
 
