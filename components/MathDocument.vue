@@ -349,6 +349,14 @@ onMounted(setupDocument)
   &.amber h1::after {
     background-color: $yellow;
   }
+
+  &.pink h1::after {
+    background-color: $pink;
+  }
+
+  &.indigo h1::after {
+    background-color: $indigo;
+  }
 }
 
 .bubble-objectifs {
