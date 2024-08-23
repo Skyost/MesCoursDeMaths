@@ -177,7 +177,7 @@ onMounted(setupDocument)
     content: $text;
     position: absolute;
     top: 0;
-    left: -6px;
+    left: -5px;
     background-color: $titleColor;
     color: white;
     font-size: 0.6em;
