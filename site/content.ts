@@ -334,7 +334,7 @@ const getLinkedResourceTitle = (prefix: string, fileName: string) => {
     },
     {
       fileNameRegex: RegExp(prefix + /-dm/.source),
-      buildTitle: (_: RegExpExecArray) => 'DM'
+      buildTitle: (_: RegExpExecArray) => 'Devoir maison'
     }
   ]
   for (const resourceType of resourceTypes) {
