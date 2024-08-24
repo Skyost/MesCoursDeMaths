@@ -331,6 +331,10 @@ const getLinkedResourceTitle = (prefix: string, fileName: string) => {
     {
       fileNameRegex: RegExp(prefix + /-interrogation/.source),
       buildTitle: (_: RegExpExecArray) => 'Interrogation'
+    },
+    {
+      fileNameRegex: RegExp(prefix + /-dm/.source),
+      buildTitle: (_: RegExpExecArray) => 'DM'
     }
   ]
   for (const resourceType of resourceTypes) {
