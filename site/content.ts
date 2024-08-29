@@ -151,6 +151,7 @@ export const siteContentSettings: SiteContentSettings = {
   },
   pandocRedefinitions: 'pandoc.tex',
   ignores: [
+    'devoir.tex',
     'eleve.tex',
     'geogebra.tex',
     'groupes.tex',
