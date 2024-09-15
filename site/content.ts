@@ -191,6 +191,11 @@ export const siteContentSettings: SiteContentSettings = {
 \\usepackage{ifthen}
 \\usepackage{xparse}
 \\usepackage[group-separator={\\;}, group-minimum-digits=4]{siunitx}
+\\usepackage{tkz-tab}
+
+% Tables :
+
+\\tikzset{t style/.style = {style = dashed}}
 
 % Options for xlop.
 \\opset{%
