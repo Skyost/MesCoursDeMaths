@@ -4,7 +4,7 @@ import fs from 'fs'
 import path from 'path'
 import { createResolver, defineNuxtModule, type Resolver, useLogger } from '@nuxt/kit'
 import * as latex from 'that-latex-lib'
-import { siteContentSettings } from '../site/content'
+import { siteContentSettings, type Variant } from '../site/content'
 import { debug } from '../site/debug'
 import { getFileName } from '../utils/utils'
 
@@ -17,7 +17,7 @@ export interface ModuleOptions {
   directory: string
   previousBuildDirectory: string
   destinationDirectory: string
-  generatePrintVariant: (filePath: string, fileContent: string) => null | { name: string, content: string }
+  generateVariants: (filePath: string, fileContent: string) => null | Variant[]
   ignores: string[]
   getIncludeGraphicsDirectories: (latexFilePath: string) => string[]
   moveFiles: boolean
@@ -48,7 +48,7 @@ export default defineNuxtModule<ModuleOptions>({
     directory: siteContentSettings.downloadDestinations.data + '/' + siteContentSettings.dataLatexDirectory,
     previousBuildDirectory: siteContentSettings.downloadDestinations.previousBuild,
     destinationDirectory: siteContentSettings.latexPdfDestinationDirectory,
-    generatePrintVariant: siteContentSettings.generatePrintVariant,
+    generateVariants: siteContentSettings.generateVariants,
     ignores: siteContentSettings.ignores,
     getIncludeGraphicsDirectories: siteContentSettings.getIncludeGraphicsDirectories,
     moveFiles: !debug,
@@ -130,10 +130,11 @@ const generatePdf = (
       const result = generateAndCopy(resolver, filePath, previousBuildDirectory, destinationDirectoryPath, options)
       if (result) {
         const content = fs.readFileSync(filePath, { encoding: 'utf8' })
-        const printVariant = options.generatePrintVariant(filePath, content)
-        if (printVariant) {
-          fs.writeFileSync(filePath, printVariant.content)
-          generateAndCopy(resolver, filePath, previousBuildDirectory, destinationDirectoryPath, options, printVariant.name, ' (impression)')
+        const variants = options.generateVariants(filePath, content) ?? []
+        for (const variant of variants) {
+          fs.writeFileSync(filePath, variant.fileContent)
+          console.log({ name: variant.fileName, type: variant.type })
+          generateAndCopy(resolver, filePath, previousBuildDirectory, destinationDirectoryPath, options, variant.fileName, ` (${variant.type})`)
           fs.writeFileSync(filePath, content)
         }
       }

@@ -56,10 +56,10 @@ interface SiteContentSettings {
   getLatexAssetDestinationDirectoryPath: (assetDirectoryPath: string, filePath: string, extractedFrom: string | null) => string
 
   /**
-   * Function to generate a print variant of a LaTeX file.
-   * @type {(filePath: string, fileContent: string) => null | { name: string, content: string }}
+   * Function to generate all variants (print, uncompleted, ...) of a LaTeX file.
+   * @type {(filePath: string, fileContent: string) => null | { name: string, content: string }[]}
    */
-  generatePrintVariant: (filePath: string, fileContent: string) => null | { name: string, content: string }
+  generateVariants: (filePath: string, fileContent: string) => null | Variant[]
 
   /**
    * Redefinitions for Pandoc.
@@ -96,6 +96,27 @@ interface SiteContentSettings {
    * @type {(sourceDirectoryPath: string, latexFilePath: string) => LinkedResource[]}
    */
   getLinkedResources: (sourceDirectoryPath: string, latexFilePath: string) => LinkedResource[]
+}
+
+/**
+ * Represents a LaTeX file variant.
+ */
+export interface Variant {
+  /**
+   * The variant file name.
+   * @type {string}
+   */
+  fileName: string
+  /**
+   * The variant file content.
+   * @type {string}
+   */
+  fileContent: string
+  /**
+   * The variant type.
+   * @type {string}
+   */
+  type: string
 }
 
 /**
@@ -139,15 +160,33 @@ export const siteContentSettings: SiteContentSettings = {
     const extension = path.parse(filePath).ext
     return ['.pdf', '.svg', '.png', '.jpeg', '.jpg', '.gif'].includes(extension)
   },
-  generatePrintVariant: (filePath: string, fileContent: string) => {
-    if (getFileName(filePath) === 'questions-flash') {
+  generateVariants: (filePath: string, fileContent: string) => {
+    const fileName = getFileName(filePath)
+    if (fileName === 'questions-flash') {
       return null
     }
     const regex = /\\documentclass(\[[A-Za-zÀ-ÖØ-öø-ÿ\d, =.\\-]*])?{([A-Za-zÀ-ÖØ-öø-ÿ\d/, .-]+)}/gs
-    return {
-      name: siteContentSettings.filterFileName(getFileName(filePath)) + '-impression',
-      content: fileContent.replace(regex, '\\documentclass$1{$2}\n\n\\include{../impression}')
+    const filteredFileName = siteContentSettings.filterFileName(fileName)
+    const printVariant: Variant = {
+      fileName: `${filteredFileName}-impression`,
+      fileContent: fileContent.replace(regex, '\\documentclass$1{$2}\n\n\\include{../impression}'),
+      type: 'impression'
     }
+    const result = [printVariant]
+    if (fileName.endsWith('-cours')) {
+      const studentVariant: Variant = {
+        fileName: `${filteredFileName}-eleve`,
+        fileContent: fileContent.replace(regex, '\\documentclass$1{$2}\n\n\\include{../eleve}'),
+        type: 'élève'
+      }
+      const studentPrintVariant: Variant = {
+        fileName: `${filteredFileName}-eleve-impression`,
+        fileContent: fileContent.replace(regex, '\\documentclass$1{$2}\n\n\\include{../impression}\n\\include{../eleve}'),
+        type: 'élève / impression'
+      }
+      result.push(studentVariant, studentPrintVariant)
+    }
+    return result
   },
   pandocRedefinitions: 'pandoc.tex',
   ignores: [
@@ -262,6 +301,11 @@ export const siteContentSettings: SiteContentSettings = {
   \\draw[thick,->] (\\xmin,0) -- (\\xmax,0);
   \\draw[thick,->] (0,\\ymin) -- (0,\\ymax);
 }
+
+% Other commands.
+\\newcommand{\\sipandoc}[2]{#1}
+\\newcommand{\\siimpression}[2]{#2}
+\\newcommand{\\sieleve}[2]{#2}
 
 % 2.25x scale.
 \\tikzset{
