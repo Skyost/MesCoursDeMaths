@@ -133,7 +133,6 @@ const generatePdf = (
         const variants = options.generateVariants(filePath, content) ?? []
         for (const variant of variants) {
           fs.writeFileSync(filePath, variant.fileContent)
-          console.log({ name: variant.fileName, type: variant.type })
           generateAndCopy(resolver, filePath, previousBuildDirectory, destinationDirectoryPath, options, variant.fileName, ` (${variant.type})`)
           fs.writeFileSync(filePath, content)
         }

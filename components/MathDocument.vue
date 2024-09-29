@@ -96,7 +96,6 @@ const setupDocument = async () => {
         }
       })
       details.addEventListener('animationend', (event) => {
-        console.log(event.animationName)
         if (event.animationName === 'close') {
           details.removeAttribute('open')
           details.classList.remove('closing')
