@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { Level, Lesson } from '~/types'
+import type { Level, Lesson, Resource } from '~/types'
 import { getLevelUrl, levels } from '~/site/levels'
 
 export const levelNavigationEntry = (level: Level) => {
@@ -28,11 +28,25 @@ const { pending, data: lessons, error } = useLazyAsyncData(
     .find()
 )
 
-const title = computed(() => level ? `Cours de ${level.name}` : 'Liste des cours')
+const title = computed<string>(() => level ? `Cours de ${level.name}` : 'Liste des cours')
 
 useNavigationEntry(levelsNavigationEntry)
 if (level) {
   useNavigationEntry(levelNavigationEntry(level))
+}
+
+const otherResourcesModal = ref<bool>(false)
+const getOtherResourceIcon = (otherResource: Resource) => {
+  if (otherResource.url.endsWith('.pdf')) {
+    return 'bi:file-earmark-pdf-fill'
+  }
+  return 'file-earmark-text-fill'
+}
+const getOtherResourceIconColor = (otherResource: Resource) => {
+  if (otherResource.url.endsWith('.pdf')) {
+    return 'danger'
+  }
+  return null
 }
 </script>
 
@@ -48,6 +62,12 @@ if (level) {
           <control
             to="/cours/"
             text="Retourner à la liste des niveaux"
+          />
+          <control
+            v-if="level.otherResources && level.otherResources.length > 0"
+            text="Autres ressources"
+            icon-id="file-earmark-text-fill"
+            @click="otherResourcesModal = !otherResourcesModal"
           />
         </controls-section>
       </controls>
@@ -70,6 +90,42 @@ if (level) {
           />
         </b-col>
       </b-row>
+      <b-modal
+        v-if="level.otherResources && level.otherResources.length > 0"
+        v-model="otherResourcesModal"
+        title="Autres ressources"
+        size="lg"
+        ok-only
+        ok-title="Fermer"
+        ok-variant="secondary"
+      >
+        <p>
+          Ce niveau comporte d'autres ressources qui ne sont pas associées à un chapitre particulier.
+        </p>
+        <b-list-group class="mb-3">
+          <b-list-group-item
+            v-for="otherResource in level.otherResources"
+            :key="otherResource.url"
+            :href="otherResource.url"
+          >
+            <div class="d-flex align-items-center gap-3">
+              <div
+                class="fs-2"
+                :class="{ [`text-${getOtherResourceIconColor(otherResource)}`]: getOtherResourceIconColor(otherResource) }"
+              >
+                <icon :name="getOtherResourceIcon(otherResource)" />
+              </div>
+              <div>
+                <strong
+                  class="d-block"
+                  v-html="otherResource.name"
+                />
+                <small v-html="otherResource.description" />
+              </div>
+            </div>
+          </b-list-group-item>
+        </b-list-group>
+      </b-modal>
     </div>
     <div v-else>
       <error-display

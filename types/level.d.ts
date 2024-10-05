@@ -33,4 +33,33 @@ export interface Level {
    * @type {string}
    */
   color: string
+
+  /**
+   * Other resources for this level.
+   * @type {Resource[]}
+   */
+  otherResources?: Resource[]
+}
+
+/**
+ * A resource associated to this level.
+ * @interface
+ * @export
+ */
+export interface Resource {
+  /**
+   * The resource name.
+   * @type {string}
+   */
+  name: string
+  /**
+   * The resource description.
+   * @type {string}
+   */
+  description: string
+  /**
+   * The resource URL.
+   * @type {string}
+   */
+  url: string
 }
