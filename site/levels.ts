@@ -189,12 +189,32 @@ export const levels: { [key: string]: Level } = {
       {
         name: 'Algorithmique et programmation',
         description: 'Fiche récapitulant les notions de Python vues au cours de l\'année.',
-        url: '/pdf/cinquieme/algorithmique-programmation.pdf'
+        url: '/pdf/seconde/algorithmique-programmation.pdf'
+      },
+      {
+        name: 'Fiche d\'utilisation de la NumWorks',
+        description: 'Fiche sur l\'utilisation de la calculatrice NumWorks.',
+        url: '/pdf/seconde/calculatrice-numworks.pdf'
+      },
+      {
+        name: 'Fiche d\'utilisation de la Casio Graph 35+E II',
+        description: 'Fiche sur l\'utilisation de la calculatrice Casio Graph 35+E II.',
+        url: '/pdf/seconde/calculatrice-casio.pdf'
+      },
+      {
+        name: 'Fiche d\'utilisation de la TI-83 Premium CE',
+        description: 'Fiche sur l\'utilisation de la calculatrice TI-83 Premium CE.',
+        url: '/pdf/seconde/calculatrice-ti.pdf'
       },
       {
         name: 'Automatismes',
         description: 'Fiche d\'AP permettant de retravailler les notions vues en troisième.',
-        url: '/pdf/cinquieme/ap-automatismes.pdf'
+        url: '/pdf/seconde/ap-automatismes.pdf'
+      },
+      {
+        name: 'Utilisation de la calculatrice',
+        description: 'Fiche d\'AP contenant des exercices à faire avec la calculatrice.',
+        url: '/pdf/seconde/ap-calculatrice.pdf'
       },
       {
         name: 'Les dents vertes',
