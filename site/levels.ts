@@ -225,6 +225,16 @@ export const levels: { [key: string]: Level } = {
         name: 'Logique et symboles',
         description: 'Fiche d\'AP sur le vocabulaire et les symboles utilisés en logique mathématique.',
         url: '/pdf/seconde/ap-logique-symboles.pdf'
+      },
+      {
+        name: 'Raisonnement par l\'absurde',
+        description: 'Fiche d\'AP sur le raisonnement par l\'absurde.',
+        url: '/pdf/seconde/ap-raisonnement-absurde.pdf'
+      },
+      {
+        name: 'Devoir surveillé 1',
+        description: 'Devoir surveillé sur Calcul littéral et équations, Vecteurs du plan et Calcul numérique.',
+        url: '/pdf/seconde/devoir-1.pdf'
       }
     ]
   },
@@ -237,7 +247,12 @@ export const levels: { [key: string]: Level } = {
       {
         name: 'Fiche méthode sur les inéquations',
         description: 'Fiche méthode pour travailler sur les inéquations.',
-        url: '/pdf/troisieme/fiche-methode-inequations.pdf'
+        url: '/pdf/premiere-stmg/fiche-methode-inequations.pdf'
+      },
+      {
+        name: 'Devoir surveillé 1',
+        description: 'Devoir surveillé sur Proportions et évolutions, Notion de fonction et Suites numériques.',
+        url: '/pdf/premiere-stmg/devoir-1.pdf'
       }
     ]
   }
