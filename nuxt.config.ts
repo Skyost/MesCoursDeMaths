@@ -14,8 +14,24 @@ if (debug) {
 
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
+  modules: [
+    '@nuxt/eslint',
+    'nuxt-cname-generator',
+    '~/modules/commit-sha-file-generator',
+    '~/modules/content-downloader',
+    '~/modules/latex-pdf-generator',
+    '~/modules/nuxt-content-latex',
+    '@bootstrap-vue-next/nuxt',
+    '@nuxt/content',
+    '@nuxtjs/google-fonts',
+    'nuxt-link-checker',
+    '@nuxtjs/sitemap',
+    '@nuxtjs/robots',
+    '@nuxt/icon'
+    // '@nuxt/image'
+  ],
+
   ssr: true,
-  compatibilityDate: '2024-07-01',
 
   app: {
     head: {
@@ -38,89 +54,14 @@ export default defineNuxtConfig({
     '~/node_modules/katex/dist/katex.min.css'
   ],
 
-  vite: {
-    plugins: [
-      StylelintPlugin(),
-      eslintPlugin()
-    ]
-  },
-
-  modules: [
-    '@nuxt/eslint',
-    'nuxt-cname-generator',
-    '~/modules/commit-sha-file-generator',
-    '~/modules/content-downloader',
-    '~/modules/latex-pdf-generator',
-    '~/modules/nuxt-content-latex',
-    '@bootstrap-vue-next/nuxt',
-    '@nuxt/content',
-    '@nuxtjs/google-fonts',
-    'nuxt-link-checker',
-    '@nuxtjs/sitemap',
-    '@nuxtjs/robots',
-    '@nuxt/icon'
-    // '@nuxt/image'
-  ],
-
-  nitro: {
-    prerender: {
-      routes: ['/']
-    }
-  },
-
-  eslint: {
-    config: {
-      stylistic: true
-    }
-  },
-
-  content: {
-    watch: false
-  },
-
-  icon: {
-    provider: 'iconify',
-    class: 'vue-icon'
-  },
-
-  googleFonts: {
-    display: 'swap',
-    families: {
-      Montserrat: true,
-      Raleway: true
-    }
-  },
-
   site: {
     url: siteMeta.url,
     name: siteMeta.title,
     trailingSlash: true
   },
 
-  sitemap: {
-    exclude: [
-      '/prof/agenda/',
-      '/prof/cours/',
-      '/prof/tableau-blanc/'
-    ]
-  },
-
-  linkChecker: {
-    failOnError: false,
-    excludeLinks: [
-      '/pdf/**'
-    ],
-    skipInspections: [
-      'link-text'
-    ]
-  },
-
-  commitShaFileGenerator: {
-    fileName: 'latest-commit.json'
-  },
-
-  cname: {
-    host: siteMeta.url
+  content: {
+    watch: false
   },
 
   runtimeConfig: {
@@ -137,5 +78,64 @@ export default defineNuxtConfig({
         trailingSlash: 'append'
       }
     }
+  },
+  compatibilityDate: '2024-07-01',
+
+  nitro: {
+    prerender: {
+      routes: ['/']
+    }
+  },
+
+  vite: {
+    plugins: [
+      StylelintPlugin(),
+      eslintPlugin()
+    ]
+  },
+
+  cname: {
+    host: siteMeta.url
+  },
+
+  commitShaFileGenerator: {
+    fileName: 'latest-commit.json'
+  },
+
+  eslint: {
+    config: {
+      stylistic: true
+    }
+  },
+
+  googleFonts: {
+    display: 'swap',
+    families: {
+      Montserrat: true,
+      Raleway: true
+    }
+  },
+
+  icon: {
+    provider: 'iconify',
+    class: 'vue-icon'
+  },
+
+  linkChecker: {
+    failOnError: false,
+    excludeLinks: [
+      '/pdf/**'
+    ],
+    skipInspections: [
+      'link-text'
+    ]
+  },
+
+  sitemap: {
+    exclude: [
+      '/prof/agenda/',
+      '/prof/cours/',
+      '/prof/tableau-blanc/'
+    ]
   }
 })

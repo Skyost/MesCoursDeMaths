@@ -5,7 +5,6 @@ import path from 'path'
 import AdmZip from 'adm-zip'
 import { Octokit } from '@octokit/core'
 import { createResolver, defineNuxtModule, type Resolver, useLogger } from '@nuxt/kit'
-import { copySync } from 'fs-extra'
 import { authentication } from '../site/authentication'
 import { siteContentSettings } from '../site/content'
 import { siteMeta } from '../site/meta'
@@ -149,7 +148,7 @@ async function downloadRemoteDirectory(
   options: ModuleOptions
 ): Promise<boolean> {
   if (options.github.repository === options.github.dataRepository) {
-    copySync(resolver.resolve(srcDir, options.dataLatexDirectory), resolver.resolve(srcDir, options.downloadDestinations.data))
+    fs.cpSync(resolver.resolve(srcDir, options.dataLatexDirectory), resolver.resolve(srcDir, options.downloadDestinations.data))
     return true
   }
   const octokit = new Octokit({ auth: options.github.accessToken })
