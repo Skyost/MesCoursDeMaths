@@ -127,7 +127,8 @@ export default defineNuxtConfig({
       '/pdf/**'
     ],
     skipInspections: [
-      'link-text'
+      'link-text',
+      'no-uppercase-chars'
     ]
   },
 
