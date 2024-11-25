@@ -236,6 +236,10 @@ export const siteContentSettings: SiteContentSettings = {
 
 \\tikzset{t style/.style = {style = dashed}}
 
+% Arrows :
+
+\\tikzset{>=latex}
+
 % Options for xlop.
 \\opset{%
   dividendbridge,%
