@@ -238,7 +238,7 @@ export const siteContentSettings: SiteContentSettings = {
 
 % Arrows :
 
-\\tikzset{>=latex}
+\\tikzset{>={Latex[width=4pt]}}
 
 % Options for xlop.
 \\opset{%
