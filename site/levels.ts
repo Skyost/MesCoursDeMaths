@@ -207,8 +207,8 @@ export const levels: { [key: string]: Level } = {
         url: '/pdf/seconde/calculatrice-ti.pdf'
       },
       {
-        name: 'Automatismes',
-        description: 'Fiche d\'AP permettant de retravailler les notions vues en troisième.',
+        name: 'Automatismes de Troisième',
+        description: 'Fiche d\'AP permettant de retravailler les notions vues en Troisième.',
         url: '/pdf/seconde/ap-automatismes.pdf'
       },
       {
@@ -233,8 +233,13 @@ export const levels: { [key: string]: Level } = {
       },
       {
         name: 'Devoir surveillé 1',
-        description: 'Devoir surveillé sur Calcul littéral et équations, Vecteurs du plan et Calcul numérique.',
+        description: 'Devoir surveillé sur Calcul littéral et équations et Vecteurs du plan.',
         url: '/pdf/seconde/devoir-1.pdf'
+      },
+      {
+        name: 'Devoir surveillé 2',
+        description: 'Devoir surveillé sur Calcul numérique et Ensembles de nombres.',
+        url: '/pdf/seconde/devoir-2.pdf'
       }
     ]
   },
