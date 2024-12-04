@@ -27,6 +27,15 @@ const year = (new Date()).getFullYear()
         >
           <ul class="logos flex-md-row-reverse">
             <li>
+              <a href="https://github.com/Skyost/ThatLatexLib">
+                <img
+                  src="/images/technologies/thatlatexlib.svg"
+                  alt="That LaTeX lib"
+                  title="That LaTeX lib"
+                >
+              </a>
+            </li>
+            <li>
               <a href="https://www.latex-project.org/">
                 <img
                   src="/images/technologies/latex.svg"
