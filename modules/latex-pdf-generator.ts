@@ -171,10 +171,12 @@ const generateAndCopy = (
       latexIncludeCommands: [
         LatexIncludeCommand.includeGraphics(options.getIncludeGraphicsDirectories(filePath)),
         ...LatexIncludeCommand.defaultLatexIncludeCommands,
-        new LatexIncludeCommand({
-          command: 'documentclass',
-          extensions: ['.cls']
-        })
+        new LatexIncludeCommand(
+          'documentclass',
+          {
+            extensions: ['.cls']
+          }
+        )
       ]
     })
   })
