@@ -56,7 +56,8 @@ export default defineTransformer({
             sourceDirectoryPath,
             siteContentSettings.downloadDestinations.previousBuild,
             path.dirname(
-              path.relative(moduleDataDirectoryPath,
+              path.relative(
+                moduleDataDirectoryPath,
                 resolvedImageTexFilePath
               )
             )
@@ -67,7 +68,7 @@ export default defineTransformer({
         blockType => new TikzPictureImageExtractor(
           blockType,
           sourceDirectoryPath,
-          contentDirectoryPath,
+          moduleDataDirectoryPath,
           assetsRootDirectoryPath
         )
       ),
