@@ -74,7 +74,7 @@ interface SiteContentSettings {
   ignores: string[]
 
   /**
-   * Function to get directories for includegraphics in LaTeX files.
+   * Function to get directories for `includegraphics` in LaTeX files.
    * @type {(latexFilePath: string) => string[]}
    */
   getIncludeGraphicsDirectories: (latexFilePath: string) => string[]
@@ -211,7 +211,7 @@ export const siteContentSettings: SiteContentSettings = {
 \\setscratch{scale=2.25}
 
 % Graphics path.
-{graphicspath}
+{graphicsPath}
 
 \\begin{document}
   % Content :
@@ -265,7 +265,7 @@ export const siteContentSettings: SiteContentSettings = {
 \\usetikzlibrary{babel}
 
 % Graphics path.
-{graphicspath}
+{graphicsPath}
 
 % \\dddots command.
 \\newcommand{\\dddots}[1]{\\makebox[#1]{\\dotfill}}

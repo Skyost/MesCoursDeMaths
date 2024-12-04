@@ -91,7 +91,14 @@ export default defineNuxtConfig({
     plugins: [
       StylelintPlugin(),
       eslintPlugin()
-    ]
+    ],
+    css: {
+      preprocessorOptions: {
+        scss: {
+          silenceDeprecations: ['mixed-decls', 'color-functions', 'global-builtin', 'import']
+        }
+      }
+    }
   },
 
   cname: {

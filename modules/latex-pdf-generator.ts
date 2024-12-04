@@ -3,7 +3,7 @@
 import fs from 'fs'
 import path from 'path'
 import { createResolver, defineNuxtModule, type Resolver, useLogger } from '@nuxt/kit'
-import * as latex from 'that-latex-lib'
+import { LatexChecksumsCalculator, LatexIncludeCommand, PdfGenerator } from 'that-latex-lib'
 import { siteContentSettings, type Variant } from '../site/content'
 import { debug } from '../site/debug'
 import { getFileName } from '../utils/utils'
@@ -165,29 +165,23 @@ const generateAndCopy = (
   logger.info(`Processing "${filePath}"${variant ?? ''}...`)
 
   // Generate PDF and checksums files.
-  const { wasCached, builtFilePath, checksumsFilePath } = latex.generatePdf(
+  const pdfGenerator = new PdfGenerator({
+    generateIfExists: !debug,
+    checksumsCalculator: new LatexChecksumsCalculator({
+      latexIncludeCommands: [
+        LatexIncludeCommand.includeGraphics(options.getIncludeGraphicsDirectories(filePath)),
+        ...LatexIncludeCommand.defaultLatexIncludeCommands,
+        new LatexIncludeCommand({
+          command: 'documentclass',
+          extensions: ['.cls']
+        })
+      ]
+    })
+  })
+  const { wasCached, builtFilePath, checksumsFilePath } = pdfGenerator.generate(
     filePath,
-    {
-      includeGraphicsDirectories: options.getIncludeGraphicsDirectories(filePath),
-      cacheDirectoryPath: previousBuildDirectory == null ? undefined : previousBuildDirectory,
-      cachedFileName: options.renameFile(destinationFileName ?? getFileName(filePath)),
-      checksumsCalculator: (texFilePath, includeGraphicsDirectories) => latex.calculateTexFileChecksums(
-        texFilePath,
-        includeGraphicsDirectories,
-        null,
-        [
-          ...latex.defaultLatexIncludeCommands,
-          {
-            command: 'documentclass',
-            directories: [],
-            extensions: ['.cls'],
-            excludes: [],
-            hasIncludes: true,
-            targetIsDirectory: false
-          }
-        ]
-      )
-    }
+    previousBuildDirectory == null ? undefined : previousBuildDirectory,
+    options.renameFile(destinationFileName ?? getFileName(filePath))
   )
 
   // If PDF generation is successful, copy files to the destination directory.

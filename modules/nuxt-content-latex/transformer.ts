@@ -2,8 +2,8 @@ import path from 'path'
 import fs from 'fs'
 import { defineTransformer } from '@nuxt/content/transformers'
 import type { HTMLElement } from 'node-html-parser'
-import * as latex from 'that-latex-lib'
 import { consola } from 'consola'
+import { KatexRenderer, LatexImageExtractor, PandocCommand, PandocTransformer, SvgGenerator } from 'that-latex-lib'
 import { name } from './common'
 import { debug } from '~/site/debug'
 import { getFileName, normalizeString } from '~/utils/utils'
@@ -48,40 +48,61 @@ export default defineTransformer({
     const pandocHeader = fs.readFileSync(path.resolve(sourceDirectoryPath, siteContentSettings.downloadDestinations.data, siteContentSettings.dataLatexDirectory, siteContentSettings.pandocRedefinitions), { encoding: 'utf8' })
 
     // Parse the Pandoc HTML output.
-    const { htmlResult: root } = latex.transformToHtml(
-      filePath,
-      {
-        pandocHeader,
-        pandocArguments: ['--shift-heading-level-by=1'],
-        getExtractedImageCacheDirectoryPath: (_extractedFrom, extractedImageTexFilePath) => path.resolve(sourceDirectoryPath, siteContentSettings.downloadDestinations.previousBuild, path.dirname(path.relative(moduleDataDirectoryPath, extractedImageTexFilePath))),
-        getExtractedImageTargetDirectory: (_extractedFrom, assetName) => siteContentSettings.getLatexAssetDestinationDirectoryPath(assetsRootDirectoryPath, assetName, originalTexFilePath),
-        getIncludeGraphicsDirectories: siteContentSettings.getIncludeGraphicsDirectories,
+    const pandocTransformer = new PandocTransformer({
+      imageSrcResolver: PandocTransformer.resolveFromAssetsRoot(
         assetsRootDirectoryPath,
-        getResolvedImageCacheDirectoryPath: resolvedImageTexFilePath => path.resolve(sourceDirectoryPath, siteContentSettings.downloadDestinations.previousBuild, path.dirname(path.relative(moduleDataDirectoryPath, resolvedImageTexFilePath))),
-        renderMathElement,
-        imagesTemplate: siteContentSettings.picturesTemplate,
-        generateIfExists: !debug
-      },
-      true,
-      rawContent
-    )
+        {
+          getImageCacheDirectoryPath: resolvedImageTexFilePath => path.resolve(
+            sourceDirectoryPath,
+            siteContentSettings.downloadDestinations.previousBuild,
+            path.dirname(
+              path.relative(moduleDataDirectoryPath,
+                resolvedImageTexFilePath
+              )
+            )
+          )
+        }
+      ),
+      imageExtractors: Object.keys(siteContentSettings.picturesTemplate).map(
+        blockType => new TikzPictureImageExtractor(
+          blockType,
+          sourceDirectoryPath,
+          contentDirectoryPath,
+          assetsRootDirectoryPath
+        )
+      ),
+      mathRenderer: new MathRendererWithMacros(),
+      pandoc: new PandocCommand({
+        header: pandocHeader,
+        additionalArguments: ['--shift-heading-level-by=1']
+      })
+    })
+    // Transforms the raw content into HTML.
+    const { htmlResult: root } = pandocTransformer.transform(filePath, rawContent)
 
-    // Remove empty titles from the HTML content.
-    removeEmptyTitles(root)
+    if (root) {
+      // Remove empty titles from the HTML content.
+      removeEmptyTitles(root)
 
-    // Replace vspace elements in the HTML content.
-    replaceVspaceElements(root)
+      // Replace vspace elements in the HTML content.
+      replaceVspaceElements(root)
 
-    // Adjust columns size in the HTML content.
-    adjustColSize(root)
+      // Adjust columns size in the HTML content.
+      adjustColSize(root)
 
-    logger.success(`Successfully processed ${filePath} !`)
+      // Return the parsed content object.
+      logger.success(`Successfully processed ${filePath} !`)
+      return {
+        _id,
+        body: root.outerHTML,
+        ...getHeader(filePath, root, siteContentSettings.getLinkedResources(sourceDirectoryPath, originalTexFilePath))
+      }
+    }
 
-    // Return the parsed content object.
+    logger.error(`Failed to process ${filePath}.`)
     return {
       _id,
-      body: root.outerHTML,
-      ...getHeader(filePath, root, siteContentSettings.getLinkedResources(sourceDirectoryPath, originalTexFilePath))
+      body: `Unable to parse ${_id}.`
     }
   }
 })
@@ -154,24 +175,6 @@ const adjustColSize = (root: HTMLElement) => {
 }
 
 /**
- * Renders a given math element.
- * @param {HTMLElement} element The element.
- * @returns {string} The result.
- */
-const renderMathElement = (element: HTMLElement): string => latex.renderMathElement(
-  element,
-  {
-    '\\parallelslant': '\\mathbin{\\!/\\mkern-5mu/\\!}',
-    '\\ensuremath': '#1',
-    '\\dotfillline': '\\htmlClass{dots}{}',
-    '\\dotfillsize': '\\htmlStyle{width: #1}{\\dotfillline}'
-  },
-  math => math
-    .replace(/(\\left *|\\right *)*\\VERT/g, '$1 | $1 | $1 |')
-    .replace(/\\overset{(.*)}&{(.*)}/g, '&\\overset{$1}{$2}')
-)
-
-/**
  * Extract header information from the HTML structure of a LaTeX document.
  *
  * @param {string} filePath - The file path of the document.
@@ -212,4 +215,101 @@ const getHeader = (filePath: string, root: HTMLElement, linkedResources: LinkedR
   header['linked-resources'] = linkedResourceWithoutPdf
 
   return header
+}
+
+/**
+ * Extracts Tikz pictures from a file.
+ */
+class TikzPictureImageExtractor extends LatexImageExtractor {
+  /**
+   * The source directory path.
+   */
+  sourceDirectoryPath: string
+  /**
+   * The module data directory path.
+   */
+  moduleDataDirectoryPath: string
+  /**
+   * The assets root directory path.
+   */
+  assetsRootDirectoryPath: string
+
+  /**
+   * Creates a new `TikzPictureImageExtractor` instance.
+   *
+   * @param {string} blockType The image block type.
+   * @param {string} sourceDirectoryPath The source directory path.
+   * @param {string} moduleDataDirectoryPath The module data directory path.
+   * @param {string} assetsRootDirectoryPath The assets root directory path.
+   */
+  constructor(
+    blockType: string,
+    sourceDirectoryPath: string,
+    moduleDataDirectoryPath: string,
+    assetsRootDirectoryPath: string
+  ) {
+    super(
+      blockType,
+      {
+        svgGenerator: new SvgGenerator({
+          generateIfExists: !debug
+        })
+      }
+    )
+    this.sourceDirectoryPath = sourceDirectoryPath
+    this.moduleDataDirectoryPath = moduleDataDirectoryPath
+    this.assetsRootDirectoryPath = assetsRootDirectoryPath
+  }
+
+  override getExtractedImageDirectoryPath(extractedFrom: string, extractedFileName: string): string | null {
+    return siteContentSettings.getLatexAssetDestinationDirectoryPath(
+      this.assetsRootDirectoryPath,
+      extractedFileName,
+      extractedFrom
+    )
+  }
+
+  override getExtractedImageCacheDirectoryPath(extractedFrom: string, extractedImageTexFilePath: string): string | null {
+    return path.resolve(
+      this.sourceDirectoryPath,
+      siteContentSettings.downloadDestinations.previousBuild,
+      path.dirname(
+        path.relative(
+          this.moduleDataDirectoryPath,
+          extractedImageTexFilePath
+        )
+      )
+    )
+  }
+
+  override renderContent(extractedImageTexFilePath: string, latexContent: string): string {
+    return siteContentSettings.picturesTemplate[this.imageType]
+      .replace(
+        '{graphicsPath}',
+        '\\graphicspath{' + siteContentSettings.getIncludeGraphicsDirectories(extractedImageTexFilePath)
+          .map(directory => `{${directory.replaceAll('\\', '\\\\')}}`)
+          .join('\n') + '}'
+      )
+      .replace('{extractedContent}', latexContent)
+  }
+}
+
+/**
+ * A math renderer with some custom macros.
+ */
+class MathRendererWithMacros extends KatexRenderer {
+  override renderMathElement(element: HTMLElement): string {
+    return super.renderMathElement(
+      element,
+      {
+        '\\parallelslant': '\\mathbin{\\!/\\mkern-5mu/\\!}',
+        '\\ensuremath': '#1',
+        '\\dotfillline': '\\htmlClass{dots}{}',
+        '\\dotfillsize': '\\htmlStyle{width: #1}{\\dotfillline}'
+      },
+      math => math
+        .replace(/(\\left *|\\right *)*\\VERT/g, '$1 | $1 | $1 |')
+        .replace(/\\overset{(.*)}&{(.*)}/g, '&\\overset{$1}{$2}')
+    )
+  }
 }
