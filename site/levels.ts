@@ -48,6 +48,21 @@ export const levels: { [key: string]: Level } = {
         url: '/pdf/sixieme/cryptographie.pdf'
       },
       {
+        name: 'ERROR 1980',
+        description: 'Un escape game sur le thème du retour dans le passé, accessible en ligne contenant diverses énigmes mathématiques à résoudre.',
+        url: 'https://skyost.github.io/Error1980/'
+      },
+      {
+        name: 'Voyage à Cendlard',
+        description: 'Un escape game sur le thème de la magie, accessible en ligne contenant diverses énigmes mathématiques à résoudre.',
+        url: 'https://skyost.github.io/VoyageACendlard/'
+      },
+      {
+        name: 'Murder Mystery',
+        description: 'Un escape game sur thème policier, accessible en ligne contenant diverses énigmes mathématiques à résoudre.',
+        url: 'https://skyost.github.io/MurderMystery/'
+      },
+      {
         name: 'Travail de groupe 1',
         description: 'Un travail de groupe sur la géométrie et les programmes de construction.',
         url: '/pdf/sixieme/groupes-1.pdf'
@@ -94,6 +109,21 @@ export const levels: { [key: string]: Level } = {
         name: 'Les dents vertes',
         description: 'Fiche d\'AP permettant de travailler la logique mathématique.',
         url: '/pdf/cinquieme/ap-dents-vertes.pdf'
+      },
+      {
+        name: 'ERROR 1980',
+        description: 'Un escape game sur le thème du retour dans le passé, accessible en ligne contenant diverses énigmes mathématiques à résoudre.',
+        url: 'https://skyost.github.io/Error1980/'
+      },
+      {
+        name: 'Voyage à Cendlard',
+        description: 'Un escape game sur le thème de la magie, accessible en ligne contenant diverses énigmes mathématiques à résoudre.',
+        url: 'https://skyost.github.io/VoyageACendlard/'
+      },
+      {
+        name: 'Murder Mystery',
+        description: 'Un escape game sur thème policier, accessible en ligne contenant diverses énigmes mathématiques à résoudre.',
+        url: 'https://skyost.github.io/MurderMystery/'
       },
       {
         name: 'Travail de groupe 1',
