@@ -262,7 +262,7 @@ class TikzPictureImageExtractor extends LatexImageExtractor {
     this.assetsRootDirectoryPath = assetsRootDirectoryPath
   }
 
-  override getExtractedImageDirectoryPath(extractedFrom: string, extractedFileName: string): string | null {
+  override getExtractedImageDirectoryPath(extractedFrom: string, extractedFileName: string): string {
     return siteContentSettings.getLatexAssetDestinationDirectoryPath(
       this.assetsRootDirectoryPath,
       extractedFileName,
