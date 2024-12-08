@@ -154,7 +154,7 @@ export const siteContentSettings: SiteContentSettings = {
   },
   isAsset: (filePath: string) => {
     const parentDirectoryName = path.basename(path.dirname(filePath))
-    if (!parentDirectoryName.endsWith('-cours')) {
+    if (parentDirectoryName !== 'images' && !parentDirectoryName.endsWith('-cours')) {
       return false
     }
     const extension = path.parse(filePath).ext
