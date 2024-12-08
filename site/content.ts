@@ -145,12 +145,21 @@ export const siteContentSettings: SiteContentSettings = {
       )
     }
     const parent = path.dirname(filePath)
-    const level = path.basename(path.dirname(path.dirname(parent)))
-    return path.resolve(
-      assetsDirectoryPath,
-      level,
-      path.basename(parent)
-    )
+    if (getFileName(parent) === 'images') {
+      const level = path.basename(path.dirname(parent))
+      return path.resolve(
+        assetsDirectoryPath,
+        level
+      )
+    }
+    else {
+      const level = path.basename(path.dirname(path.dirname(parent)))
+      return path.resolve(
+        assetsDirectoryPath,
+        level,
+        path.basename(parent)
+      )
+    }
   },
   isAsset: (filePath: string) => {
     const parentDirectoryName = path.basename(path.dirname(filePath))
