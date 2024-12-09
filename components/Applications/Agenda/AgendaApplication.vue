@@ -6,7 +6,7 @@ import BackToApplications from '~/components/Applications/BackToApplications.vue
 
 const runtimeConfig = useRuntimeConfig()
 const authorizationHeaders = useAuthorizationHeaders()
-const { pending, data, error, refresh } = useLazyFetch<{ [key: string]: any }>(`${runtimeConfig.public.apiUrl}/calendar/dates`, {
+const { status, data, error, refresh } = useLazyFetch<{ [key: string]: any }>(`${runtimeConfig.public.apiUrl}/calendar/dates`, {
   headers: authorizationHeaders.value,
   server: false
 })
@@ -133,7 +133,7 @@ const onModalHidden = async () => {
       id="modal-backdrop"
       ref="modalBackdrop"
     />
-    <div v-if="pending">
+    <div v-if="status === 'pending'">
       <spinner />
     </div>
     <error-display

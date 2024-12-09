@@ -1,5 +1,5 @@
 <script lang="ts">
-import { type Level, type LessonContent } from '~/types'
+import type { Level, LessonContent } from '~/types'
 import { getLessonUrl } from '~/site/lessons'
 
 export const lessonNavigationEntry = (lessonContent: LessonContent) => {
@@ -21,7 +21,7 @@ import Control from '~/components/Controls/Control.vue'
 const route = useRoute()
 const level: Level | undefined = levels[route.params.level.toString()]
 
-const { pending, data: lessonContent, error } = useLazyAsyncData(
+const { status, data: lessonContent, error } = useLazyAsyncData(
   route.path,
   () => queryContent<LessonContent>(siteContentSettings.dataLatexDirectory, level?.id)
     .where({ id: route.params.lesson.toString() })
@@ -40,7 +40,7 @@ const onMathDocumentMounted = () => useNavigationEntry(lessonNavigationEntry(les
 <template>
   <div>
     <page-head :title="title" />
-    <div v-if="pending">
+    <div v-if="status === 'pending'">
       <spinner />
     </div>
     <div v-else-if="level && lessonContent">
@@ -66,7 +66,7 @@ const onMathDocumentMounted = () => useNavigationEntry(lessonNavigationEntry(les
             v-for="resource in lessonContent['linked-resources']"
             :key="resource.url"
             :href="resource.url"
-            :icon-id="resource.url.endsWith('.pdf') ? 'file-earmark-pdf-fill' : null"
+            :icon-id="resource.url.endsWith('.pdf') ? 'file-earmark-pdf-fill' : 'file-earmark-text-fill'"
             :text="resource.title"
           />
         </controls-section>

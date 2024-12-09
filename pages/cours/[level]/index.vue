@@ -20,7 +20,7 @@ import Control from '~/components/Controls/Control.vue'
 const route = useRoute()
 const level: Level | undefined = levels[route.params.level.toString()]
 
-const { pending, data: lessons, error } = useLazyAsyncData(
+const { status, data: lessons, error } = useLazyAsyncData(
   route.path,
   () => queryContent<Lesson>(siteContentSettings.dataLatexDirectory, level?.id)
     .without('body')
@@ -35,12 +35,12 @@ if (level) {
   useNavigationEntry(levelNavigationEntry(level))
 }
 
-const otherResourcesModal = ref<bool>(false)
+const otherResourcesModal = ref<boolean>(false)
 const getOtherResourceIcon = (otherResource: Resource) => {
   if (otherResource.url.endsWith('.pdf')) {
     return 'bi:file-earmark-pdf-fill'
   }
-  return 'file-earmark-text-fill'
+  return 'bi:file-earmark-text-fill'
 }
 const getOtherResourceIconColor = (otherResource: Resource) => {
   if (otherResource.url.endsWith('.pdf')) {
@@ -53,7 +53,7 @@ const getOtherResourceIconColor = (otherResource: Resource) => {
 <template>
   <div>
     <page-head :title="title" />
-    <div v-if="pending">
+    <div v-if="status === 'pending'">
       <spinner />
     </div>
     <div v-else-if="level && lessons">
