@@ -1,0 +1,1 @@
+import{_ as e}from"./BbsWrnOq.js";import{d as o,b as t,i as a}from"./DdbvfPp3.js";const _=o({__name:"BackToApplications",setup(n){return(r,s)=>(t(),a(e,{to:"/prof/",text:"Retour à l'espace enseignant"}))}});export{_};
