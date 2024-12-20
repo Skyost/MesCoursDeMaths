@@ -66,9 +66,10 @@ useNavigationEntry(homeNavigationEntry)
         >
           <div class="text-center text-md-start">
             <p>
-              Bonjour et bienvenue sur <em>{{ siteMeta.title }}</em>. Je mets sur ce petit site web tous mes cours ainsi que les
-              ressources qui y sont rattachées. Vous trouverez donc ici des cours de mathématiques, mais également des
-              exercices et des activités de découverte.
+              Bonjour et bienvenue sur <em>{{ siteMeta.title }}</em>. Je suis Hugo Delaunay, professeur agrégé de mathématiques, et
+              je mets sur ce petit site web tous mes cours ainsi que les ressources qui y sont rattachées.
+              Vous trouverez donc ici des cours de mathématiques, mais également des exercices corrigés, des activités de découverte,
+              des devoirs, etc.
             </p>
             <p class="mb-0">
               Tout cela vous est accessible dès maintenant via la <nuxt-link to="/cours/">
@@ -157,9 +158,11 @@ useNavigationEntry(homeNavigationEntry)
             <a :href="githubUrl">totalement open-source</a>.
           </p>
           <p class="mb-0">
-            Quelques contenus sont tirés des manuels
+            Quelques contenus de niveau collège sont tirés des manuels
             <a href="https://www.enseignants.hachette-education.com/collections/mission-indigo-mathematiques">Mission Indigo</a>,
-            que je trouve de grande qualité. Les illustrations du site et des cours proviennent de
+            que je trouve de grande qualité. Des contenus de niveau lycée sont tirés des manuels
+            <a href="https://manuel.sesamath.net/">Sésamath</a>, dont le statut libre est à souligner (et à soutenir).
+            Les illustrations du site et des cours proviennent de
             <a href="https://www.freepik.com">FreePik</a> et de <a href="https://www.flaticon.com/">FlatIcon</a>.
           </p>
         </div>
