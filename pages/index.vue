@@ -45,6 +45,13 @@ const links = [
     name: 'Micmaths sur YouTube',
     image: '/images/index/micmaths.png',
     text: 'Une autre chaîne de vulgarisation mathématique, approuvée par McFly et Carlito !'
+  },
+  {
+    id: 'evariste',
+    to: 'https://levariste.com/fr/',
+    name: 'L\'Évariste',
+    image: '/images/index/evariste.svg',
+    text: 'Un concours de mathématiques accessible aux lycéens et créé par le vidéaste Axel Arno.'
   }
 ]
 
