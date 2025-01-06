@@ -50,16 +50,10 @@ interface SiteContentSettings {
   isAsset: (filePath: string) => boolean
 
   /**
-   * Should return the images directory of the given Latex document.
-   * @type {(assetDirectoryPath: string, filePath: string) => string}
-   */
-  getLatexDocumentImagesDirectoryPath: (assetDirectoryPath: string, filePath: string) => string
-
-  /**
    * Function to get the destination for LaTeX assets.
-   * @type {(assetDirectoryPath: string, filePath: string, extractedFrom: string | null) => string}
+   * @type {(assetDirectoryPath: string, filePath: string | null, extractedFrom: string | null) => string}
    */
-  getLatexAssetDestinationDirectoryPath: (assetDirectoryPath: string, filePath: string, extractedFrom: string | null) => string
+  getLatexAssetDestinationDirectoryPath: (assetDirectoryPath: string, filePath: string | null, extractedFrom: string | null) => string
 
   /**
    * Function to generate all variants (print, uncompleted, ...) of a LaTeX file.
@@ -142,22 +136,16 @@ export const siteContentSettings: SiteContentSettings = {
   dataLatexDirectory: 'latex',
   latexPdfDestinationDirectory: 'pdf',
   latexAssetsDestinationDirectory: 'images',
-  getLatexDocumentImagesDirectoryPath: (assetsDirectoryPath: string, filePath: string) => {
-    const parent = path.dirname(filePath)
-    const level = path.basename(path.dirname(path.dirname(parent)))
-    return path.resolve(
-      assetsDirectoryPath,
-      level,
-      path.basename(parent)
-    )
-  },
-  getLatexAssetDestinationDirectoryPath: (assetsDirectoryPath: string, filePath: string, extractedFrom: string | null): string => {
+  getLatexAssetDestinationDirectoryPath: (assetsDirectoryPath: string, filePath: string | null, extractedFrom: string | null): string => {
     if (extractedFrom) {
       return path.resolve(
         assetsDirectoryPath,
         path.basename(path.dirname(extractedFrom)),
         getFileName(extractedFrom)
       )
+    }
+    if (!filePath) {
+      throw 'Either `filePath` or `extractedFrom` should be non null.'
     }
     const parent = path.dirname(filePath)
     if (getFileName(parent) === 'images') {
@@ -167,7 +155,14 @@ export const siteContentSettings: SiteContentSettings = {
         level
       )
     }
-    return siteContentSettings.getLatexDocumentImagesDirectoryPath(assetsDirectoryPath, filePath)
+    else {
+      const level = path.basename(path.dirname(path.dirname(parent)))
+      return path.resolve(
+        assetsDirectoryPath,
+        level,
+        path.basename(parent)
+      )
+    }
   },
   isAsset: (filePath: string) => {
     const parentDirectoryName = path.basename(path.dirname(filePath))

@@ -48,13 +48,13 @@ export default defineTransformer({
     const pandocHeader = fs.readFileSync(path.resolve(sourceDirectoryPath, siteContentSettings.downloadDestinations.data, siteContentSettings.dataLatexDirectory, siteContentSettings.pandocRedefinitions), { encoding: 'utf8' })
 
     // Parse the Pandoc HTML output.
-    console.log(siteContentSettings.getLatexDocumentImagesDirectoryPath(assetsRootDirectoryPath, filePath))
+    console.log(siteContentSettings.getLatexAssetDestinationDirectoryPath(assetsRootDirectoryPath, null, filePath))
     const pandocTransformer = new PandocTransformer({
       imageSrcResolver: PandocTransformer.resolveFromAssetsRoot(
         assetsRootDirectoryPath,
         {
           subdirectories: [
-            siteContentSettings.getLatexDocumentImagesDirectoryPath(assetsRootDirectoryPath, filePath)
+            siteContentSettings.getLatexAssetDestinationDirectoryPath(assetsRootDirectoryPath, null, filePath)
           ],
           getImageCacheDirectoryPath: resolvedImageTexFilePath => path.resolve(
             sourceDirectoryPath,
