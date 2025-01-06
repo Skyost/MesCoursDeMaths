@@ -48,10 +48,14 @@ export default defineTransformer({
     const pandocHeader = fs.readFileSync(path.resolve(sourceDirectoryPath, siteContentSettings.downloadDestinations.data, siteContentSettings.dataLatexDirectory, siteContentSettings.pandocRedefinitions), { encoding: 'utf8' })
 
     // Parse the Pandoc HTML output.
+    console.log(path.resolve(assetsRootDirectoryPath, path.relative(contentDirectoryPath, filePath)))
     const pandocTransformer = new PandocTransformer({
       imageSrcResolver: PandocTransformer.resolveFromAssetsRoot(
         assetsRootDirectoryPath,
         {
+          subdirectories: [
+            path.resolve(assetsRootDirectoryPath, path.relative(contentDirectoryPath, filePath))
+          ],
           getImageCacheDirectoryPath: resolvedImageTexFilePath => path.resolve(
             sourceDirectoryPath,
             siteContentSettings.downloadDestinations.previousBuild,
@@ -72,7 +76,7 @@ export default defineTransformer({
           assetsRootDirectoryPath
         )
       ),
-      mathRenderer: new MathRendererWithMacros(),
+      mathRenderer: new KatexRendererWithMacros(),
       pandoc: new PandocCommand({
         header: pandocHeader,
         additionalArguments: ['--shift-heading-level-by=1']
@@ -298,19 +302,19 @@ class TikzPictureImageExtractor extends LatexImageExtractor {
 /**
  * A math renderer with some custom macros.
  */
-class MathRendererWithMacros extends KatexRenderer {
-  override renderMathElement(element: HTMLElement): string {
-    return super.renderMathElement(
-      element,
-      {
-        '\\parallelslant': '\\mathbin{\\!/\\mkern-5mu/\\!}',
-        '\\ensuremath': '#1',
-        '\\dotfillline': '\\htmlClass{dots}{}',
-        '\\dotfillsize': '\\htmlStyle{width: #1}{\\dotfillline}'
-      },
-      math => math
-        .replace(/(\\left *|\\right *)*\\VERT/g, '$1 | $1 | $1 |')
-        .replace(/\\overset{(.*)}&{(.*)}/g, '&\\overset{$1}{$2}')
-    )
+class KatexRendererWithMacros extends KatexRenderer {
+  override filterUnknownSymbols(math: string): string {
+    return super.filterUnknownSymbols(math)
+      .replace(/(\\left *|\\right *)*\\VERT/g, '$1 | $1 | $1 |')
+      .replace(/\\overset{(.*)}&{(.*)}/g, '&\\overset{$1}{$2}')
+  }
+
+  override getMacros() {
+    return {
+      '\\parallelslant': '\\mathbin{\\!/\\mkern-5mu/\\!}',
+      '\\ensuremath': '#1',
+      '\\dotfillline': '\\htmlClass{dots}{}',
+      '\\dotfillsize': '\\htmlStyle{width: #1}{\\dotfillline}'
+    }
   }
 }
