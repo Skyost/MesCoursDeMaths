@@ -223,7 +223,7 @@ export const siteContentSettings: SiteContentSettings = {
 % Load all required packages for my Scratch scripts.
 \\usepackage{scratch3}
 
-\\setscratch{scale=2.25}
+\\setscratch{scale=2.0}
 
 % Graphics path.
 {graphicsPath}
@@ -326,14 +326,14 @@ export const siteContentSettings: SiteContentSettings = {
 \\newcommand{\\siimpression}[2]{#2}
 \\newcommand{\\sieleve}[2]{#2}
 
-% 2.25x scale.
+% 2.0x scale.
 \\tikzset{
   graphfonctionlabel/.style args={at #1 #2 with #3}{
     postaction={
       decorate, decoration={markings, mark= at position #1 with \\node [#2] {#3};}
     }
   },
-  every picture/.append style={scale=2.25, every node/.style={scale=2.25}}
+  every picture/.append style={scale=2.0, every node/.style={scale=2.0}}
 }
 
 \\begin{document}
