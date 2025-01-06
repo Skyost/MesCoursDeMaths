@@ -50,6 +50,12 @@ interface SiteContentSettings {
   isAsset: (filePath: string) => boolean
 
   /**
+   * Should return the images directory of the given Latex document.
+   * @type {(assetDirectoryPath: string, filePath: string) => string}
+   */
+  getLatexDocumentImagesDirectoryPath: (assetDirectoryPath: string, filePath: string) => string
+
+  /**
    * Function to get the destination for LaTeX assets.
    * @type {(assetDirectoryPath: string, filePath: string, extractedFrom: string | null) => string}
    */
@@ -136,6 +142,15 @@ export const siteContentSettings: SiteContentSettings = {
   dataLatexDirectory: 'latex',
   latexPdfDestinationDirectory: 'pdf',
   latexAssetsDestinationDirectory: 'images',
+  getLatexDocumentImagesDirectoryPath: (assetsDirectoryPath: string, filePath: string) => {
+    const parent = path.dirname(filePath)
+    const level = path.basename(path.dirname(path.dirname(parent)))
+    return path.resolve(
+      assetsDirectoryPath,
+      level,
+      path.basename(parent)
+    )
+  },
   getLatexAssetDestinationDirectoryPath: (assetsDirectoryPath: string, filePath: string, extractedFrom: string | null): string => {
     if (extractedFrom) {
       return path.resolve(
@@ -152,14 +167,7 @@ export const siteContentSettings: SiteContentSettings = {
         level
       )
     }
-    else {
-      const level = path.basename(path.dirname(path.dirname(parent)))
-      return path.resolve(
-        assetsDirectoryPath,
-        level,
-        path.basename(parent)
-      )
-    }
+    return siteContentSettings.getLatexDocumentImagesDirectoryPath(assetsDirectoryPath, filePath)
   },
   isAsset: (filePath: string) => {
     const parentDirectoryName = path.basename(path.dirname(filePath))
