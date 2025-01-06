@@ -3,7 +3,7 @@ import fs from 'fs'
 import { defineTransformer } from '@nuxt/content/transformers'
 import type { HTMLElement } from 'node-html-parser'
 import { consola } from 'consola'
-import { KatexRenderer, LatexImageExtractor, PandocCommand, PandocTransformer, SvgGenerator } from 'that-latex-lib'
+import { KatexRenderer, LatexImageExtractorInDirectory, PandocCommand, PandocTransformer, SvgGenerator } from 'that-latex-lib'
 import { name } from './common'
 import { debug } from '~/site/debug'
 import { getFileName, normalizeString } from '~/utils/utils'
@@ -48,14 +48,10 @@ export default defineTransformer({
     const pandocHeader = fs.readFileSync(path.resolve(sourceDirectoryPath, siteContentSettings.downloadDestinations.data, siteContentSettings.dataLatexDirectory, siteContentSettings.pandocRedefinitions), { encoding: 'utf8' })
 
     // Parse the Pandoc HTML output.
-    console.log(siteContentSettings.getLatexAssetDestinationDirectoryPath(assetsRootDirectoryPath, null, filePath))
     const pandocTransformer = new PandocTransformer({
       imageSrcResolver: PandocTransformer.resolveFromAssetsRoot(
         assetsRootDirectoryPath,
         {
-          subdirectories: [
-            siteContentSettings.getLatexAssetDestinationDirectoryPath(assetsRootDirectoryPath, null, filePath)
-          ],
           getImageCacheDirectoryPath: resolvedImageTexFilePath => path.resolve(
             sourceDirectoryPath,
             siteContentSettings.downloadDestinations.previousBuild,
@@ -71,6 +67,7 @@ export default defineTransformer({
       imageExtractors: Object.keys(siteContentSettings.picturesTemplate).map(
         blockType => new TikzPictureImageExtractor(
           blockType,
+          filePath,
           sourceDirectoryPath,
           moduleDataDirectoryPath,
           assetsRootDirectoryPath
@@ -225,7 +222,7 @@ const getHeader = (filePath: string, root: HTMLElement, linkedResources: LinkedR
 /**
  * Extracts Tikz pictures from a file.
  */
-class TikzPictureImageExtractor extends LatexImageExtractor {
+class TikzPictureImageExtractor extends LatexImageExtractorInDirectory {
   /**
    * The source directory path.
    */
@@ -243,18 +240,22 @@ class TikzPictureImageExtractor extends LatexImageExtractor {
    * Creates a new `TikzPictureImageExtractor` instance.
    *
    * @param {string} blockType The image block type.
+   * @param {string} latexFilePath The Latex file path.
    * @param {string} sourceDirectoryPath The source directory path.
    * @param {string} moduleDataDirectoryPath The module data directory path.
    * @param {string} assetsRootDirectoryPath The assets root directory path.
    */
   constructor(
     blockType: string,
+    latexFilePath: string,
     sourceDirectoryPath: string,
     moduleDataDirectoryPath: string,
     assetsRootDirectoryPath: string
   ) {
     super(
       blockType,
+      siteContentSettings.getLatexFileAssetsDestinationDirectoryPath(assetsRootDirectoryPath, latexFilePath),
+      (extractedImageTexFilePath: string, latexContent: string) => TikzPictureImageExtractor.renderContent(blockType, extractedImageTexFilePath, latexContent),
       {
         svgGenerator: new SvgGenerator({
           generateIfExists: !debug
@@ -264,14 +265,6 @@ class TikzPictureImageExtractor extends LatexImageExtractor {
     this.sourceDirectoryPath = sourceDirectoryPath
     this.moduleDataDirectoryPath = moduleDataDirectoryPath
     this.assetsRootDirectoryPath = assetsRootDirectoryPath
-  }
-
-  override getExtractedImageDirectoryPath(extractedFrom: string, extractedFileName: string): string {
-    return siteContentSettings.getLatexAssetDestinationDirectoryPath(
-      this.assetsRootDirectoryPath,
-      extractedFileName,
-      extractedFrom
-    )
   }
 
   override getExtractedImageCacheDirectoryPath(extractedFrom: string, extractedImageTexFilePath: string): string | null {
@@ -287,8 +280,8 @@ class TikzPictureImageExtractor extends LatexImageExtractor {
     )
   }
 
-  override renderContent(extractedImageTexFilePath: string, latexContent: string): string {
-    return siteContentSettings.picturesTemplate[this.imageType]
+  static renderContent(imageType: string, extractedImageTexFilePath: string, latexContent: string): string {
+    return siteContentSettings.picturesTemplate[imageType]
       .replace(
         '{graphicsPath}',
         '\\graphicspath{' + siteContentSettings.getIncludeGraphicsDirectories(extractedImageTexFilePath)

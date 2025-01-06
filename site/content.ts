@@ -50,10 +50,16 @@ interface SiteContentSettings {
   isAsset: (filePath: string) => boolean
 
   /**
-   * Function to get the destination for LaTeX assets.
-   * @type {(assetDirectoryPath: string, filePath: string | null, extractedFrom: string | null) => string}
+   * Function to get the destination for a LaTeX document assets.
+   * @type {(assetDirectoryPath: string, latexFilePath: string) => string}
    */
-  getLatexAssetDestinationDirectoryPath: (assetDirectoryPath: string, filePath: string | null, extractedFrom: string | null) => string
+  getLatexFileAssetsDestinationDirectoryPath: (assetDirectoryPath: string, latexFilePath: string) => string
+
+  /**
+   * Function to get the destination for an asset.
+   * @type {(assetDirectoryPath: string, filePath: string) => string}
+   */
+  getAssetDestinationDirectoryPath: (assetDirectoryPath: string, filePath: string) => string
 
   /**
    * Function to generate all variants (print, uncompleted, ...) of a LaTeX file.
@@ -136,17 +142,14 @@ export const siteContentSettings: SiteContentSettings = {
   dataLatexDirectory: 'latex',
   latexPdfDestinationDirectory: 'pdf',
   latexAssetsDestinationDirectory: 'images',
-  getLatexAssetDestinationDirectoryPath: (assetsDirectoryPath: string, filePath: string | null, extractedFrom: string | null): string => {
-    if (extractedFrom) {
-      return path.resolve(
-        assetsDirectoryPath,
-        path.basename(path.dirname(extractedFrom)),
-        getFileName(extractedFrom)
-      )
-    }
-    if (!filePath) {
-      throw 'Either `filePath` or `extractedFrom` should be non null.'
-    }
+  getLatexFileAssetsDestinationDirectoryPath: (assetsDirectoryPath: string, latexFilePath: string): string => {
+    return path.resolve(
+      assetsDirectoryPath,
+      path.basename(path.dirname(latexFilePath)),
+      getFileName(latexFilePath)
+    )
+  },
+  getAssetDestinationDirectoryPath: (assetsDirectoryPath: string, filePath: string): string => {
     const parent = path.dirname(filePath)
     if (getFileName(parent) === 'images') {
       const level = path.basename(path.dirname(parent))

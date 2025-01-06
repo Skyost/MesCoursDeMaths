@@ -20,7 +20,7 @@ export interface ModuleOptions {
   directory: string
   assetsDestinationDirectoryName: string
   isAsset: (filePath: string) => boolean
-  getLatexAssetDestination: (assetDirectoryPath: string, filePath: string) => string
+  getAssetDestination: (assetDirectoryPath: string, filePath: string) => string
 }
 
 /**
@@ -37,7 +37,7 @@ export default defineNuxtModule<ModuleOptions>({
     directory: siteContentSettings.downloadDestinations.data,
     assetsDestinationDirectoryName: siteContentSettings.latexAssetsDestinationDirectory,
     isAsset: siteContentSettings.isAsset,
-    getLatexAssetDestination: (assetDirectoryPath: string, filePath: string) => siteContentSettings.getLatexAssetDestinationDirectoryPath(assetDirectoryPath, filePath, null)
+    getAssetDestination: siteContentSettings.getAssetDestinationDirectoryPath
   },
   setup(options, nuxt) {
     const resolver = createResolver(import.meta.url)
@@ -97,7 +97,7 @@ const processAssets = (
     // Check if the file extension is included in the allowed extensions.
     if (options.isAsset(filePath)) {
       // Calculate the destination path.
-      const destinationDirectoryPath = options.getLatexAssetDestination(assetsDestinationPath, filePath)
+      const destinationDirectoryPath = options.getAssetDestination(assetsDestinationPath, filePath)
       const destinationPath = resolver.resolve(destinationDirectoryPath, path.parse(filePath).base)
 
       // Ensure destination directory exists.
