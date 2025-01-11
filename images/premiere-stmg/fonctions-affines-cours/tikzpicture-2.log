@@ -1,0 +1,1465 @@
+This is LuaHBTeX, Version 1.18.0 (TeX Live 2024)  (format=lualatex 2024.12.29)  11 JAN 2025 20:41
+ restricted system commands enabled.
+**tikzpicture-2.tex
+(./tikzpicture-2.tex
+LaTeX2e <2024-11-01> patch level 1
+L3 programming layer <2024-12-09>
+Lua module: luaotfload 2024-02-14 v3.28 Lua based OpenType font support
+Lua module: lualibs 2023-07-13 v2.76 ConTeXt Lua standard libraries.
+Lua module: lualibs-extended 2023-07-13 v2.76 ConTeXt Lua libraries -- extended 
+collection.
+luaotfload | conf : Root cache directory is "/github/home/.texlive2024/texmf-var
+/luatex-cache/generic/names".
+luaotfload | init : Loading fontloader "fontloader-2023-12-28.lua" from kpse-res
+olved path "/usr/local/texlive/2024/texmf-dist/tex/luatex/luaotfload/fontloader-
+2023-12-28.lua".
+Lua-only attribute luaotfload@noligature = 1
+luaotfload | init : Context OpenType loader version 3.134
+Inserting `luaotfload.node_processor' in `pre_linebreak_filter'.
+Inserting `luaotfload.node_processor' in `hpack_filter'.
+Inserting `luaotfload.glyph_stream' in `glyph_stream_provider'.
+Inserting `luaotfload.define_font' in `define_font'.
+Lua-only attribute luaotfload_color_attribute = 2
+luaotfload | conf : Root cache directory is "/github/home/.texlive2024/texmf-var
+/luatex-cache/generic/names".
+Inserting `luaotfload.harf.strip_prefix' in `find_opentype_file'.
+Inserting `luaotfload.harf.strip_prefix' in `find_truetype_file'.
+Removing  `luaotfload.glyph_stream' from `glyph_stream_provider'.
+Inserting `luaotfload.harf.glyphstream' in `glyph_stream_provider'.
+Inserting `luaotfload.harf.finalize_vlist' in `post_linebreak_filter'.
+Inserting `luaotfload.harf.finalize_hlist' in `hpack_filter'.
+Inserting `luaotfload.cleanup_files' in `wrapup_run'.
+Inserting `luaotfload.harf.finalize_unicode' in `finish_pdffile'.
+Inserting `luaotfload.glyphinfo' in `glyph_info'.
+Lua-only attribute luaotfload.letterspace_done = 3
+Inserting `luaotfload.aux.set_sscale_dimens' in `luaotfload.patch_font'.
+Inserting `luaotfload.aux.set_font_index' in `luaotfload.patch_font'.
+Inserting `luaotfload.aux.patch_cambria_domh' in `luaotfload.patch_font'.
+Inserting `luaotfload.aux.fixup_fontdata' in `luaotfload.patch_font_unsafe'.
+Inserting `luaotfload.aux.set_capheight' in `luaotfload.patch_font'.
+Inserting `luaotfload.aux.set_xheight' in `luaotfload.patch_font'.
+Inserting `luaotfload.rewrite_fontname' in `luaotfload.patch_font'.
+Inserting `tracingstacklevels' in `input_level_string'. (/usr/local/texlive/202
+4/texmf-dist/tex/latex/standalone/standalone.cls
+Document Class: standalone 2022/10/10 v1.3b Class to compile TeX sub-files stan
+dalone
+(/usr/local/texlive/2024/texmf-dist/tex/latex/tools/shellesc.sty
+Package: shellesc 2023/07/08 v1.0d unified shell escape interface for LaTeX
+Package shellesc Info: Restricted shell escape enabled on input line 77.
+)
+(/usr/local/texlive/2024/texmf-dist/tex/generic/iftex/ifluatex.sty
+Package: ifluatex 2019/10/25 v1.5 ifluatex legacy package. Use iftex instead.
+
+(/usr/local/texlive/2024/texmf-dist/tex/generic/iftex/iftex.sty
+Package: iftex 2024/12/12 v1.0g TeX engine tests
+))
+(/usr/local/texlive/2024/texmf-dist/tex/latex/xkeyval/xkeyval.sty
+Package: xkeyval 2022/06/16 v2.9 package option processing (HA)
+
+(/usr/local/texlive/2024/texmf-dist/tex/generic/xkeyval/xkeyval.tex
+(/usr/local/texlive/2024/texmf-dist/tex/generic/xkeyval/xkvutils.tex
+\XKV@toks=\toks17
+\XKV@tempa@toks=\toks18
+
+(/usr/local/texlive/2024/texmf-dist/tex/generic/xkeyval/keyval.tex))
+\XKV@depth=\count194
+File: xkeyval.tex 2014/12/03 v2.7a key=value parser (HA)
+))
+\sa@internal=\count195
+\c@sapage=\count196
+
+(/usr/local/texlive/2024/texmf-dist/tex/latex/standalone/standalone.cfg
+File: standalone.cfg 2022/10/10 v1.3b Default configuration file for 'standalon
+e' class
+)
+(/usr/local/texlive/2024/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2024/06/29 v1.4n Standard LaTeX document class
+(/usr/local/texlive/2024/texmf-dist/tex/latex/base/size10.clo
+File: size10.clo 2024/06/29 v1.4n Standard LaTeX file (size option)
+luaotfload | db : Font names database loaded from /github/home/.texlive2024/texm
+f-var/luatex-cache/generic/names/luaotfload-names.luc.gz)
+\c@part=\count197
+\c@section=\count198
+\c@subsection=\count199
+\c@subsubsection=\count266
+\c@paragraph=\count267
+\c@subparagraph=\count268
+\c@figure=\count269
+\c@table=\count270
+\abovecaptionskip=\skip49
+\belowcaptionskip=\skip50
+\bibindent=\dimen140
+)
+(/usr/local/texlive/2024/texmf-dist/tex/generic/luatex85/luatex85.sty
+Package: luatex85 2016/06/15 v1.4 pdftex aliases for luatex
+)
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pdftexcmds/pdftexcmds.sty
+Package: pdftexcmds 2020-06-27 v0.33 Utility functions of pdfTeX for LuaTeX (HO
+)
+
+(/usr/local/texlive/2024/texmf-dist/tex/generic/infwarerr/infwarerr.sty
+Package: infwarerr 2019/12/03 v1.5 Providing info/warning/error messages (HO)
+)
+(/usr/local/texlive/2024/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty
+Package: ltxcmds 2023-12-04 v1.26 LaTeX kernel commands for general use (HO)
+)
+Package pdftexcmds Info: \pdf@primitive is available.
+Package pdftexcmds Info: \pdf@ifprimitive is available.
+Package pdftexcmds Info: \pdfdraftmode found.
+\pdftexcmds@toks=\toks19
+)
+(/usr/local/texlive/2024/texmf-dist/tex/latex/pgf/frontendlayer/tikz.sty
+(/usr/local/texlive/2024/texmf-dist/tex/latex/pgf/basiclayer/pgf.sty
+(/usr/local/texlive/2024/texmf-dist/tex/latex/pgf/utilities/pgfrcs.sty
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/utilities/pgfutil-common.te
+x
+\pgfutil@everybye=\toks20
+\pgfutil@tempdima=\dimen141
+\pgfutil@tempdimb=\dimen142
+)
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/utilities/pgfutil-latex.def
+\pgfutil@abb=\box52
+) (/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/utilities/pgfrcs.code.tex
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/pgf.revision.tex)
+Package: pgfrcs 2023-01-15 v3.1.10 (3.1.10)
+))
+Package: pgf 2023-01-15 v3.1.10 (3.1.10)
+
+(/usr/local/texlive/2024/texmf-dist/tex/latex/pgf/basiclayer/pgfcore.sty
+(/usr/local/texlive/2024/texmf-dist/tex/latex/graphics/graphicx.sty
+Package: graphicx 2021/09/16 v1.2d Enhanced LaTeX Graphics (DPC,SPQR)
+
+(/usr/local/texlive/2024/texmf-dist/tex/latex/graphics/graphics.sty
+Package: graphics 2024/08/06 v1.4g Standard LaTeX Graphics (DPC,SPQR)
+
+(/usr/local/texlive/2024/texmf-dist/tex/latex/graphics/trig.sty
+Package: trig 2023/12/02 v1.11 sin cos tan (DPC)
+)
+(/usr/local/texlive/2024/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
+File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
+)
+Package graphics Info: Driver file: luatex.def on input line 106.
+
+(/usr/local/texlive/2024/texmf-dist/tex/latex/graphics-def/luatex.def
+File: luatex.def 2024/04/13 v1.2e Graphics/color driver for luatex
+))
+\Gin@req@height=\dimen143
+\Gin@req@width=\dimen144
+)
+(/usr/local/texlive/2024/texmf-dist/tex/latex/pgf/systemlayer/pgfsys.sty
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/systemlayer/pgfsys.code.tex
+Package: pgfsys 2023-01-15 v3.1.10 (3.1.10)
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/utilities/pgfkeys.code.tex
+\pgfkeys@pathtoks=\toks21
+\pgfkeys@temptoks=\toks22
+
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/utilities/pgfkeyslibraryfil
+tered.code.tex
+\pgfkeys@tmptoks=\toks23
+))
+\pgf@x=\dimen145
+\pgf@y=\dimen146
+\pgf@xa=\dimen147
+\pgf@ya=\dimen148
+\pgf@xb=\dimen149
+\pgf@yb=\dimen150
+\pgf@xc=\dimen151
+\pgf@yc=\dimen152
+\pgf@xd=\dimen153
+\pgf@yd=\dimen154
+\w@pgf@writea=\write3
+\r@pgf@reada=\read2
+\c@pgf@counta=\count271
+\c@pgf@countb=\count272
+\c@pgf@countc=\count273
+\c@pgf@countd=\count274
+\t@pgf@toka=\toks24
+\t@pgf@tokb=\toks25
+\t@pgf@tokc=\toks26
+\pgf@sys@id@count=\count275
+
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/systemlayer/pgf.cfg
+File: pgf.cfg 2023-01-15 v3.1.10 (3.1.10)
+)
+Driver file for pgf: pgfsys-luatex.def
+
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/systemlayer/pgfsys-luatex.d
+ef
+File: pgfsys-luatex.def 2023-01-15 v3.1.10 (3.1.10)
+
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/systemlayer/pgfsys-common-p
+df.def
+File: pgfsys-common-pdf.def 2023-01-15 v3.1.10 (3.1.10)
+)))
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/systemlayer/pgfsyssoftpath.
+code.tex
+File: pgfsyssoftpath.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgfsyssoftpath@smallbuffer@items=\count276
+\pgfsyssoftpath@bigbuffer@items=\count277
+)
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/systemlayer/pgfsysprotocol.
+code.tex
+File: pgfsysprotocol.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)) (/usr/local/texlive/2024/texmf-dist/tex/latex/xcolor/xcolor.sty
+Package: xcolor 2024/09/29 v3.02 LaTeX color extensions (UK)
+
+(/usr/local/texlive/2024/texmf-dist/tex/latex/graphics-cfg/color.cfg
+File: color.cfg 2016/01/02 v1.6 sample color configuration
+)
+Package xcolor Info: Driver file: luatex.def on input line 274.
+
+(/usr/local/texlive/2024/texmf-dist/tex/latex/graphics/mathcolor.ltx)
+Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1349.
+Package xcolor Info: Model `hsb' substituted by `rgb' on input line 1353.
+Package xcolor Info: Model `RGB' extended on input line 1365.
+Package xcolor Info: Model `HTML' substituted by `rgb' on input line 1367.
+Package xcolor Info: Model `Hsb' substituted by `hsb' on input line 1368.
+Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1369.
+Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1370.
+Package xcolor Info: Model `Gray' substituted by `gray' on input line 1371.
+Package xcolor Info: Model `wave' substituted by `hsb' on input line 1372.
+)
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/basiclayer/pgfcore.code.tex
+Package: pgfcore 2023-01-15 v3.1.10 (3.1.10)
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/math/pgfmathutil.code.tex)
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/math/pgfmathparser.code.tex
+\pgfmath@dimen=\dimen155
+\pgfmath@count=\count278
+\pgfmath@box=\box53
+\pgfmath@toks=\toks27
+\pgfmath@stack@operand=\toks28
+\pgfmath@stack@operation=\toks29
+)
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.code.
+tex)
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.basic
+.code.tex)
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.trigo
+nometric.code.tex)
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.rando
+m.code.tex)
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.compa
+rison.code.tex)
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.base.
+code.tex)
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.round
+.code.tex)
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.misc.
+code.tex)
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.integ
+erarithmetics.code.tex)
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/math/pgfmathcalc.code.tex)
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/math/pgfmathfloat.code.tex
+\c@pgfmathroundto@lastzeros=\count279
+)) (/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/math/pgfint.code.tex)
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepoints.co
+de.tex
+File: pgfcorepoints.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgf@picminx=\dimen156
+\pgf@picmaxx=\dimen157
+\pgf@picminy=\dimen158
+\pgf@picmaxy=\dimen159
+\pgf@pathminx=\dimen160
+\pgf@pathmaxx=\dimen161
+\pgf@pathminy=\dimen162
+\pgf@pathmaxy=\dimen163
+\pgf@xx=\dimen164
+\pgf@xy=\dimen165
+\pgf@yx=\dimen166
+\pgf@yy=\dimen167
+\pgf@zx=\dimen168
+\pgf@zy=\dimen169
+)
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathconst
+ruct.code.tex
+File: pgfcorepathconstruct.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgf@path@lastx=\dimen170
+\pgf@path@lasty=\dimen171
+)
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathusage
+.code.tex
+File: pgfcorepathusage.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgf@shorten@end@additional=\dimen172
+\pgf@shorten@start@additional=\dimen173
+)
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/basiclayer/pgfcorescopes.co
+de.tex
+File: pgfcorescopes.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgfpic=\box54
+\pgf@hbox=\box55
+\pgf@layerbox@main=\box56
+\pgf@picture@serial@count=\count280
+)
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/basiclayer/pgfcoregraphicst
+ate.code.tex
+File: pgfcoregraphicstate.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgflinewidth=\dimen174
+)
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/basiclayer/pgfcoretransform
+ations.code.tex
+File: pgfcoretransformations.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgf@pt@x=\dimen175
+\pgf@pt@y=\dimen176
+\pgf@pt@temp=\dimen177
+)
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/basiclayer/pgfcorequick.cod
+e.tex
+File: pgfcorequick.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreobjects.c
+ode.tex
+File: pgfcoreobjects.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathproce
+ssing.code.tex
+File: pgfcorepathprocessing.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/basiclayer/pgfcorearrows.co
+de.tex
+File: pgfcorearrows.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgfarrowsep=\dimen178
+)
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreshade.cod
+e.tex
+File: pgfcoreshade.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgf@max=\dimen179
+\pgf@sys@shading@range@num=\count281
+\pgf@shadingcount=\count282
+)
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreimage.cod
+e.tex
+File: pgfcoreimage.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreexternal.
+code.tex
+File: pgfcoreexternal.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgfexternal@startupbox=\box57
+)
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/basiclayer/pgfcorelayers.co
+de.tex
+File: pgfcorelayers.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/basiclayer/pgfcoretranspare
+ncy.code.tex
+File: pgfcoretransparency.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepatterns.
+code.tex
+File: pgfcorepatterns.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/basiclayer/pgfcorerdf.code.
+tex
+File: pgfcorerdf.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)))
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/modules/pgfmoduleshapes.cod
+e.tex
+File: pgfmoduleshapes.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgfnodeparttextbox=\box58
+)
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/modules/pgfmoduleplot.code.
+tex
+File: pgfmoduleplot.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+(/usr/local/texlive/2024/texmf-dist/tex/latex/pgf/compatibility/pgfcomp-version
+-0-65.sty
+Package: pgfcomp-version-0-65 2023-01-15 v3.1.10 (3.1.10)
+\pgf@nodesepstart=\dimen180
+\pgf@nodesepend=\dimen181
+)
+(/usr/local/texlive/2024/texmf-dist/tex/latex/pgf/compatibility/pgfcomp-version
+-1-18.sty
+Package: pgfcomp-version-1-18 2023-01-15 v3.1.10 (3.1.10)
+))
+(/usr/local/texlive/2024/texmf-dist/tex/latex/pgf/utilities/pgffor.sty
+(/usr/local/texlive/2024/texmf-dist/tex/latex/pgf/utilities/pgfkeys.sty
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/utilities/pgfkeys.code.tex))
+ (/usr/local/texlive/2024/texmf-dist/tex/latex/pgf/math/pgfmath.sty
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex))
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/utilities/pgffor.code.tex
+Package: pgffor 2023-01-15 v3.1.10 (3.1.10)
+\pgffor@iter=\dimen182
+\pgffor@skip=\dimen183
+\pgffor@stack=\toks30
+\pgffor@toks=\toks31
+))
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/frontendlayer/tikz/tikz.cod
+e.tex
+Package: tikz 2023-01-15 v3.1.10 (3.1.10)
+
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/libraries/pgflibraryplothan
+dlers.code.tex
+File: pgflibraryplothandlers.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgf@plot@mark@count=\count283
+\pgfplotmarksize=\dimen184
+)
+\tikz@lastx=\dimen185
+\tikz@lasty=\dimen186
+\tikz@lastxsaved=\dimen187
+\tikz@lastysaved=\dimen188
+\tikz@lastmovetox=\dimen189
+\tikz@lastmovetoy=\dimen190
+\tikzleveldistance=\dimen191
+\tikzsiblingdistance=\dimen192
+\tikz@figbox=\box59
+\tikz@figbox@bg=\box60
+\tikz@tempbox=\box61
+\tikz@tempbox@bg=\box62
+\tikztreelevel=\count284
+\tikznumberofchildren=\count285
+\tikznumberofcurrentchild=\count286
+\tikz@fig@count=\count287
+
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/modules/pgfmodulematrix.cod
+e.tex
+File: pgfmodulematrix.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgfmatrixcurrentrow=\count288
+\pgfmatrixcurrentcolumn=\count289
+\pgf@matrix@numberofcolumns=\count290
+)
+\tikz@expandcount=\count291
+
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibrarytopaths.code.tex
+File: tikzlibrarytopaths.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)))
+\sa@box=\box63
+)
+(/usr/local/texlive/2024/texmf-dist/tex/latex/erewhon-math/fourier-otf.sty
+Package: fourier-otf 2024-03-01 0.66
+
+(/usr/local/texlive/2024/texmf-dist/tex/latex/unicode-math/unicode-math.sty
+(/usr/local/texlive/2024/texmf-dist/tex/latex/l3kernel/expl3.sty
+Package: expl3 2024-12-09 L3 programming layer (loader) 
+
+(/usr/local/texlive/2024/texmf-dist/tex/latex/l3backend/l3backend-luatex.def
+File: l3backend-luatex.def 2024-05-08 L3 backend support: PDF output (LuaTeX)
+\l__color_backend_stack_int=\count292
+Inserting `l3color' in `luaotfload.parse_color'.
+\l__pdf_internal_box=\box64
+))
+Package: unicode-math 2023/08/13 v0.8r Unicode maths in XeLaTeX and LuaLaTeX
+
+(/usr/local/texlive/2024/texmf-dist/tex/latex/unicode-math/unicode-math-luatex.
+sty
+Package: unicode-math-luatex 2023/08/13 v0.8r Unicode maths in XeLaTeX and LuaL
+aTeX
+ (/usr/local/texlive/2024/texmf-dist/tex/latex/l3packages/xparse/xparse.sty
+Package: xparse 2024-08-16 L3 Experimental document command parser
+) (/usr/local/texlive/2024/texmf-dist/tex/latex/l3packages/l3keys2e/l3keys2e.st
+y
+Package: l3keys2e 2024-08-16 LaTeX2e option processing using LaTeX3 keys
+) (/usr/local/texlive/2024/texmf-dist/tex/latex/fontspec/fontspec.sty
+Package: fontspec 2024/05/11 v2.9e Font selection for XeLaTeX and LuaLaTeX
+Lua module: fontspec 2024/05/11 v2.9e Font selection for XeLaTeX and LuaLaTeX
+(/usr/local/texlive/2024/texmf-dist/tex/latex/fontspec/fontspec-luatex.sty
+Package: fontspec-luatex 2024/05/11 v2.9e Font selection for XeLaTeX and LuaLaT
+eX
+\l__fontspec_script_int=\count293
+\l__fontspec_language_int=\count294
+\l__fontspec_strnum_int=\count295
+\l__fontspec_tmp_int=\count296
+\l__fontspec_tmpa_int=\count297
+\l__fontspec_tmpb_int=\count298
+\l__fontspec_tmpc_int=\count299
+\l__fontspec_em_int=\count300
+\l__fontspec_emdef_int=\count301
+\l__fontspec_strong_int=\count302
+\l__fontspec_strongdef_int=\count303
+\l__fontspec_tmpa_dim=\dimen193
+\l__fontspec_tmpb_dim=\dimen194
+\l__fontspec_tmpc_dim=\dimen195
+
+(/usr/local/texlive/2024/texmf-dist/tex/latex/base/fontenc.sty
+Package: fontenc 2021/04/29 v2.0v Standard LaTeX package
+)
+(/usr/local/texlive/2024/texmf-dist/tex/latex/fontspec/fontspec.cfg)))
+(/usr/local/texlive/2024/texmf-dist/tex/latex/base/fix-cm.sty
+Package: fix-cm 2020/11/24 v1.1t fixes to LaTeX
+
+(/usr/local/texlive/2024/texmf-dist/tex/latex/base/ts1enc.def
+File: ts1enc.def 2001/06/05 v3.0e (jk/car/fm) Standard LaTeX file
+LaTeX Font Info:    Redeclaring font encoding TS1 on input line 47.
+))
+(/usr/local/texlive/2024/texmf-dist/tex/latex/amsmath/amsmath.sty
+Package: amsmath 2024/11/05 v2.17t AMS math features
+\@mathmargin=\skip51
+
+For additional information on amsmath, use the `?' option.
+(/usr/local/texlive/2024/texmf-dist/tex/latex/amsmath/amstext.sty
+Package: amstext 2021/08/26 v2.01 AMS text
+
+(/usr/local/texlive/2024/texmf-dist/tex/latex/amsmath/amsgen.sty
+File: amsgen.sty 1999/11/30 v2.0 generic functions
+\@emptytoks=\toks32
+\ex@=\dimen196
+))
+(/usr/local/texlive/2024/texmf-dist/tex/latex/amsmath/amsbsy.sty
+Package: amsbsy 1999/11/29 v1.2d Bold Symbols
+\pmbraise@=\dimen197
+)
+(/usr/local/texlive/2024/texmf-dist/tex/latex/amsmath/amsopn.sty
+Package: amsopn 2022/04/08 v2.04 operator names
+)
+\inf@bad=\count304
+LaTeX Info: Redefining \frac on input line 235.
+\uproot@=\count305
+\leftroot@=\count306
+LaTeX Info: Redefining \overline on input line 398.
+LaTeX Info: Redefining \colon on input line 409.
+\classnum@=\count307
+\DOTSCASE@=\count308
+LaTeX Info: Redefining \ldots on input line 495.
+LaTeX Info: Redefining \dots on input line 498.
+LaTeX Info: Redefining \cdots on input line 619.
+\Mathstrutbox@=\box65
+\strutbox@=\box66
+LaTeX Info: Redefining \big on input line 721.
+LaTeX Info: Redefining \Big on input line 722.
+LaTeX Info: Redefining \bigg on input line 723.
+LaTeX Info: Redefining \Bigg on input line 724.
+\big@size=\dimen198
+LaTeX Font Info:    Redeclaring font encoding OML on input line 742.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 743.
+\macc@depth=\count309
+LaTeX Info: Redefining \bmod on input line 904.
+LaTeX Info: Redefining \pmod on input line 909.
+LaTeX Info: Redefining \smash on input line 939.
+LaTeX Info: Redefining \relbar on input line 969.
+LaTeX Info: Redefining \Relbar on input line 970.
+\c@MaxMatrixCols=\count310
+\dotsspace@=\muskip17
+\c@parentequation=\count311
+\dspbrk@lvl=\count312
+\tag@help=\toks33
+\row@=\count313
+\column@=\count314
+\maxfields@=\count315
+\andhelp@=\toks34
+\eqnshift@=\dimen199
+\alignsep@=\dimen256
+\tagshift@=\dimen257
+\tagwidth@=\dimen258
+\totwidth@=\dimen259
+\lineht@=\dimen260
+\@envbody=\toks35
+\multlinegap=\skip52
+\multlinetaggap=\skip53
+\mathdisplay@stack=\toks36
+LaTeX Info: Redefining \[ on input line 2953.
+LaTeX Info: Redefining \] on input line 2954.
+)
+(/usr/local/texlive/2024/texmf-dist/tex/lualatex/lualatex-math/lualatex-math.st
+y
+Package: lualatex-math 2022/01/01 v1.12 Patches for mathematics typesetting wit
+h LuaLaTeX
+ (/usr/local/texlive/2024/texmf-dist/tex/latex/etoolbox/etoolbox.sty
+Package: etoolbox 2020/10/05 v2.5k e-TeX tools for LaTeX (JAW)
+\etb@tempcnta=\count316
+)
+Lua module: lualatex-math 2013/08/03 v1.3 Patches for mathematics typesetting wi
+th LuaLaTeX)
+\g__um_fam_int=\count317
+\g__um_fonts_used_int=\count318
+\l__um_primecount_int=\count319
+\g__um_primekern_muskip=\muskip18
+
+(/usr/local/texlive/2024/texmf-dist/tex/latex/unicode-math/unicode-math-table.t
+ex)))
+\FOTtoksT=\toks37
+\FOTtoksM=\toks38
+ (/usr/local/texlive/2024/texmf-dist/tex/latex/fourier/fourier-orns.sty
+Package: fourier-orns 2024/09/08 2.4 fourier-ornaments package
+)
+
+Package fontspec Info: 
+(fontspec)             Font family 'Erewhon-Math.otf(0)' created for font
+(fontspec)             'Erewhon-Math.otf' with options
+(fontspec)             [Renderer=Basic,BoldItalicFont={},ItalicFont={},SmallCap
+sFont={},Script=Math,RawFeature={mathfontdimen=xetex},BoldFont={Erewhon-Math-Bo
+ld.otf}].
+(fontspec)              
+(fontspec)              This font family consists of the following NFSS
+(fontspec)             series/shapes:
+(fontspec)              
+(fontspec)             - 'normal' (m/n) with NFSS spec.:
+(fontspec)             <->"[Erewhon-Math.otf]:mode=base;script=math;language=df
+lt;mathfontdimen=xetex;"
+(fontspec)             - 'bold' (b/n) with NFSS spec.:
+(fontspec)             <->"[Erewhon-Math-Bold.otf]:mode=base;script=math;langua
+ge=dflt;mathfontdimen=xetex;"
+
+
+Package fontspec Info: 
+(fontspec)             Font family 'Erewhon-Math.otf(1)' created for font
+(fontspec)             'Erewhon-Math.otf' with options
+(fontspec)             [Renderer=Basic,BoldItalicFont={},ItalicFont={},SmallCap
+sFont={},Script=Math,SizeFeatures={{Size=8.5-},{Size=6.25-8.5,Font=Erewhon-Math
+.otf,Style=MathScript},{Size=-6.25,Font=Erewhon-Math.otf,Style=MathScriptScript
+}},RawFeature={mathfontdimen=xetex},BoldFont={Erewhon-Math-Bold.otf}].
+(fontspec)              
+(fontspec)              This font family consists of the following NFSS
+(fontspec)             series/shapes:
+(fontspec)              
+(fontspec)             - 'normal' (m/n) with NFSS spec.:
+(fontspec)             <8.5->"[Erewhon-Math.otf]:mode=base;script=math;language
+=dflt;mathfontdimen=xetex;"<6.25-8.5>"[Erewhon-Math.otf]:mode=base;script=math;
+language=dflt;mathfontdimen=xetex;+ssty=0;"<-6.25>"[Erewhon-Math.otf]:mode=base
+;script=math;language=dflt;mathfontdimen=xetex;+ssty=1;"
+(fontspec)             - 'bold' (b/n) with NFSS spec.:
+(fontspec)             <->"[Erewhon-Math-Bold.otf]:mode=base;script=math;langua
+ge=dflt;mathfontdimen=xetex;"
+
+LaTeX Font Info:    Encoding `OT1' has changed to `TU' for symbol font
+(Font)              `operators' in the math version `normal' on input line 64.
+LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
+(Font)                  OT1/cmr/m/n --> TU/Erewhon-Math.otf(1)/m/n on input lin
+e 64.
+LaTeX Font Info:    Encoding `OT1' has changed to `TU' for symbol font
+(Font)              `operators' in the math version `bold' on input line 64.
+LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
+(Font)                  OT1/cmr/bx/n --> TU/Erewhon-Math.otf(1)/b/n on input li
+ne 64.
+
+Package fontspec Info: 
+(fontspec)             Font family 'Erewhon-Math.otf(2)' created for font
+(fontspec)             'Erewhon-Math.otf' with options
+(fontspec)             [Renderer=Basic,BoldItalicFont={},ItalicFont={},SmallCap
+sFont={},Script=Math,SizeFeatures={{Size=8.5-},{Size=6.25-8.5,Font=Erewhon-Math
+.otf,Style=MathScript},{Size=-6.25,Font=Erewhon-Math.otf,Style=MathScriptScript
+}},RawFeature={mathfontdimen=xetex},BoldFont={Erewhon-Math-Bold.otf},RawFeature
+={mathfontdimen=tex2}].
+(fontspec)              
+(fontspec)              This font family consists of the following NFSS
+(fontspec)             series/shapes:
+(fontspec)              
+(fontspec)             - 'normal' (m/n) with NFSS spec.:
+(fontspec)             <8.5->"[Erewhon-Math.otf]:mode=base;script=math;language
+=dflt;mathfontdimen=xetex;mathfontdimen=tex2;"<6.25-8.5>"[Erewhon-Math.otf]:mod
+e=base;script=math;language=dflt;mathfontdimen=xetex;mathfontdimen=tex2;+ssty=0
+;"<-6.25>"[Erewhon-Math.otf]:mode=base;script=math;language=dflt;mathfontdimen=
+xetex;mathfontdimen=tex2;+ssty=1;"
+(fontspec)             - 'bold' (b/n) with NFSS spec.:
+(fontspec)             <->"[Erewhon-Math-Bold.otf]:mode=base;script=math;langua
+ge=dflt;mathfontdimen=xetex;mathfontdimen=tex2;"
+
+LaTeX Font Info:    Encoding `OMS' has changed to `TU' for symbol font
+(Font)              `symbols' in the math version `normal' on input line 64.
+LaTeX Font Info:    Overwriting symbol font `symbols' in version `normal'
+(Font)                  OMS/cmsy/m/n --> TU/Erewhon-Math.otf(2)/m/n on input li
+ne 64.
+LaTeX Font Info:    Encoding `OMS' has changed to `TU' for symbol font
+(Font)              `symbols' in the math version `bold' on input line 64.
+LaTeX Font Info:    Overwriting symbol font `symbols' in version `bold'
+(Font)                  OMS/cmsy/b/n --> TU/Erewhon-Math.otf(2)/b/n on input li
+ne 64.
+
+Package fontspec Info: 
+(fontspec)             Font family 'Erewhon-Math.otf(3)' created for font
+(fontspec)             'Erewhon-Math.otf' with options
+(fontspec)             [Renderer=Basic,BoldItalicFont={},ItalicFont={},SmallCap
+sFont={},Script=Math,SizeFeatures={{Size=8.5-},{Size=6.25-8.5,Font=Erewhon-Math
+.otf,Style=MathScript},{Size=-6.25,Font=Erewhon-Math.otf,Style=MathScriptScript
+}},RawFeature={mathfontdimen=xetex},BoldFont={Erewhon-Math-Bold.otf},RawFeature
+={mathfontdimen=tex3}].
+(fontspec)              
+(fontspec)              This font family consists of the following NFSS
+(fontspec)             series/shapes:
+(fontspec)              
+(fontspec)             - 'normal' (m/n) with NFSS spec.:
+(fontspec)             <8.5->"[Erewhon-Math.otf]:mode=base;script=math;language
+=dflt;mathfontdimen=xetex;mathfontdimen=tex3;"<6.25-8.5>"[Erewhon-Math.otf]:mod
+e=base;script=math;language=dflt;mathfontdimen=xetex;mathfontdimen=tex3;+ssty=0
+;"<-6.25>"[Erewhon-Math.otf]:mode=base;script=math;language=dflt;mathfontdimen=
+xetex;mathfontdimen=tex3;+ssty=1;"
+(fontspec)             - 'bold' (b/n) with NFSS spec.:
+(fontspec)             <->"[Erewhon-Math-Bold.otf]:mode=base;script=math;langua
+ge=dflt;mathfontdimen=xetex;mathfontdimen=tex3;"
+
+LaTeX Font Info:    Encoding `OMX' has changed to `TU' for symbol font
+(Font)              `largesymbols' in the math version `normal' on input line 6
+4.
+LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `normal'
+(Font)                  OMX/cmex/m/n --> TU/Erewhon-Math.otf(3)/m/n on input li
+ne 64.
+LaTeX Font Info:    Encoding `OMX' has changed to `TU' for symbol font
+(Font)              `largesymbols' in the math version `bold' on input line 64.
+
+LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `bold'
+(Font)                  OMX/cmex/m/n --> TU/Erewhon-Math.otf(3)/b/n on input li
+ne 64.
+
+(/usr/local/texlive/2024/texmf-dist/tex/latex/realscripts/realscripts.sty
+Package: realscripts 2016/02/13 v0.3d Access OpenType subscripts and superscrip
+ts
+\subsupersep=\dimen261
+)
+(/usr/local/texlive/2024/texmf-dist/tex/latex/erewhon/erewhon.fontspec)
+
+Package fontspec Info: 
+(fontspec)             Font family 'erewhon(0)' created for font 'erewhon'
+(fontspec)             with options [Ligatures=TeX,Extension =
+(fontspec)             .otf,SlantedFont =
+(fontspec)             Erewhon-RegularSlanted,BoldSlantedFont =
+(fontspec)             Erewhon-BoldSlanted,BoldFont = Erewhon-Bold,ItalicFont
+(fontspec)             = Erewhon-Italic,BoldItalicFont =
+(fontspec)             Erewhon-BoldItalic,UprightFont = Erewhon-Regular].
+(fontspec)              
+(fontspec)              This font family consists of the following NFSS
+(fontspec)             series/shapes:
+(fontspec)              
+(fontspec)             - 'normal' (m/n) with NFSS spec.:
+(fontspec)             <->"[Erewhon-Regular.otf]:mode=node;script=latn;language
+=dflt;+tlig;"
+(fontspec)             - 'small caps'  (m/sc) with NFSS spec.:
+(fontspec)             <->"[Erewhon-Regular.otf]:mode=node;script=latn;language
+=dflt;+tlig;+smcp;"
+(fontspec)             - 'bold' (b/n) with NFSS spec.:
+(fontspec)             <->"[Erewhon-Bold.otf]:mode=node;script=latn;language=df
+lt;+tlig;"
+(fontspec)             - 'bold small caps'  (b/sc) with NFSS spec.:
+(fontspec)             <->"[Erewhon-Bold.otf]:mode=node;script=latn;language=df
+lt;+tlig;+smcp;"
+(fontspec)             - 'italic' (m/it) with NFSS spec.:
+(fontspec)             <->"[Erewhon-Italic.otf]:mode=node;script=latn;language=
+dflt;+tlig;"
+(fontspec)             - 'italic small caps'  (m/scit) with NFSS spec.:
+(fontspec)             <->"[Erewhon-Italic.otf]:mode=node;script=latn;language=
+dflt;+tlig;+smcp;"
+(fontspec)             - 'slanted' (m/sl) with NFSS spec.:
+(fontspec)             <->"[Erewhon-RegularSlanted.otf]:mode=node;script=latn;l
+anguage=dflt;+tlig;"
+(fontspec)             - 'slanted small caps'  (m/scsl) with NFSS spec.:
+(fontspec)             <->"[Erewhon-RegularSlanted.otf]:mode=node;script=latn;l
+anguage=dflt;+tlig;+smcp;"
+(fontspec)             - 'bold italic' (b/it) with NFSS spec.:
+(fontspec)             <->"[Erewhon-BoldItalic.otf]:mode=node;script=latn;langu
+age=dflt;+tlig;"
+(fontspec)             - 'bold italic small caps'  (b/scit) with NFSS spec.:
+(fontspec)             <->"[Erewhon-BoldItalic.otf]:mode=node;script=latn;langu
+age=dflt;+tlig;+smcp;"
+(fontspec)             - 'bold slanted' (b/sl) with NFSS spec.:
+(fontspec)             <->"[Erewhon-BoldSlanted.otf]:mode=node;script=latn;lang
+uage=dflt;+tlig;"
+(fontspec)             - 'bold slanted small caps'  (b/scsl) with NFSS spec.:
+(fontspec)             <->"[Erewhon-BoldSlanted.otf]:mode=node;script=latn;lang
+uage=dflt;+tlig;+smcp;"
+
+
+Package fontspec Info: 
+(fontspec)             Font family 'erewhon(1)' created for font 'erewhon'
+(fontspec)             with options [Extension = .otf,SlantedFont =
+(fontspec)             Erewhon-RegularSlanted,BoldSlantedFont =
+(fontspec)             Erewhon-BoldSlanted,BoldFont = Erewhon-Bold,ItalicFont
+(fontspec)             = Erewhon-Italic,BoldItalicFont =
+(fontspec)             Erewhon-BoldItalic,UprightFont =
+(fontspec)             Erewhon-Regular,Renderer=Basic].
+(fontspec)              
+(fontspec)              This font family consists of the following NFSS
+(fontspec)             series/shapes:
+(fontspec)              
+(fontspec)             - 'normal' (m/n) with NFSS spec.:
+(fontspec)             <->"[Erewhon-Regular.otf]:mode=base;script=latn;language
+=dflt;"
+(fontspec)             - 'small caps'  (m/sc) with NFSS spec.:
+(fontspec)             <->"[Erewhon-Regular.otf]:mode=base;script=latn;language
+=dflt;+smcp;"
+(fontspec)             - 'bold' (b/n) with NFSS spec.:
+(fontspec)             <->"[Erewhon-Bold.otf]:mode=base;script=latn;language=df
+lt;"
+(fontspec)             - 'bold small caps'  (b/sc) with NFSS spec.:
+(fontspec)             <->"[Erewhon-Bold.otf]:mode=base;script=latn;language=df
+lt;+smcp;"
+(fontspec)             - 'italic' (m/it) with NFSS spec.:
+(fontspec)             <->"[Erewhon-Italic.otf]:mode=base;script=latn;language=
+dflt;"
+(fontspec)             - 'italic small caps'  (m/scit) with NFSS spec.:
+(fontspec)             <->"[Erewhon-Italic.otf]:mode=base;script=latn;language=
+dflt;+smcp;"
+(fontspec)             - 'slanted' (m/sl) with NFSS spec.:
+(fontspec)             <->"[Erewhon-RegularSlanted.otf]:mode=base;script=latn;l
+anguage=dflt;"
+(fontspec)             - 'slanted small caps'  (m/scsl) with NFSS spec.:
+(fontspec)             <->"[Erewhon-RegularSlanted.otf]:mode=base;script=latn;l
+anguage=dflt;+smcp;"
+(fontspec)             - 'bold italic' (b/it) with NFSS spec.:
+(fontspec)             <->"[Erewhon-BoldItalic.otf]:mode=base;script=latn;langu
+age=dflt;"
+(fontspec)             - 'bold italic small caps'  (b/scit) with NFSS spec.:
+(fontspec)             <->"[Erewhon-BoldItalic.otf]:mode=base;script=latn;langu
+age=dflt;+smcp;"
+(fontspec)             - 'bold slanted' (b/sl) with NFSS spec.:
+(fontspec)             <->"[Erewhon-BoldSlanted.otf]:mode=base;script=latn;lang
+uage=dflt;"
+(fontspec)             - 'bold slanted small caps'  (b/scsl) with NFSS spec.:
+(fontspec)             <->"[Erewhon-BoldSlanted.otf]:mode=base;script=latn;lang
+uage=dflt;+smcp;"
+
+LaTeX Font Info:    Overwriting math alphabet `\mathrm' in version `normal'
+(Font)                  TU/Erewhon-Math.otf(1)/m/n --> TU/erewhon(1)/m/n on inp
+ut line 75.
+LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `normal'
+(Font)                  OT1/cmr/m/it --> TU/erewhon(1)/m/it on input line 75.
+LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `normal'
+(Font)                  OT1/cmr/bx/n --> TU/erewhon(1)/b/n on input line 75.
+luaotfload | aux : font no 51 (nil) defines no feature for script latn
+luaotfload | aux : font no 51 (nil) defines no feature for script dflt
+luaotfload | aux : font no 51 (nil) does not define feature smcp for script latn
+ with language dflt
+luaotfload | aux : font no 51 (nil) does not define feature smcp for script dflt
+ with language dflt
+luaotfload | aux : font no 51 (nil) does not define feature smcp for script latn
+ with language dflt
+luaotfload | aux : font no 51 (nil) does not define feature smcp for script dflt
+ with language dflt
+luaotfload | aux : font no 51 (nil) does not define feature smcp for script latn
+ with language dflt
+luaotfload | aux : font no 51 (nil) does not define feature smcp for script dflt
+ with language dflt
+luaotfload | aux : font no 51 (nil) does not define feature smcp for script latn
+ with language dflt
+luaotfload | aux : font no 51 (nil) does not define feature smcp for script dflt
+ with language dflt
+luaotfload | aux : font no 51 (nil) does not define feature smcp for script latn
+ with language dflt
+luaotfload | aux : font no 51 (nil) does not define feature smcp for script dflt
+ with language dflt
+luaotfload | aux : font no 51 (nil) does not define feature smcp for script latn
+ with language dflt
+luaotfload | aux : font no 51 (nil) does not define feature smcp for script dflt
+ with language dflt
+luaotfload | aux : font no 51 (nil) does not define feature smcp for script latn
+ with language dflt
+luaotfload | aux : font no 51 (nil) does not define feature smcp for script dflt
+ with language dflt
+luaotfload | aux : font no 51 (nil) does not define feature smcp for script latn
+ with language dflt
+luaotfload | aux : font no 51 (nil) does not define feature smcp for script dflt
+ with language dflt
+
+Package fontspec Info: 
+(fontspec)             Font family 'FourierOrns-Regular.otf(0)' created for
+(fontspec)             font 'FourierOrns-Regular.otf' with options [BoldFont =
+(fontspec)             FourierOrns-Regular.otf,ItalicFont =
+(fontspec)             FourierOrns-Regular.otf,BoldItalicFont =
+(fontspec)             FourierOrns-Regular.otf].
+(fontspec)              
+(fontspec)              This font family consists of the following NFSS
+(fontspec)             series/shapes:
+(fontspec)              
+(fontspec)             - 'normal' (m/n) with NFSS spec.:
+(fontspec)             <->"[FourierOrns-Regular.otf]:mode=node;language=dflt;"
+(fontspec)             - 'bold' (b/n) with NFSS spec.:
+(fontspec)             <->"[FourierOrns-Regular.otf]:mode=node;language=dflt;"
+(fontspec)             - 'italic' (m/it) with NFSS spec.:
+(fontspec)             <->"[FourierOrns-Regular.otf]:mode=node;language=dflt;"
+(fontspec)             - 'bold italic' (b/it) with NFSS spec.:
+(fontspec)             <->"[FourierOrns-Regular.otf]:mode=node;language=dflt;"
+
+)
+(/usr/local/texlive/2024/texmf-dist/tex/latex/tkz-euclide/tkz-euclide.sty
+2024/04/19 5.10c tkz-euclide.sty
+Package: tkz-euclide  2024/04/19 5.10c for pure Euclidean Geometry 
+
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibraryangles.code.tex
+File: tikzlibraryangles.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibraryarrows.code.tex
+File: tikzlibraryarrows.code.tex 2023-01-15 v3.1.10 (3.1.10)
+
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/libraries/pgflibraryarrows.
+code.tex
+File: pgflibraryarrows.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\arrowsize=\dimen262
+))
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/libraries/pgflibraryarrows.
+meta.code.tex
+File: pgflibraryarrows.meta.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgfarrowinset=\dimen263
+\pgfarrowlength=\dimen264
+\pgfarrowwidth=\dimen265
+\pgfarrowlinewidth=\dimen266
+)
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibrarybackgrounds.code.tex
+File: tikzlibrarybackgrounds.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgf@layerbox@background=\box67
+\pgf@layerboxsaved@background=\box68
+)
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibrarycalc.code.tex
+File: tikzlibrarycalc.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibrarydecorations.code.tex
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/modules/pgfmoduledecoration
+s.code.tex
+\pgfdecoratedcompleteddistance=\dimen267
+\pgfdecoratedremainingdistance=\dimen268
+\pgfdecoratedinputsegmentcompleteddistance=\dimen269
+\pgfdecoratedinputsegmentremainingdistance=\dimen270
+\pgf@decorate@distancetomove=\dimen271
+\pgf@decorate@repeatstate=\count320
+\pgfdecorationsegmentamplitude=\dimen272
+\pgfdecorationsegmentlength=\dimen273
+)
+\tikz@lib@dec@box=\box69
+)
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibrarydecorations.markings.code.tex
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/libraries/decorations/pgfli
+brarydecorations.markings.code.tex))
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibrarydecorations.pathreplacing.code.tex
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/libraries/decorations/pgfli
+brarydecorations.pathreplacing.code.tex))
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibrarydecorations.shapes.code.tex
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/libraries/decorations/pgfli
+brarydecorations.shapes.code.tex))
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibrarydecorations.text.code.tex
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/libraries/decorations/pgfli
+brarydecorations.text.code.tex
+\pgf@lib@dec@text@box=\box70
+)
+\tikz@lib@dec@te@box=\box71
+)
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibrarydecorations.pathmorphing.code.tex
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/libraries/decorations/pgfli
+brarydecorations.pathmorphing.code.tex))
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibraryintersections.code.tex
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/libraries/pgflibraryinterse
+ctions.code.tex
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/libraries/pgflibraryfpu.cod
+e.tex)
+\pgf@intersect@solutions=\count321
+))
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibrarymath.code.tex
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibraryfpu.code.tex)
+\tikz@math@for@depth=\count322
+\tikz@math@dimen=\dimen274
+\tikz@math@toks=\toks39
+)
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibraryplotmarks.code.tex
+File: tikzlibraryplotmarks.code.tex 2023-01-15 v3.1.10 (3.1.10)
+
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/libraries/pgflibraryplotmar
+ks.code.tex
+File: pgflibraryplotmarks.code.tex 2023-01-15 v3.1.10 (3.1.10)
+))
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibrarypositioning.code.tex
+File: tikzlibrarypositioning.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibraryquotes.code.tex
+File: tikzlibraryquotes.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibraryshapes.misc.code.tex
+File: tikzlibraryshapes.misc.code.tex 2023-01-15 v3.1.10 (3.1.10)
+
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/libraries/shapes/pgflibrary
+shapes.misc.code.tex
+File: pgflibraryshapes.misc.code.tex 2023-01-15 v3.1.10 (3.1.10)
+))
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibrarythrough.code.tex
+File: tikzlibrarythrough.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+(/usr/local/texlive/2024/texmf-dist/tex/latex/l3packages/xfp/xfp.sty
+Package: xfp 2024-08-16 L3 Floating point unit
+)
+(/usr/local/texlive/2024/texmf-dist/tex/latex/xpatch/xpatch.sty
+Package: xpatch 2020/03/25 v0.3a Extending etoolbox patching commands
+)
+\tkzRadius=\dimen275
+\tkzLength=\dimen276
+\tkz@radi=\dimen277
+\tkz@ax=\dimen278
+\tkz@ay=\dimen279
+\tkz@bx=\dimen280
+\tkz@by=\dimen281
+\tkz@cx=\dimen282
+\tkz@cy=\dimen283
+\tkz@dx=\dimen284
+\tkz@dy=\dimen285
+\tkz@cntmk=\count323
+
+Local configuration file tkz-euclide.cfg found and used
+(/usr/local/texlive/2024/texmf-dist/tex/latex/tkz-euclide/tkz-euclide.cfg
+2024/04/19 5.10c tkz-euclide.cfg
+)
+(/usr/local/texlive/2024/texmf-dist/tex/latex/tkz-euclide/tkz-tools-eu-base.tex
+2024/04/19 5.10c tkz-tools-eu-base.tex
+)
+(/usr/local/texlive/2024/texmf-dist/tex/latex/tkz-euclide/tkz-tools-eu-utilitie
+s.tex
+2024/04/19 5.10c tkz-tools-eu-utilities.tex
+) (/usr/local/texlive/2024/texmf-dist/tex/latex/tkz-euclide/tkz-tools-eu-BB.tex
+2024/04/19 5.10c tkz-obj-eu-BB.tex
+)
+(/usr/local/texlive/2024/texmf-dist/tex/latex/tkz-euclide/tkz-obj-eu-grids.tex
+2024/04/19 5.10c tkz-obj-eu-grids.tex
+)
+(/usr/local/texlive/2024/texmf-dist/tex/latex/tkz-euclide/tkz-lib-eu-marks.tex
+2024/04/19 5.10c tkz-lib-eu-marks.tex
+)
+(/usr/local/texlive/2024/texmf-dist/tex/latex/tkz-euclide/tkz-tools-eu-text.tex
+2024/04/19 5.10c tkz-tools-eu-text.tex
+)
+(/usr/local/texlive/2024/texmf-dist/tex/latex/tkz-euclide/tkz-lib-eu-shape.tex
+2024/04/19 5.10c tkz-lib-eu-shape.tex
+)
+(/usr/local/texlive/2024/texmf-dist/tex/latex/tkz-euclide/tkz-obj-eu-axesmin.te
+x
+2024/04/19 5.10c tkz-obj-eu-axesmin
+)
+(/usr/local/texlive/2024/texmf-dist/tex/latex/tkz-euclide/tkz-tools-eu-colors.t
+ex
+2024/04/19 5.10c tkz-tools-eu-colors
+)
+(/usr/local/texlive/2024/texmf-dist/tex/latex/tkz-euclide/tkz-obj-eu-points.tex
+2024/04/19 5.10c tkz-obj-eu-points.tex
+)
+(/usr/local/texlive/2024/texmf-dist/tex/latex/tkz-euclide/tkz-draw-eu-points.te
+x
+2024/04/19 5.10c tkz-draw-eu-points.tex
+)
+(/usr/local/texlive/2024/texmf-dist/tex/latex/tkz-euclide/tkz-obj-eu-points.tex
+2024/04/19 5.10c tkz-obj-eu-points.tex
+)
+(/usr/local/texlive/2024/texmf-dist/tex/latex/tkz-euclide/tkz-obj-eu-points-by.
+tex
+2024/04/19 5.10c tkz-tools-eu-points-by.tex
+)
+(/usr/local/texlive/2024/texmf-dist/tex/latex/tkz-euclide/tkz-tools-eu-math.tex
+2024/04/19 5.10c tkz-tools-eu-math.tex
+)
+(/usr/local/texlive/2024/texmf-dist/tex/latex/tkz-euclide/tkz-tools-eu-intersec
+tions.tex
+2024/04/19 5.10c tkz-tools-eu-intersections.tex
+)
+(/usr/local/texlive/2024/texmf-dist/tex/latex/tkz-euclide/tkz-obj-eu-points-wit
+h.tex
+2024/04/19 5.10c tkz-obj-eu-points-with.tex
+)
+(/usr/local/texlive/2024/texmf-dist/tex/latex/tkz-euclide/tkz-obj-eu-points-spc
+.tex
+2024/04/19 5.10c tkz-obj-el-points.tex
+)
+(/usr/local/texlive/2024/texmf-dist/tex/latex/tkz-euclide/tkz-tools-eu-angles.t
+ex
+2024/04/19 5.10c tkz-tools-eu-angles.tex
+)
+(/usr/local/texlive/2024/texmf-dist/tex/latex/tkz-euclide/tkz-obj-eu-circles.te
+x
+2024/04/19 5.10c tkz-obj-eu-circles.tex
+)
+(/usr/local/texlive/2024/texmf-dist/tex/latex/tkz-euclide/tkz-obj-eu-circles-by
+.tex
+2024/04/19 5.10c tkz-obj-eu-circles.tex
+)
+(/usr/local/texlive/2024/texmf-dist/tex/latex/tkz-euclide/tkz-obj-eu-points-rnd
+.tex
+2024/04/19 5.10c tkz-obj-eu-points-rnd.tex
+)
+(/usr/local/texlive/2024/texmf-dist/tex/latex/tkz-euclide/tkz-obj-eu-lines.tex
+2024/04/19 5.10c tkz-obj-eu-lines.tex
+)
+(/usr/local/texlive/2024/texmf-dist/tex/latex/tkz-euclide/tkz-obj-eu-polygons.t
+ex
+2024/04/19 5.10c tkz-obj-eu-polygons.tex
+)
+(/usr/local/texlive/2024/texmf-dist/tex/latex/tkz-euclide/tkz-obj-eu-triangles.
+tex
+2024/04/19 5.10c tkz-obj-eu-triangles.tex
+)
+(/usr/local/texlive/2024/texmf-dist/tex/latex/tkz-euclide/tkz-draw-eu-lines.tex
+2024/04/19 5.10c tkz-obj-eu-draw-lines.tex
+)
+(/usr/local/texlive/2024/texmf-dist/tex/latex/tkz-euclide/tkz-draw-eu-circles.t
+ex
+2024/04/19 5.10c tkz-obj-eu-draw-circles.tex
+)
+(/usr/local/texlive/2024/texmf-dist/tex/latex/tkz-euclide/tkz-draw-eu-ellipses.
+tex
+2024/04/19 5.10c tkz-obj-eu-draw-ellipses.tex
+)
+(/usr/local/texlive/2024/texmf-dist/tex/latex/tkz-euclide/tkz-draw-eu-polygons.
+tex
+2024/04/19 5.10c tkz-obj-eu-polygons.tex
+)
+(/usr/local/texlive/2024/texmf-dist/tex/latex/tkz-euclide/tkz-draw-eu-arcs.tex
+2024/04/19 5.10c tkz-tool-eu-arcs.tex
+)
+(/usr/local/texlive/2024/texmf-dist/tex/latex/tkz-euclide/tkz-draw-eu-angles.te
+x
+2024/04/19 5.10c tkz-tool-eu-angles.tex
+)
+(/usr/local/texlive/2024/texmf-dist/tex/latex/tkz-euclide/tkz-draw-eu-sectors.t
+ex
+2024/04/19 5.10c tkz-obj-eu-sectors.tex
+)
+(/usr/local/texlive/2024/texmf-dist/tex/latex/tkz-euclide/tkz-draw-eu-compass.t
+ex
+2024/04/19 5.10c tkz-obj-eu-compass.tex
+)
+(/usr/local/texlive/2024/texmf-dist/tex/latex/tkz-euclide/tkz-draw-eu-show.tex
+2024/04/19 5.10c tkz-obj-eu-show.tex
+)
+(/usr/local/texlive/2024/texmf-dist/tex/latex/tkz-euclide/tkz-draw-eu-protracto
+r.tex
+2024/04/19 5.10c tkz-obj-eu-protractor.tex
+)) (/usr/local/texlive/2024/texmf-dist/tex/latex/gensymb/gensymb.sty
+Package: gensymb 2022/10/17 v1.0.2 (KJH)
+)
+(/usr/local/texlive/2024/texmf-dist/tex/generic/xlop/xlop.sty
+Package: xlop 2020/04/26 package wrapper for xlop.tex
+
+(/usr/local/texlive/2024/texmf-dist/tex/generic/xlop/xlop.tex
+\op@count@z=\count324
+\op@count@i=\count325
+\op@count@ii=\count326
+\op@count@iii=\count327
+\op@count@iv=\count328
+\op@count@v=\count329
+\op@count@vi=\count330
+\op@nbop=\count331
+\op@currentstyle=\toks40
+
+`xlop' v0.28  <2020/11/11> (jcc)
+\opcolumnwidth=\dimen286
+\oplineheight=\dimen287
+\op@strutbox=\box72
+\op@decimalsepwidth=\dimen288
+\op@decimalsepoffset=\dimen289
+\op@hrulewidth=\dimen290
+\op@vrulewidth=\dimen291
+\op@parenthesis=\count332
+\op@token=\count333
+\op@stack=\count334
+\op@stackb=\count335
+)) (/usr/local/texlive/2024/texmf-dist/tex/latex/base/ifthen.sty
+Package: ifthen 2024/03/16 v1.1e Standard LaTeX ifthen package (DPC)
+)
+(/usr/local/texlive/2024/texmf-dist/tex/latex/siunitx/siunitx.sty
+Package: siunitx 2024-12-06 v3.4.0 A comprehensive (SI) units package
+\l__siunitx_number_uncert_offset_int=\count336
+\l__siunitx_number_exponent_fixed_int=\count337
+\l__siunitx_number_min_decimal_int=\count338
+\l__siunitx_number_min_integer_int=\count339
+\l__siunitx_number_round_precision_int=\count340
+\l__siunitx_number_lower_threshold_int=\count341
+\l__siunitx_number_upper_threshold_int=\count342
+\l__siunitx_number_group_first_int=\count343
+\l__siunitx_number_group_size_int=\count344
+\l__siunitx_number_group_minimum_int=\count345
+\l__siunitx_angle_tmp_dim=\dimen292
+\l__siunitx_angle_marker_box=\box73
+\l__siunitx_angle_unit_box=\box74
+\l__siunitx_compound_count_int=\count346
+
+(/usr/local/texlive/2024/texmf-dist/tex/latex/translations/translations.sty
+Package: translations 2022/02/05 v1.12 internationalization of LaTeX2e packages
+ (CN)
+)
+\l__siunitx_table_tmp_box=\box75
+\l__siunitx_table_tmp_dim=\dimen293
+\l__siunitx_table_column_width_dim=\dimen294
+\l__siunitx_table_integer_box=\box76
+\l__siunitx_table_decimal_box=\box77
+\l__siunitx_table_uncert_box=\box78
+\l__siunitx_table_before_box=\box79
+\l__siunitx_table_after_box=\box80
+\l__siunitx_table_before_dim=\dimen295
+\l__siunitx_table_carry_dim=\dimen296
+\l__siunitx_unit_tmp_int=\count347
+\l__siunitx_unit_position_int=\count348
+\l__siunitx_unit_total_int=\count349
+
+(/usr/local/texlive/2024/texmf-dist/tex/latex/tools/array.sty
+Package: array 2024/10/17 v2.6g Tabular extension package (FMi)
+\col@sep=\dimen297
+\ar@mcellbox=\box81
+\extrarowheight=\dimen298
+\NC@list=\toks41
+\extratabsurround=\skip54
+\backup@length=\skip55
+\ar@cellbox=\box82
+))
+(/usr/local/texlive/2024/texmf-dist/tex/latex/tkz-tab/tkz-tab.sty
+Package: tkz-tab 2020/04/29 v2.12c variations (ctan version)
+
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibrarypatterns.code.tex
+File: tikzlibrarypatterns.code.tex 2023-01-15 v3.1.10 (3.1.10)
+
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/libraries/pgflibrarypattern
+s.code.tex
+File: pgflibrarypatterns.code.tex 2023-01-15 v3.1.10 (3.1.10)
+))
+\tkz@XF=\dimen299
+\tkz@YF=\dimen300
+\c@tkz@cnt@line=\count350
+\c@tkz@cnt@lg=\count351
+\c@tkz@cnt@cl=\count352
+\c@tkz@cnt@pred=\count353
+\c@tkz@cnt@temp=\count354
+\c@tkz@cnt@arrow=\count355
+\c@tkz@cnt@zone=\count356
+\c@tkz@cnt@lgnext=\count357
+\c@tkz@cnt@clnext=\count358
+\c@tkz@cnt@pair=\count359
+\c@tkz@cnt@impair=\count360
+\c@tkz@cnt@aw=\count361
+)
+luaotfload | cache : Lookup cache loaded from /github/home/.texlive2024/texmf-va
+r/luatex-cache/generic/names/luaotfload-lookup-cache.luc.
+
+Package fontspec Info: 
+(fontspec)             Could not resolve font "Erewhon Math/B" (it probably
+(fontspec)             doesn't exist).
+
+
+Package fontspec Info: 
+(fontspec)             Font family 'ErewhonMath(0)' created for font 'Erewhon
+(fontspec)             Math' with options
+(fontspec)             [Renderer=Basic,BoldItalicFont={},ItalicFont={},SmallCap
+sFont={},Script=Math,RawFeature={mathfontdimen=xetex}].
+(fontspec)              
+(fontspec)              This font family consists of the following NFSS
+(fontspec)             series/shapes:
+(fontspec)              
+(fontspec)             - 'normal' (m/n) with NFSS spec.: <->"name:Erewhon
+(fontspec)             Math:mode=base;script=math;language=dflt;mathfontdimen=x
+etex;"
+
+
+Package fontspec Info: 
+(fontspec)             Could not resolve font "Erewhon Math/B" (it probably
+(fontspec)             doesn't exist).
+
+
+Package fontspec Info: 
+(fontspec)             Font family 'ErewhonMath(1)' created for font 'Erewhon
+(fontspec)             Math' with options
+(fontspec)             [Renderer=Basic,BoldItalicFont={},ItalicFont={},SmallCap
+sFont={},Script=Math,SizeFeatures={{Size=8.5-},{Size=6.25-8.5,Font=Erewhon
+(fontspec)             Math,Style=MathScript},{Size=-6.25,Font=Erewhon
+(fontspec)             Math,Style=MathScriptScript}},RawFeature={mathfontdimen=
+xetex}].
+(fontspec)              
+(fontspec)              This font family consists of the following NFSS
+(fontspec)             series/shapes:
+(fontspec)              
+(fontspec)             - 'normal' (m/n) with NFSS spec.: <8.5->"name:Erewhon
+(fontspec)             Math:mode=base;script=math;language=dflt;mathfontdimen=x
+etex;"<6.25-8.5>"name:Erewhon
+(fontspec)             Math:mode=base;script=math;language=dflt;mathfontdimen=x
+etex;+ssty=0;"<-6.25>"name:Erewhon
+(fontspec)             Math:mode=base;script=math;language=dflt;mathfontdimen=x
+etex;+ssty=1;"
+
+LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
+(Font)                  TU/Erewhon-Math.otf(1)/m/n --> TU/ErewhonMath(1)/m/n on
+ input line 37.
+LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
+(Font)                  TU/Erewhon-Math.otf(1)/b/n --> TU/ErewhonMath(1)/b/n on
+ input line 37.
+
+Package fontspec Info: 
+(fontspec)             Could not resolve font "Erewhon Math/B" (it probably
+(fontspec)             doesn't exist).
+
+
+Package fontspec Info: 
+(fontspec)             Font family 'ErewhonMath(2)' created for font 'Erewhon
+(fontspec)             Math' with options
+(fontspec)             [Renderer=Basic,BoldItalicFont={},ItalicFont={},SmallCap
+sFont={},Script=Math,SizeFeatures={{Size=8.5-},{Size=6.25-8.5,Font=Erewhon
+(fontspec)             Math,Style=MathScript},{Size=-6.25,Font=Erewhon
+(fontspec)             Math,Style=MathScriptScript}},RawFeature={mathfontdimen=
+xetex},RawFeature={mathfontdimen=tex2}].
+(fontspec)              
+(fontspec)              This font family consists of the following NFSS
+(fontspec)             series/shapes:
+(fontspec)              
+(fontspec)             - 'normal' (m/n) with NFSS spec.: <8.5->"name:Erewhon
+(fontspec)             Math:mode=base;script=math;language=dflt;mathfontdimen=x
+etex;mathfontdimen=tex2;"<6.25-8.5>"name:Erewhon
+(fontspec)             Math:mode=base;script=math;language=dflt;mathfontdimen=x
+etex;mathfontdimen=tex2;+ssty=0;"<-6.25>"name:Erewhon
+(fontspec)             Math:mode=base;script=math;language=dflt;mathfontdimen=x
+etex;mathfontdimen=tex2;+ssty=1;"
+
+LaTeX Font Info:    Overwriting symbol font `symbols' in version `normal'
+(Font)                  TU/Erewhon-Math.otf(2)/m/n --> TU/ErewhonMath(2)/m/n on
+ input line 37.
+LaTeX Font Info:    Overwriting symbol font `symbols' in version `bold'
+(Font)                  TU/Erewhon-Math.otf(2)/b/n --> TU/ErewhonMath(2)/b/n on
+ input line 37.
+
+Package fontspec Info: 
+(fontspec)             Could not resolve font "Erewhon Math/B" (it probably
+(fontspec)             doesn't exist).
+
+
+Package fontspec Info: 
+(fontspec)             Font family 'ErewhonMath(3)' created for font 'Erewhon
+(fontspec)             Math' with options
+(fontspec)             [Renderer=Basic,BoldItalicFont={},ItalicFont={},SmallCap
+sFont={},Script=Math,SizeFeatures={{Size=8.5-},{Size=6.25-8.5,Font=Erewhon
+(fontspec)             Math,Style=MathScript},{Size=-6.25,Font=Erewhon
+(fontspec)             Math,Style=MathScriptScript}},RawFeature={mathfontdimen=
+xetex},RawFeature={mathfontdimen=tex3}].
+(fontspec)              
+(fontspec)              This font family consists of the following NFSS
+(fontspec)             series/shapes:
+(fontspec)              
+(fontspec)             - 'normal' (m/n) with NFSS spec.: <8.5->"name:Erewhon
+(fontspec)             Math:mode=base;script=math;language=dflt;mathfontdimen=x
+etex;mathfontdimen=tex3;"<6.25-8.5>"name:Erewhon
+(fontspec)             Math:mode=base;script=math;language=dflt;mathfontdimen=x
+etex;mathfontdimen=tex3;+ssty=0;"<-6.25>"name:Erewhon
+(fontspec)             Math:mode=base;script=math;language=dflt;mathfontdimen=x
+etex;mathfontdimen=tex3;+ssty=1;"
+
+LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `normal'
+(Font)                  TU/Erewhon-Math.otf(3)/m/n --> TU/ErewhonMath(3)/m/n on
+ input line 37.
+LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `bold'
+(Font)                  TU/Erewhon-Math.otf(3)/b/n --> TU/ErewhonMath(3)/b/n on
+ input line 37.
+
+(/usr/local/texlive/2024/texmf-dist/tex/latex/pgf-blur/tikzlibraryshadows.blur.
+code.tex  v1.02, 2012/12/09
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibraryshadows.code.tex
+File: tikzlibraryshadows.code.tex 2023-01-15 v3.1.10 (3.1.10)
+
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibraryfadings.code.tex
+File: tikzlibraryfadings.code.tex 2023-01-15 v3.1.10 (3.1.10)
+
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/libraries/pgflibraryfadings
+.code.tex
+File: pgflibraryfadings.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)))
+\pgfbs@fading@count=\count362
+)
+(/usr/local/texlive/2024/texmf-dist/tex/generic/tikz-ext/tikzlibraryext.transfo
+rmations.mirror.code.tex
+(/usr/local/texlive/2024/texmf-dist/tex/generic/tikz-ext/pgflibraryext.transfor
+mations.mirror.code.tex))
+(/usr/local/texlive/2024/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibrarybabel.code.tex
+File: tikzlibrarybabel.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+Package translations Info: No language package found. I am going to use `englis
+h' as default language. on input line 105.
+ (./tikzpicture-2.aux)
+\openout1 = tikzpicture-2.aux
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 105.
+LaTeX Font Info:    ... okay on input line 105.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 105.
+LaTeX Font Info:    ... okay on input line 105.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 105.
+LaTeX Font Info:    ... okay on input line 105.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 105.
+LaTeX Font Info:    ... okay on input line 105.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 105.
+LaTeX Font Info:    ... okay on input line 105.
+LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 105.
+LaTeX Font Info:    ... okay on input line 105.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 105.
+LaTeX Font Info:    ... okay on input line 105.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 105.
+LaTeX Font Info:    ... okay on input line 105.
+
+(/usr/local/texlive/2024/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count363
+\scratchdimen=\dimen301
+\scratchbox=\box83
+\nofMPsegments=\count364
+\nofMParguments=\count365
+\everyMPshowfont=\toks42
+\MPscratchCnt=\count366
+\MPscratchDim=\dimen302
+\MPnumerator=\count367
+\makeMPintoPDFobject=\count368
+\everyMPtoPDFconversion=\toks43
+) (/usr/local/texlive/2024/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
+Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
+Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
+85.
+
+(/usr/local/texlive/2024/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
+File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
+e
+))
+LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `normal'
+(Font)                  OT1/cmss/m/n --> TU/lmss/m/n on input line 105.
+LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
+(Font)                  OT1/cmss/bx/n --> TU/lmss/b/n on input line 105.
+LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `normal'
+(Font)                  OT1/cmtt/m/n --> TU/lmtt/m/n on input line 105.
+LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
+(Font)                  OT1/cmtt/m/n --> TU/lmtt/b/n on input line 105.
+LaTeX Info: Redefining \celsius on input line 105.
+Package gensymb Info: Faking symbols for \degree and \celsius on input line 105
+.
+
+
+Package gensymb Warning: Not defining \perthousand.
+
+LaTeX Info: Redefining \ohm on input line 105.
+Package gensymb Info: Using \upOmega for \ohm on input line 105.
+
+Package gensymb Warning: Not defining \micro.
+
+
+(/usr/local/texlive/2024/texmf-dist/tex/latex/translations/translations-basic-d
+ictionary-english.trsl
+File: translations-basic-dictionary-english.trsl (english translation file `tra
+nslations-basic-dictionary')
+)
+Package translations Info: loading dictionary `translations-basic-dictionary' f
+or `english'. on input line 105.
+
+! Dimension too large.
+<to be read again> 
+\relax 
+l.108           \graphfonction{-3}{-2}{3}{4}[1-\x];
+                                                 
+? 
+! Emergency stop.
+<to be read again> 
+\relax 
+l.108           \graphfonction{-3}{-2}{3}{4}[1-\x];
+                                                 
+End of file on the terminal!
+
+
+
+Here is how much of LuaTeX's memory you used:
+ 31874 strings out of 475554
+ 100000,1648299 words of node,token memory allocated 7638 words of node memory still in use:
+   123 hlist, 1 vlist, 11 rule, 4 dir, 28 math, 282 glue, 5 kern, 23 glyph, 643 
+attribute, 55 glue_spec, 643 attribute_list, 3 temp, 11 if_stack, 1 write, 337 p
+df_literal, 23 pdf_colorstack nodes
+   avail lists: 1:1,2:6,5:11,8:2
+ 53858 multiletter control sequences out of 65536+600000
+ 65 fonts using 17365043 bytes
+ 117i,7n,114p,1180b,1369s stack positions out of 10000i,1000n,20000p,200000b,200000s
+!  ==> Fatal error occurred, no output PDF file produced!
