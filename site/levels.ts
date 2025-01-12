@@ -288,6 +288,11 @@ export const levels: { [key: string]: Level } = {
         name: 'Devoir surveillé 1',
         description: 'Devoir surveillé sur Proportions et évolutions, Notion de fonction et Suites numériques.',
         url: '/pdf/premiere-stmg/devoir-1.pdf'
+      },
+      {
+        name: 'Devoir surveillé 2',
+        description: 'Devoir surveillé sur Croisement de deux variables, Fonctions affines et Fonctions polynômiales du second degré.',
+        url: '/pdf/premiere-stmg/devoir-2.pdf'
       }
     ]
   }
