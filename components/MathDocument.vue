@@ -45,7 +45,7 @@ const setupDocument = async () => {
       parentEnclosing.replaceWith(element)
     }
     else {
-      const baseCount = katex.getElementsByTagName('base')
+      const baseCount = katex.getElementsByTagName('base').length
       const parentText = katex.parentElement?.textContent
       const katexText = katex.textContent
       if (parentText && katexText) {
@@ -53,7 +53,7 @@ const setupDocument = async () => {
         if (index !== -1) {
           const after = parentText.substring(index + katexText.length)
           if (after === '.') {
-            katex.nextSibling.remove()
+            katex.nextSibling?.remove()
           }
         }
       }
@@ -89,7 +89,7 @@ const setupDocument = async () => {
         details.setAttribute('open', 'true')
         scrollCollapse = details
       }
-      details.addEventListener('click', (event) => {
+      summary.addEventListener('click', (event) => {
         if (details.hasAttribute('open')) {
           event.preventDefault()
           details.classList.add('closing')
