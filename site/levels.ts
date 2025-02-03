@@ -262,6 +262,11 @@ export const levels: { [key: string]: Level } = {
         url: '/pdf/seconde/ap-raisonnement-absurde.pdf'
       },
       {
+        name: 'Crack the code !',
+        description: 'Fiche d\'AP sur permettant de travailler la logique à travers la résolution d\'énigmes.',
+        url: '/pdf/seconde/ap-cadenas.pdf'
+      },
+      {
         name: 'Devoir surveillé 1',
         description: 'Devoir surveillé sur Calcul littéral et équations et Vecteurs du plan.',
         url: '/pdf/seconde/devoir-1.pdf'
@@ -293,6 +298,11 @@ export const levels: { [key: string]: Level } = {
         name: 'Devoir surveillé 2',
         description: 'Devoir surveillé sur Croisement de deux variables, Fonctions affines et Fonctions polynômiales du second degré.',
         url: '/pdf/premiere-stmg/devoir-2.pdf'
+      },
+      {
+        name: 'Devoir surveillé 3',
+        description: 'Devoir surveillé sur Géométrie repérée, Notion de fonction et Poportions et évolutions.',
+        url: '/pdf/premiere-stmg/devoir-3.pdf'
       }
     ]
   }
