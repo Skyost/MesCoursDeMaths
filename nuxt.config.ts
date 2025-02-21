@@ -20,15 +20,13 @@ export default defineNuxtConfig({
     '~/modules/commit-sha-file-generator',
     '~/modules/content-downloader',
     '~/modules/latex-pdf-generator',
-    '~/modules/nuxt-content-latex',
+    '~/modules/latex-to-content',
     '@bootstrap-vue-next/nuxt',
-    '@nuxt/content',
     '@nuxtjs/google-fonts',
     'nuxt-link-checker',
     '@nuxtjs/sitemap',
     '@nuxtjs/robots',
     '@nuxt/icon'
-    // '@nuxt/image'
   ],
 
   ssr: true,
@@ -58,10 +56,6 @@ export default defineNuxtConfig({
     url: siteMeta.url,
     name: siteMeta.title,
     trailingSlash: true
-  },
-
-  content: {
-    watch: false
   },
 
   runtimeConfig: {
@@ -107,7 +101,7 @@ export default defineNuxtConfig({
   },
 
   commitShaFileGenerator: {
-    fileName: 'latest-commit.json'
+    file: 'node_modules/.commit-sha-file-generator/latest-commit.json'
   },
 
   eslint: {

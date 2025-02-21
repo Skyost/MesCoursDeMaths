@@ -9,12 +9,10 @@ import { authentication } from '../site/authentication'
 import { siteContentSettings } from '../site/content'
 import { siteMeta } from '../site/meta'
 import { debug } from '../site/debug'
-import type { ModuleOptions as CommitShaFileGeneratorModule } from './commit-sha-file-generator'
+import { file } from './commit-sha-file-generator/common'
 
 /**
  * Options for the content downloader module.
- *
- * @interface
  */
 export interface ModuleOptions {
   github: {
@@ -29,9 +27,7 @@ export interface ModuleOptions {
   }
   previousBuildDirectories: string[]
   dataLatexDirectory: string
-  latestCommitShaFileName: string | null
-  shouldCopyDownloadedFileToContent: (filePath: string) => boolean
-  renameFile(file: string): string
+  latestCommitShaFilename: string | null
 }
 
 const name = 'content-downloader'
@@ -57,40 +53,30 @@ export default defineNuxtModule<ModuleOptions>({
       ...siteMeta.github
     },
     downloadDestinations: siteContentSettings.downloadDestinations,
-    previousBuildDirectories: [siteContentSettings.latexPdfDestinationDirectory, siteContentSettings.latexAssetsDestinationDirectory],
+    previousBuildDirectories: [siteContentSettings.latexPdfDestinationDirectory, siteContentSettings.latexAssetsDestinationDirectoryName],
     dataLatexDirectory: siteContentSettings.dataLatexDirectory,
-    latestCommitShaFileName: null,
-    shouldCopyDownloadedFileToContent: siteContentSettings.shouldCopyDownloadedFileToContent,
-    renameFile: siteContentSettings.filterFileName
+    latestCommitShaFilename: file
   },
   setup: async (options, nuxt) => {
     const resolver = createResolver(import.meta.url)
     const srcDir = nuxt.options.srcDir
 
-    const contentDirectoryPath = resolver.resolve(srcDir, 'content')
     let latestCommitShaFilePath = null
-    if (!debug) {
-      if (options.latestCommitShaFileName) {
-        latestCommitShaFilePath = resolver.resolve(contentDirectoryPath, options.latestCommitShaFileName)
-      }
-      else if ('commitShaFileGenerator' in nuxt.options) {
-        latestCommitShaFilePath = resolver.resolve(contentDirectoryPath, (nuxt.options.commitShaFileGenerator as CommitShaFileGeneratorModule).fileName)
-      }
+    if (!debug && options.latestCommitShaFilename) {
+      latestCommitShaFilePath = resolver.resolve(srcDir, options.latestCommitShaFilename)
     }
 
     await downloadPreviousBuild(resolver, srcDir, options)
-    if (await downloadRemoteDirectory(resolver, srcDir, latestCommitShaFilePath, options)) {
-      copyFilesIfNeeded(resolver, resolver.resolve(srcDir, options.downloadDestinations.data), contentDirectoryPath, options)
-    }
+    await downloadRemoteDirectory(resolver, srcDir, latestCommitShaFilePath, options)
   }
 })
 
 /**
  * Downloads the previous build from Github pages.
- * @param {Resolver} resolver The resolver instance.
- * @param {string} srcDir The source directory.
- * @param {ModuleOptions} options The module options.
- * @return {Promise<boolean>} Whether the download is a success.
+ * @param resolver The resolver instance.
+ * @param srcDir The source directory.
+ * @param options The module options.
+ * @returns Whether the download is a success.
  */
 async function downloadPreviousBuild(resolver: Resolver, srcDir: string, options: ModuleOptions): Promise<boolean> {
   try {
@@ -135,11 +121,11 @@ async function downloadPreviousBuild(resolver: Resolver, srcDir: string, options
 /**
  * Downloads the remote directory content.
  *
- * @param {Resolver} resolver The resolver instance.
- * @param {string} srcDir The source directory.
- * @param {string | null} latestCommitShaFilePath The latest commit sha file path.
- * @param {ModuleOptions} options Module options.
- * @return {Promise<boolean>} Whether the download is a success.
+ * @param resolver The resolver instance.
+ * @param srcDir The source directory.
+ * @param latestCommitShaFilePath The latest commit sha file path.
+ * @param options Module options.
+ * @returns Whether the download is a success.
  */
 async function downloadRemoteDirectory(
   resolver: Resolver,
@@ -203,46 +189,4 @@ async function downloadRemoteDirectory(
     logger.success('Done.')
   }
   return true
-}
-
-/**
- * Copies files to the destination, if needed.
- *
- * @param {Resolver} resolver The resolver instance.
- * @param {string} directoryPath The directory.
- * @param {string} destinationDirectoryPath The destination.
- * @param {ModuleOptions} options Module options.
- */
-const copyFilesIfNeeded = (
-  resolver: Resolver,
-  directoryPath: string,
-  destinationDirectoryPath: string,
-  options: ModuleOptions
-) => {
-  // Get a list of files in the current directory.
-  const files = fs.readdirSync(directoryPath)
-
-  // Iterate over each file in the directory.
-  for (const file of files) {
-    const filePath = resolver.resolve(directoryPath, file)
-
-    // If the file is a directory, recursively check it for its contents.
-    if (fs.lstatSync(filePath).isDirectory()) {
-      copyFilesIfNeeded(
-        resolver,
-        filePath,
-        resolver.resolve(destinationDirectoryPath, file),
-        options
-      )
-      continue
-    }
-
-    // Ignore specified files and directories.
-    const destinationPath = resolver.resolve(destinationDirectoryPath, path.parse(file).base)
-    if (options.shouldCopyDownloadedFileToContent(filePath) && !fs.existsSync(destinationPath)) {
-      logger.info(`Copied ${filePath} to ${destinationPath}.`)
-      fs.mkdirSync(path.dirname(destinationPath), { recursive: true })
-      fs.copyFileSync(filePath, destinationPath)
-    }
-  }
 }

@@ -28,7 +28,7 @@ const onFileLoaded = async (event: FileContent) => {
     return
   }
 
-  if (isFileNameValid(name)) {
+  if (isFilenameValid(name)) {
     await saveFileContent(currentDirectory.value + name, event.content.split(',')[1])
     await refreshFileList()
   }
@@ -43,7 +43,7 @@ const createNewFile = async () => {
     return
   }
 
-  if (isFileNameValid(name)) {
+  if (isFilenameValid(name)) {
     await saveFileContent(currentDirectory.value + name, '')
     await refreshFileList()
   }
@@ -58,7 +58,7 @@ const renameFile = async (file: APILessonsListEntry) => {
     return
   }
 
-  if (!isFileNameValid(name)) {
+  if (!isFilenameValid(name)) {
     window.alert('Nom de fichier invalide !')
     return
   }
@@ -145,13 +145,13 @@ const request = async (callback: () => Promise<any>) => {
   loading.value = false
 }
 
-const isFileNameValid = (fileName: string | null) => {
-  if (!fileName || fileName.includes('/') || !fileList.value) {
+const isFilenameValid = (filename: string | null) => {
+  if (!filename || filename.includes('/') || !fileList.value) {
     return false
   }
 
   for (const file of fileList.value) {
-    if (file.name === fileName) {
+    if (file.name === filename) {
       return false
     }
   }

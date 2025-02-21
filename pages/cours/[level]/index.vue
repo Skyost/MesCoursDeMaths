@@ -14,19 +14,14 @@ export const levelNavigationEntry = (level: Level) => {
 <script setup lang="ts">
 import { levelsNavigationEntry } from '~/pages/cours/index.vue'
 import { getLessonImage, getLessonSubtitle, getLessonUrl } from '~/site/lessons'
-import { siteContentSettings } from '~/site/content'
+// eslint-disable-next-line import/order
+import { type IconifyIcon, loadIcon } from '@iconify/vue'
 import Control from '~/components/Controls/Control.vue'
 
 const route = useRoute()
 const level: Level | undefined = levels[route.params.level.toString()]
 
-const { status, data: lessons, error } = useLazyAsyncData(
-  route.path,
-  () => queryContent<Lesson>(siteContentSettings.dataLatexDirectory, level?.id)
-    .without('body')
-    .sort({ number: 1, $numeric: true })
-    .find()
-)
+const { data: lessons, status, error } = await useFetch<Lesson[]>(`/_api/latex/${level?.id}/index.json`)
 
 const title = computed<string>(() => level ? `Cours de ${level.name}` : 'Liste des cours')
 
@@ -35,12 +30,17 @@ if (level) {
   useNavigationEntry(levelNavigationEntry(level))
 }
 
+const pdfIcon = await loadIcon('bi:file-earmark-pdf-fill')
+const textIcon = await loadIcon('bi:file-earmark-text-fill')
+
+const sortedLessons = computed<Lesson[] | undefined>(() => lessons.value?.slice().sort((a, b) => a.number - b.number))
 const otherResourcesModal = ref<boolean>(false)
 const getOtherResourceIcon = (otherResource: Resource) => {
+  const iconToHtml = (icon: IconifyIcon) => `<svg height="${icon.height}" width="${icon.width}" viewBox="0 0 ${icon.width} ${icon.height}" aria-hidden="true">${icon.body}</svg>`
   if (otherResource.url.endsWith('.pdf')) {
-    return 'bi:file-earmark-pdf-fill'
+    return iconToHtml(pdfIcon)
   }
-  return 'bi:file-earmark-text-fill'
+  return iconToHtml(textIcon)
 }
 const getOtherResourceIconColor = (otherResource: Resource) => {
   if (otherResource.url.endsWith('.pdf')) {
@@ -56,7 +56,7 @@ const getOtherResourceIconColor = (otherResource: Resource) => {
     <div v-if="status === 'pending'">
       <spinner />
     </div>
-    <div v-else-if="level && lessons">
+    <div v-else-if="level && sortedLessons">
       <controls>
         <controls-section>
           <control
@@ -74,7 +74,7 @@ const getOtherResourceIconColor = (otherResource: Resource) => {
       <h1 v-text="title" />
       <b-row class="justify-content-center">
         <b-col
-          v-for="lesson in lessons"
+          v-for="lesson in sortedLessons"
           :key="lesson.id"
           xs="12"
           md="6"
@@ -84,9 +84,9 @@ const getOtherResourceIconColor = (otherResource: Resource) => {
           <image-card
             :title="lesson.name"
             :color="level.color"
-            :subtitle="getLessonSubtitle(lesson)"
-            :to="getLessonUrl(lesson)"
-            :image="getLessonImage(lesson)"
+            :subtitle="getLessonSubtitle(lesson as Lesson)"
+            :to="getLessonUrl(lesson as Lesson)"
+            :image="getLessonImage(lesson as Lesson)"
           />
         </b-col>
       </b-row>
@@ -108,21 +108,17 @@ const getOtherResourceIconColor = (otherResource: Resource) => {
             :key="otherResource.url"
             :href="otherResource.url"
           >
-            <div class="d-flex align-items-center gap-3">
-              <div
-                class="fs-2"
+            <span class="d-flex align-items-center gap-3">
+              <span
+                class="fs-2 resource-icon"
                 :class="{ [`text-${getOtherResourceIconColor(otherResource)}`]: getOtherResourceIconColor(otherResource) }"
-              >
-                <icon :name="getOtherResourceIcon(otherResource)" />
-              </div>
-              <div>
-                <strong
-                  class="d-block"
-                  v-html="otherResource.name"
-                />
-                <small v-html="otherResource.description" />
-              </div>
-            </div>
+                v-html="getOtherResourceIcon(otherResource)"
+              />
+              <span>
+                <strong class="d-block">{{ otherResource.name }}</strong>
+                <small>{{ otherResource.description }}</small>
+              </span>
+            </span>
           </b-list-group-item>
         </b-list-group>
       </b-modal>
@@ -135,3 +131,10 @@ const getOtherResourceIconColor = (otherResource: Resource) => {
     </div>
   </div>
 </template>
+
+<style lang="scss" scoped>
+.resource-icon > :deep(*) {
+  height: 1em;
+  min-width: 1em;
+}
+</style>

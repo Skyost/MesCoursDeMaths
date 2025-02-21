@@ -1,24 +1,28 @@
 import { execSync } from 'child_process'
 import fs from 'fs'
 import path from 'path'
-import { createResolver, defineNuxtModule, useLogger } from '@nuxt/kit'
+import { addServerHandler, createResolver, defineNuxtModule, useLogger } from '@nuxt/kit'
+import { storageKey, filename } from './common.ts'
 
 /**
  * Options for the commit SHA file generator module.
- *
- * @interface
  */
 export interface ModuleOptions {
   /**
-   * The name of the file to store the latest commit information.
+   * The file target URL.
    */
-  fileName: string
+  targetUrl: string
+
+  /**
+   * The directory.
+   */
+  directory: string
 }
 
 /**
  * The name of the commit SHA file generator module.
  */
-const name = 'commit-sha-file-generator'
+export const name = 'commit-sha-file-generator'
 
 /**
  * The logger instance.
@@ -36,7 +40,8 @@ export default defineNuxtModule<ModuleOptions>({
     compatibility: { nuxt: '^3.0.0' }
   },
   defaults: {
-    fileName: 'latest-commit.json'
+    targetUrl: '/_api/',
+    directory: `node_modules/.${name}/`
   },
   setup: (options, nuxt) => {
     const resolver = createResolver(import.meta.url)
@@ -47,22 +52,39 @@ export default defineNuxtModule<ModuleOptions>({
     const short = execSync('git rev-parse --short HEAD', { cwd: srcDir }).toString().trim()
 
     // Merge with other data.
-    const latestCommitShaFile = resolver.resolve(srcDir, 'content', options.fileName)
+    const directoryPath = resolver.resolve(srcDir, options.directory)
+    const filePath = resolver.resolve(directoryPath, filename)
     let latestCommitData = {
       websiteRepository: { long, short }
     }
-    if (fs.existsSync(latestCommitShaFile)) {
+    if (fs.existsSync(filePath)) {
       latestCommitData = {
-        ...JSON.parse(fs.readFileSync(latestCommitShaFile, { encoding: 'utf-8' })),
+        ...JSON.parse(fs.readFileSync(filePath, { encoding: 'utf-8' })),
         ...latestCommitData
       }
     }
 
     // Write commit information to file.
-    const filePath = resolver.resolve(srcDir, 'content', options.fileName)
-    fs.mkdirSync(path.dirname(filePath), { recursive: true })
+    fs.mkdirSync(directoryPath, { recursive: true })
     fs.writeFileSync(filePath, JSON.stringify(latestCommitData))
-
     logger.success(`Wrote latest commit info for ${long} in ${filePath}.`)
+
+    logger.info('Registering it to Nitro...')
+    nuxt.options.nitro.publicAssets = nuxt.options.nitro.publicAssets || []
+    nuxt.options.nitro.publicAssets.push({
+      baseURL: options.targetUrl,
+      dir: directoryPath,
+      fallthrough: true
+    })
+    nuxt.options.nitro.serverAssets = nuxt.options.nitro.serverAssets || []
+    nuxt.options.nitro.serverAssets.push({
+      baseName: storageKey,
+      dir: directoryPath
+    })
+    addServerHandler({
+      route: `${options.targetUrl}${path.parse(filePath).base}`,
+      handler: resolver.resolve(`./handler.ts`)
+    })
+    logger.success(`Done : "${options.targetUrl}" mapped to "${filePath}".`)
   }
 })

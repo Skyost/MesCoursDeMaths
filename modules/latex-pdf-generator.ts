@@ -6,12 +6,10 @@ import { createResolver, defineNuxtModule, type Resolver, useLogger } from '@nux
 import { LatexChecksumsCalculator, LatexIncludeCommand, PdfGenerator } from 'that-latex-lib'
 import { siteContentSettings, type Variant } from '../site/content'
 import { debug } from '../site/debug'
-import { getFileName } from '../utils/utils'
+import { getFilename } from '../utils/utils'
 
 /**
  * Options for the PDF generator module.
- *
- * @interface
  */
 export interface ModuleOptions {
   directory: string
@@ -52,7 +50,7 @@ export default defineNuxtModule<ModuleOptions>({
     ignores: siteContentSettings.ignores,
     getIncludeGraphicsDirectories: siteContentSettings.getIncludeGraphicsDirectories,
     moveFiles: !debug,
-    renameFile: siteContentSettings.filterFileName
+    renameFile: siteContentSettings.filterFilename
   },
   setup: (options, nuxt) => {
     const resolver = createResolver(import.meta.url)
@@ -83,12 +81,12 @@ export default defineNuxtModule<ModuleOptions>({
 /**
  * Recursively generates PDF files from Latex files in a directory.
  *
- * @param {Resolver} resolver The resolver instance.
- * @param {string} directoryPath Absolute path to the directory containing Latex files.
- * @param {string} destinationDirectoryPath Absolute path to the destination directory for generated PDFs.
- * @param {string[]} ignores List of files to ignore during the generation process.
- * @param {string | null} previousBuildDirectory Absolute path to the directory containing previous build files.
- * @param {ModuleOptions} options Module options.
+ * @param resolver The resolver instance.
+ * @param directoryPath Absolute path to the directory containing Latex files.
+ * @param destinationDirectoryPath Absolute path to the destination directory for generated PDFs.
+ * @param ignores List of files to ignore during the generation process.
+ * @param previousBuildDirectory Absolute path to the directory containing previous build files.
+ * @param options Module options.
  */
 const generatePdf = (
   resolver: Resolver,
@@ -133,7 +131,7 @@ const generatePdf = (
         const variants = options.generateVariants(filePath, content) ?? []
         for (const variant of variants) {
           fs.writeFileSync(filePath, variant.fileContent)
-          generateAndCopy(resolver, filePath, previousBuildDirectory, destinationDirectoryPath, options, variant.fileName, ` (${variant.type})`)
+          generateAndCopy(resolver, filePath, previousBuildDirectory, destinationDirectoryPath, options, variant.filename, ` (${variant.type})`)
           fs.writeFileSync(filePath, content)
         }
       }
@@ -144,14 +142,14 @@ const generatePdf = (
 /**
  * Generates and copies a file.
  *
- * @param {Resolver} resolver The resolver instance.
- * @param {string} filePath The file path.
- * @param {string | null} previousBuildDirectory Absolute path to the directory containing previous build files.
- * @param {string} destinationDirectoryPath Absolute path to the destination directory.
- * @param {ModuleOptions} options Module options.
- * @param {string | null} destinationFileName The destination directory.
- * @param {string | null} variant Whether we're generating a variant.
- * @return {boolean} Whether the operation is a success.
+ * @param resolver The resolver instance.
+ * @param filePath The file path.
+ * @param previousBuildDirectory Absolute path to the directory containing previous build files.
+ * @param destinationDirectoryPath Absolute path to the destination directory.
+ * @param options Module options.
+ * @param destinationFilename The destination directory.
+ * @param variant Whether we're generating a variant.
+ * @returns Whether the operation is a success.
  */
 const generateAndCopy = (
   resolver: Resolver,
@@ -159,7 +157,7 @@ const generateAndCopy = (
   previousBuildDirectory: string | null,
   destinationDirectoryPath: string,
   options: ModuleOptions,
-  destinationFileName: string | null = null,
+  destinationFilename: string | null = null,
   variant: string | null = null
 ): boolean => {
   logger.info(`Processing "${filePath}"${variant ?? ''}...`)
@@ -183,14 +181,14 @@ const generateAndCopy = (
   const { wasCached, builtFilePath, checksumsFilePath } = pdfGenerator.generate(
     filePath,
     previousBuildDirectory == null ? undefined : previousBuildDirectory,
-    options.renameFile(destinationFileName ?? getFileName(filePath))
+    options.renameFile(destinationFilename ?? getFilename(filePath))
   )
 
   // If PDF generation is successful, copy files to the destination directory.
   if (builtFilePath) {
     let parts = path.parse(builtFilePath)
-    let fileName = destinationFileName ?? parts.name
-    const destinationFilePath = resolver.resolve(destinationDirectoryPath, options.renameFile(fileName) + parts.ext)
+    let filename = destinationFilename ?? parts.name
+    const destinationFilePath = resolver.resolve(destinationDirectoryPath, options.renameFile(filename) + parts.ext)
     fs.mkdirSync(destinationDirectoryPath, { recursive: true })
     fs.copyFileSync(builtFilePath, destinationFilePath)
 
@@ -202,8 +200,8 @@ const generateAndCopy = (
     // Copy checksums file if available.
     if (checksumsFilePath) {
       parts = path.parse(checksumsFilePath)
-      fileName = destinationFileName ?? parts.name
-      fs.copyFileSync(checksumsFilePath, resolver.resolve(destinationDirectoryPath, options.renameFile(fileName) + parts.ext))
+      filename = destinationFilename ?? parts.name
+      fs.copyFileSync(checksumsFilePath, resolver.resolve(destinationDirectoryPath, options.renameFile(filename) + parts.ext))
 
       // Optionally move checksums file instead of copying.
       if (options.moveFiles) {

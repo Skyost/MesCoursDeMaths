@@ -2,8 +2,6 @@ import type { Level } from '~/types'
 
 /**
  * Object containing levels.
- * @const {{[key: string]: Level}}
- * @export
  */
 export const levels: { [key: string]: Level } = {
   'sixieme': {
@@ -29,7 +27,7 @@ export const levels: { [key: string]: Level } = {
       },
       {
         name: 'Sudoku',
-        description: 'Fiche d\'AP contenant une grille de sudoku <q>bilan</q> sur l\'année.',
+        description: 'Fiche d\'AP contenant une grille de sudoku "bilan" sur l\'année.',
         url: '/pdf/sixieme/ap-sudoku.pdf'
       },
       {
@@ -84,7 +82,7 @@ export const levels: { [key: string]: Level } = {
       },
       {
         name: 'Questions flash',
-        description: 'Questions flash sur les différents chapitres. La plupart proviennent de <a href="https://www.enseignants.hachette-education.com/collections/mission-indigo-mathematiques">Mission Indigo</a>.',
+        description: 'Questions flash sur les différents chapitres. La plupart proviennent de Mission Indigo.',
         url: '/pdf/sixieme/questions-flash.pdf'
       }
     ]
@@ -157,7 +155,7 @@ export const levels: { [key: string]: Level } = {
       },
       {
         name: 'Questions flash',
-        description: 'Questions flash sur les différents chapitres. La plupart proviennent de <a href="https://www.enseignants.hachette-education.com/collections/mission-indigo-mathematiques">Mission Indigo</a>.',
+        description: 'Questions flash sur les différents chapitres. La plupart proviennent de Mission Indigo.',
         url: '/pdf/cinquieme/questions-flash.pdf'
       }
     ]
@@ -205,7 +203,7 @@ export const levels: { [key: string]: Level } = {
       },
       {
         name: 'Questions flash',
-        description: 'Questions flash sur les différents chapitres. La plupart proviennent de <a href="https://www.enseignants.hachette-education.com/collections/mission-indigo-mathematiques">Mission Indigo</a>.',
+        description: 'Questions flash sur les différents chapitres. La plupart proviennent de Mission Indigo.',
         url: '/pdf/troisieme/questions-flash.pdf'
       }
     ]
@@ -310,21 +308,21 @@ export const levels: { [key: string]: Level } = {
 
 /**
  * Returns the subtitle for a given level.
- * @param {Level} level - The level.
- * @returns {string} - The level subtitle.
+ * @param level The level.
+ * @returns The level subtitle.
  */
 export const getLevelSubtitle = (level: Level): string => `Cours de ${level.short}`
 
 /**
  * Returns the URL for a given level.
- * @param {Level} level - The level.
- * @returns {string} - The level URL.
+ * @param level The level.
+ * @returns The level URL.
  */
 export const getLevelUrl = (level: Level): string => `/cours/${level.id}/`
 
 /**
  * Returns the image URL for a given level.
- * @param {Level} level - The level.
- * @returns {string} - The level image URL.
+ * @param level The level.
+ * @returns The level image URL.
  */
 export const getLevelImage = (level: Level): string => `/images/${level.id}/image.svg`

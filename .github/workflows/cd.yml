@@ -44,7 +44,7 @@ jobs:
       - name: Install dependencies 👨🏻‍💻
         run: npm ci
       - name: Generate ⚙️
-        run: npm run generate
+        run: npx ts-to-zod types/lesson.d.ts types/lesson.z.ts && npm run generate
         env:
           GITHUB_CLIENT_ID: ${{ secrets.CLIENT_ID }}
           GITHUB_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}

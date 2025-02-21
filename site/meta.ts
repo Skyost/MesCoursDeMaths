@@ -1,41 +1,34 @@
 /**
  * Represents metadata for the website.
- * @interface
  */
 interface SiteMeta {
   /**
    * Title of the website.
-   * @type {string}
    */
   title: string
 
   /**
    * Description of the website.
-   * @type {string}
    */
   description: string
 
   /**
    * Author of the website.
-   * @type {string}
    */
   author: string
 
   /**
    * URL of the website.
-   * @type {string}
    */
   url: string
 
   /**
    * Vercel API URL associated with the website.
-   * @type {string}
    */
   apiUrl: string
 
   /**
    * GitHub information for the website.
-   * @type {{ username: string, repository: string, dataRepository: string }}
    */
   github: {
     username: string
@@ -46,8 +39,6 @@ interface SiteMeta {
 
 /**
  * Metadata object for the website.
- * @const {SiteMeta}
- * @export
  */
 export const siteMeta: SiteMeta = {
   title: 'Mes cours de maths',

@@ -2,7 +2,6 @@ import type { LevelId } from '~/types/level'
 
 /**
  * Represents a linked resource associated with a lesson.
- * @interface
  */
 interface LinkedResource {
   /**
@@ -22,8 +21,6 @@ interface LinkedResource {
 
 /**
  * Represents the main structure of a math lesson.
- * @interface
- * @export
  */
 export interface Lesson {
   /**
@@ -50,6 +47,12 @@ export interface Lesson {
    * Title used for webpage search purposes.
    */
   'page-title-search': string
+}
+
+/**
+ * Represents a math lesson with additional content.
+ */
+export interface LessonContent extends Lesson {
   /**
    * Array of linked resources.
    */
@@ -58,16 +61,8 @@ export interface Lesson {
    * Optional PDF file associated with the lesson.
    */
   'pdf'?: string
-}
-
-/**
- * Represents a math lesson with additional content.
- * @interface
- * @extends {Lesson}
- */
-export interface LessonContent extends Lesson {
   /**
    * The main content or body of the lesson (in HTML format).
    */
-  body: string
+  'body': string
 }

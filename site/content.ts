@@ -2,17 +2,15 @@
 
 import path from 'path'
 import fs from 'fs'
-import { getFileName } from '../utils/utils.js'
+import { getFilename } from '../utils/utils.js'
 import type { LinkedResource } from '../types'
 
 /**
  * Represents settings for handling the conversion of LaTeX files to HTML and PDF.
- * @interface
  */
 interface SiteContentSettings {
   /**
    * Download destinations for the website previous build and data.
-   * @type {{ previousBuild: string, data: string }}
    */
   downloadDestinations: {
     previousBuild: string
@@ -20,86 +18,72 @@ interface SiteContentSettings {
   }
 
   /**
-   * Function to determine whether to copy downloaded files to content.
-   * @type {(filePath: string) => boolean}
+   * Function to determine whether the given file should be transformed into a webpage thanks to Pandoc.
    */
-  shouldCopyDownloadedFileToContent: (filePath: string) => boolean
+  shouldBeTransformed: (filePath: string) => boolean
 
   /**
    * Directory path for LaTeX data files.
-   * @type {string}
    */
   dataLatexDirectory: string
 
   /**
    * Directory path for storing LaTeX PDF files.
-   * @type {string}
    */
   latexPdfDestinationDirectory: string
 
   /**
    * Directory path for storing LaTeX assets.
-   * @type {string}
    */
-  latexAssetsDestinationDirectory: string
+  latexAssetsDestinationDirectoryName: string
 
   /**
    * Function to determine whether a file is an asset.
-   * @type {(filePath: string) => boolean}
    */
   isAsset: (filePath: string) => boolean
 
   /**
    * Function to get the destination for a LaTeX document assets.
-   * @type {(assetDirectoryPath: string, latexFilePath: string) => string}
    */
   getLatexFileAssetsDestinationDirectoryPath: (assetDirectoryPath: string, latexFilePath: string) => string
 
   /**
    * Function to get the destination for an asset.
-   * @type {(assetDirectoryPath: string, filePath: string) => string}
    */
   getAssetDestinationDirectoryPath: (assetDirectoryPath: string, filePath: string) => string
 
   /**
    * Function to generate all variants (print, uncompleted, ...) of a LaTeX file.
-   * @type {(filePath: string, fileContent: string) => null | { name: string, content: string }[]}
    */
   generateVariants: (filePath: string, fileContent: string) => null | Variant[]
 
   /**
    * Redefinitions for Pandoc.
-   * @type {string}
    */
-  pandocRedefinitions: string
+  pandocRedefinitionsFile: string
 
   /**
    * List of file paths to ignore during conversion.
-   * @type {string[]}
    */
   ignores: string[]
 
   /**
    * Function to get directories for `includegraphics` in LaTeX files.
-   * @type {(latexFilePath: string) => string[]}
    */
   getIncludeGraphicsDirectories: (latexFilePath: string) => string[]
 
   /**
    * Template for picture resources (`tikzpicture` / `scratch` for instance).
-   * @type {{[key: string]: string}}
    */
   picturesTemplate: { [key: string]: string }
 
   /**
    * Function to filter the file name of a LaTeX file.
-   * @type {(latexFileName: string) => string}
    */
-  filterFileName: (latexFileName: string) => string
+  filterFilename: (latexFilename: string) => string
 
   /**
    * Function to get linked resources for a LaTeX file.
-   * @type {(sourceDirectoryPath: string, latexFilePath: string) => LinkedResource[]}
    */
   getLinkedResources: (sourceDirectoryPath: string, latexFilePath: string) => LinkedResource[]
 }
@@ -110,48 +94,43 @@ interface SiteContentSettings {
 export interface Variant {
   /**
    * The variant file name.
-   * @type {string}
    */
-  fileName: string
+  filename: string
   /**
    * The variant file content.
-   * @type {string}
    */
   fileContent: string
   /**
    * The variant type.
-   * @type {string}
    */
   type: string
 }
 
 /**
  * Object containing site content settings.
- * @const {SiteContentSettings}
- * @export
  */
 export const siteContentSettings: SiteContentSettings = {
   downloadDestinations: {
     previousBuild: 'node_modules/.previous-build',
     data: 'node_modules/.data'
   },
-  shouldCopyDownloadedFileToContent: (filePath: string) => {
-    const fileName = getFileName(filePath)
-    return fileName.endsWith('-cours') && path.extname(filePath) === '.tex'
+  shouldBeTransformed: (filePath: string) => {
+    const filename = getFilename(filePath)
+    return filename.endsWith('-cours') && path.extname(filePath) === '.tex'
   },
   dataLatexDirectory: 'latex',
   latexPdfDestinationDirectory: 'pdf',
-  latexAssetsDestinationDirectory: 'images',
+  latexAssetsDestinationDirectoryName: 'images',
   getLatexFileAssetsDestinationDirectoryPath: (assetsDirectoryPath: string, latexFilePath: string): string => {
     return path.resolve(
       assetsDirectoryPath,
       path.basename(path.dirname(latexFilePath)),
-      getFileName(latexFilePath)
+      getFilename(latexFilePath)
     )
   },
   getAssetDestinationDirectoryPath: (assetsDirectoryPath: string, filePath: string): string => {
     const parent = path.dirname(filePath)
-    if (getFileName(parent) === 'images') {
+    if (getFilename(parent) === 'images') {
       const level = path.basename(path.dirname(parent))
       return path.resolve(
         assetsDirectoryPath,
@@ -176,26 +155,26 @@ export const siteContentSettings: SiteContentSettings = {
     return ['.pdf', '.svg', '.png', '.jpeg', '.jpg', '.gif'].includes(extension)
   },
   generateVariants: (filePath: string, fileContent: string) => {
-    const fileName = getFileName(filePath)
-    if (fileName === 'questions-flash') {
+    const filename = getFilename(filePath)
+    if (filename === 'questions-flash') {
       return null
     }
     const regex = /\\documentclass(\[[A-Za-zÀ-ÖØ-öø-ÿ\d, =.\\-]*])?{([A-Za-zÀ-ÖØ-öø-ÿ\d/, .-]+)}/gs
-    const filteredFileName = siteContentSettings.filterFileName(fileName)
+    const filteredFilename = siteContentSettings.filterFilename(filename)
     const printVariant: Variant = {
-      fileName: `${filteredFileName}-impression`,
+      filename: `${filteredFilename}-impression`,
       fileContent: fileContent.replace(regex, '\\documentclass$1{$2}\n\n\\include{../impression}'),
       type: 'impression'
     }
     const result = [printVariant]
-    if (fileName.endsWith('-cours')) {
+    if (filename.endsWith('-cours')) {
       const studentVariant: Variant = {
-        fileName: `${filteredFileName}-eleve`,
+        filename: `${filteredFilename}-eleve`,
         fileContent: fileContent.replace(regex, '\\documentclass$1{$2}\n\n\\include{../eleve}'),
         type: 'élève'
       }
       const studentPrintVariant: Variant = {
-        fileName: `${filteredFileName}-eleve-impression`,
+        filename: `${filteredFilename}-eleve-impression`,
         fileContent: fileContent.replace(regex, '\\documentclass$1{$2}\n\n\\include{../impression}\n\\include{../eleve}'),
         type: 'élève / impression'
       }
@@ -203,7 +182,7 @@ export const siteContentSettings: SiteContentSettings = {
     }
     return result
   },
-  pandocRedefinitions: 'pandoc.tex',
+  pandocRedefinitionsFile: 'pandoc.tex',
   ignores: [
     'devoir.tex',
     'eleve.tex',
@@ -214,7 +193,7 @@ export const siteContentSettings: SiteContentSettings = {
     'scratch.tex'
   ],
   getIncludeGraphicsDirectories: (latexFilePath: string): string[] => [
-    path.resolve(path.dirname(latexFilePath), siteContentSettings.latexAssetsDestinationDirectory, path.parse(latexFilePath).name),
+    path.resolve(path.dirname(latexFilePath), siteContentSettings.latexAssetsDestinationDirectoryName, path.parse(latexFilePath).name),
     path.dirname(latexFilePath)
   ],
   picturesTemplate: {
@@ -342,30 +321,30 @@ export const siteContentSettings: SiteContentSettings = {
 \\end{document}
 `
   },
-  filterFileName: (latexFileName: string) => {
+  filterFilename: (latexFilename: string) => {
     let suffixToRemove = '-cours'
-    if (latexFileName.endsWith(suffixToRemove)) {
-      return latexFileName.substring(0, latexFileName.length - suffixToRemove.length)
+    if (latexFilename.endsWith(suffixToRemove)) {
+      return latexFilename.substring(0, latexFilename.length - suffixToRemove.length)
     }
     suffixToRemove = '-cours-impression'
-    if (latexFileName.endsWith(suffixToRemove)) {
-      return latexFileName.substring(0, latexFileName.length - suffixToRemove.length) + '-impression'
+    if (latexFilename.endsWith(suffixToRemove)) {
+      return latexFilename.substring(0, latexFilename.length - suffixToRemove.length) + '-impression'
     }
-    return latexFileName
+    return latexFilename
   },
   getLinkedResources: (sourceDirectoryPath: string, latexFilePath: string): LinkedResource[] => {
-    const fileName = getFileName(latexFilePath)
-    if (fileName.endsWith('-cours')) {
+    const filename = getFilename(latexFilePath)
+    if (filename.endsWith('-cours')) {
       const result = []
-      const prefix = siteContentSettings.filterFileName(fileName)
+      const prefix = siteContentSettings.filterFilename(filename)
       const files = fs.readdirSync(path.dirname(latexFilePath))
-      const buildUrl = (baseUrl: string, file: string) => `/${siteContentSettings.latexPdfDestinationDirectory}/${baseUrl}/${siteContentSettings.filterFileName(getFileName(file))}.pdf`
+      const buildUrl = (baseUrl: string, file: string) => `/${siteContentSettings.latexPdfDestinationDirectory}/${baseUrl}/${siteContentSettings.filterFilename(getFilename(file))}.pdf`
       for (const file of files) {
         // We don't check for ignores here as there is no match in my setup.
-        if (file.startsWith(prefix) && file.endsWith('.tex') && file !== fileName) {
+        if (file.startsWith(prefix) && file.endsWith('.tex') && file !== filename) {
           const relativePath = path.relative(path.resolve(sourceDirectoryPath, siteContentSettings.downloadDestinations.data, siteContentSettings.dataLatexDirectory), latexFilePath)
           const baseUrl = path.dirname(relativePath).replace('\\', '/')
-          if (fileName + '.tex' === file) {
+          if (filename + '.tex' === file) {
             result.push({
               title: 'Télécharger le PDF',
               url: buildUrl(baseUrl, file),
@@ -387,27 +366,27 @@ export const siteContentSettings: SiteContentSettings = {
   }
 }
 
-const getLinkedResourceTitle = (prefix: string, fileName: string) => {
+const getLinkedResourceTitle = (prefix: string, filename: string) => {
   const resourceTypes = [
     {
-      fileNameRegex: RegExp(prefix + /-activite-([A-Za-zÀ-ÖØ-öø-ÿ\d, ]+)/.source),
+      filenameRegex: RegExp(prefix + /-activite-([A-Za-zÀ-ÖØ-öø-ÿ\d, ]+)/.source),
       buildTitle: (match: RegExpExecArray) => `Activité ${match[1]}`
     },
     {
-      fileNameRegex: RegExp(prefix + /-evaluation/.source),
+      filenameRegex: RegExp(prefix + /-evaluation/.source),
       buildTitle: (_: RegExpExecArray) => 'Évaluation'
     },
     {
-      fileNameRegex: RegExp(prefix + /-interrogation/.source),
+      filenameRegex: RegExp(prefix + /-interrogation/.source),
       buildTitle: (_: RegExpExecArray) => 'Interrogation'
     },
     {
-      fileNameRegex: RegExp(prefix + /-dm/.source),
+      filenameRegex: RegExp(prefix + /-dm/.source),
       buildTitle: (_: RegExpExecArray) => 'Devoir maison'
     }
   ]
   for (const resourceType of resourceTypes) {
-    const match = resourceType.fileNameRegex.exec(fileName)
+    const match = resourceType.filenameRegex.exec(filename)
     if (match != null) {
       return resourceType.buildTitle(match)
     }

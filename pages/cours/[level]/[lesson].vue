@@ -15,18 +15,12 @@ export const lessonNavigationEntry = (lessonContent: LessonContent) => {
 import { levelsNavigationEntry } from '~/pages/cours/index.vue'
 import { levelNavigationEntry } from '~/pages/cours/[level]/index.vue'
 import { getLevelUrl, levels } from '~/site/levels'
-import { siteContentSettings } from '~/site/content'
 import Control from '~/components/Controls/Control.vue'
 
 const route = useRoute()
 const level: Level | undefined = levels[route.params.level.toString()]
 
-const { status, data: lessonContent, error } = useLazyAsyncData(
-  route.path,
-  () => queryContent<LessonContent>(siteContentSettings.dataLatexDirectory, level?.id)
-    .where({ id: route.params.lesson.toString() })
-    .findOne()
-)
+const { data: lessonContent, status, error } = await useFetch<LessonContent>(`/_api/latex/${level.id}/${route.params.lesson}.json`)
 
 const title = computed(() => level && lessonContent.value ? `${level.name} > ${lessonContent.value['page-title']}` : 'Affichage d\'un cours')
 

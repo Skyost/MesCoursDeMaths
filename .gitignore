@@ -105,3 +105,4 @@ sw.*
 *.run.xml
 .output
 content/
+types/lesson.z.ts
