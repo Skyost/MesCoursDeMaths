@@ -283,8 +283,8 @@ const processLatexFile = (
         options.picturesTemplate[blockType],
         options.getLatexFileAssetsDestinationDirectoryPath(assetsRootDirectoryPath, filePath),
         options.getIncludeGraphicsDirectories,
-        resolver.resolve(sourceDirectoryPath, options.downloadDestinations.previousBuild),
-        moduleDataDirectoryPath
+        moduleDataDirectoryPath,
+        resolver.resolve(sourceDirectoryPath, options.downloadDestinations.previousBuild)
       )
     ),
     mathRenderer: new KatexRendererWithMacros(),
