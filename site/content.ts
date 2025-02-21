@@ -193,7 +193,7 @@ export const siteContentSettings: SiteContentSettings = {
     'scratch.tex'
   ],
   getIncludeGraphicsDirectories: (latexFilePath: string): string[] => [
-    path.resolve(path.dirname(latexFilePath), siteContentSettings.latexAssetsDestinationDirectoryName, path.parse(latexFilePath).name),
+    path.resolve(path.dirname(latexFilePath), getFilename(latexFilePath)),
     path.dirname(latexFilePath)
   ],
   picturesTemplate: {
