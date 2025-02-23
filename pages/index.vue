@@ -47,11 +47,11 @@ const links = [
     text: 'Une autre chaîne de vulgarisation mathématique, approuvée par McFly et Carlito !'
   },
   {
-    id: 'evariste',
-    to: 'https://levariste.com/fr/',
-    name: 'L\'Évariste',
-    image: '/images/index/evariste.svg',
-    text: 'Un concours de mathématiques accessible aux lycéens et créé par le vidéaste Axel Arno.'
+    id: 'voyage-au-pays-des-maths',
+    to: 'https://www.youtube.com/playlist?list=PLCwXWOyIR22veT31gK5JwmqxuVc0Uoy8a',
+    name: 'Voyage au pays des maths',
+    image: '/images/index/voyage-au-pays-des-maths.png',
+    text: 'Une série de vidéo YouTube très accessible produite par ARTE sur divers thèmes mathématiques : calcul infinitésimal, paradoxe de Monty Hall, …'
   }
 ]
 
