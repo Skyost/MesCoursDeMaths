@@ -9,7 +9,7 @@ import { authentication } from '../site/authentication'
 import { siteContentSettings } from '../site/content'
 import { siteMeta } from '../site/meta'
 import { debug } from '../site/debug'
-import { file } from './commit-sha-file-generator/common'
+import { filename } from './commit-sha-file-generator/common'
 
 /**
  * Options for the content downloader module.
@@ -55,15 +55,15 @@ export default defineNuxtModule<ModuleOptions>({
     downloadDestinations: siteContentSettings.downloadDestinations,
     previousBuildDirectories: [siteContentSettings.latexPdfDestinationDirectory, siteContentSettings.latexAssetsDestinationDirectoryName],
     dataLatexDirectory: siteContentSettings.dataLatexDirectory,
-    latestCommitShaFilename: file
+    latestCommitShaFilename: filename
   },
   setup: async (options, nuxt) => {
     const resolver = createResolver(import.meta.url)
     const srcDir = nuxt.options.srcDir
 
     let latestCommitShaFilePath = null
-    if (!debug && options.latestCommitShaFilename) {
-      latestCommitShaFilePath = resolver.resolve(srcDir, options.latestCommitShaFilename)
+    if (!debug && options.latestCommitShaFilename && nuxt.options.commitShaFileGenerator) {
+      latestCommitShaFilePath = resolver.resolve(srcDir, nuxt.options.commitShaFileGenerator.directory, options.latestCommitShaFilename)
     }
 
     await downloadPreviousBuild(resolver, srcDir, options)

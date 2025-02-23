@@ -101,7 +101,7 @@ export default defineNuxtConfig({
   },
 
   commitShaFileGenerator: {
-    file: 'node_modules/.commit-sha-file-generator/latest-commit.json'
+    directory: 'node_modules/.commit-sha-file-generator/'
   },
 
   eslint: {
