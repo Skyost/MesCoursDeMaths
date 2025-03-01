@@ -1,0 +1,1 @@
+import{a as e}from"./-vIBm4PS.js";import{d as o,j as a,a as t}from"./BJY-c1ri.js";const _=o({__name:"BackToApplications",setup(n){return(r,s)=>(t(),a(e,{to:"/prof/",text:"Retour à l'espace enseignant"}))}});export{_};
