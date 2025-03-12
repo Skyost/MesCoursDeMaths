@@ -30,17 +30,27 @@ if (level) {
   useNavigationEntry(levelNavigationEntry(level))
 }
 
-const pdfIcon = await loadIcon('bi:file-earmark-pdf-fill')
-const textIcon = await loadIcon('bi:file-earmark-text-fill')
+const loadBootstrapIconOrNull = async (name: string): Promise<IconifyIcon | null> => {
+  try {
+    return await loadIcon(`bi:${name}`)
+  }
+  catch (exception) {
+    console.error(exception)
+  }
+  return null
+}
+
+const pdfIcon = await loadBootstrapIconOrNull('file-earmark-pdf-fill')
+const textIcon = await loadBootstrapIconOrNull('file-earmark-text-fill')
 
 const sortedLessons = computed<Lesson[] | undefined>(() => lessons.value?.slice().sort((a, b) => a.number - b.number))
 const otherResourcesModal = ref<boolean>(false)
 const getOtherResourceIcon = (otherResource: Resource) => {
   const iconToHtml = (icon: IconifyIcon) => `<svg height="${icon.height}" width="${icon.width}" viewBox="0 0 ${icon.width} ${icon.height}" aria-hidden="true">${icon.body}</svg>`
   if (otherResource.url.endsWith('.pdf')) {
-    return iconToHtml(pdfIcon)
+    return pdfIcon ? iconToHtml(pdfIcon) : ''
   }
-  return iconToHtml(textIcon)
+  return textIcon ? iconToHtml(textIcon) : ''
 }
 const getOtherResourceIconColor = (otherResource: Resource) => {
   if (otherResource.url.endsWith('.pdf')) {

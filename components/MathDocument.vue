@@ -67,8 +67,14 @@ const setupDocument = async () => {
   }
 
   const exercises = root.value!.querySelectorAll<HTMLElement>('.bubble-exercice')
-  const printIcon = await loadIcon('bi:printer-fill')
-  const printIconHtml = `<svg height="${printIcon.height}" width="${printIcon.width}" aria-hidden="true">${printIcon.body}</svg>`
+  let printIconHtml = ''
+  try {
+    const printIcon = await loadIcon('bi:printer-fill')
+    printIconHtml = `<svg height="${printIcon.height}" width="${printIcon.width}" aria-hidden="true">${printIcon.body}</svg>`
+  }
+  catch (exception) {
+    console.error(exception)
+  }
   let scrollCollapse
   for (let i = 0; i < exercises.length; i++) {
     const exercise = exercises[i]
