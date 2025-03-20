@@ -273,6 +273,16 @@ export const levels: { [key: string]: Level } = {
         name: 'Devoir surveillé 2',
         description: 'Devoir surveillé sur Calcul numérique et Ensembles de nombres.',
         url: '/pdf/seconde/devoir-2.pdf'
+      },
+      {
+        name: 'Devoir surveillé 3',
+        description: 'Devoir surveillé sur Géométrie repérée, Notion de fonction et Proportions et évolutions.',
+        url: '/pdf/seconde/devoir-3.pdf'
+      },
+      {
+        name: 'Devoir surveillé 4',
+        description: 'Devoir surveillé sur Fonctions usuelles, Arithmétique et Droites du plan.',
+        url: '/pdf/seconde/devoir-4.pdf'
       }
     ]
   },
@@ -299,7 +309,7 @@ export const levels: { [key: string]: Level } = {
       },
       {
         name: 'Devoir surveillé 3',
-        description: 'Devoir surveillé sur Géométrie repérée, Notion de fonction et Poportions et évolutions.',
+        description: 'Devoir surveillé sur Nombre dérivé, Probabilités conditionnelles et Suites arithmétiques et géométriques.',
         url: '/pdf/premiere-stmg/devoir-3.pdf'
       }
     ]
