@@ -1,0 +1,1 @@
+import{b as e}from"./CO1jO--5.js";import{d as o,k as t,o as a}from"./DhXyllwW.js";const _=o({__name:"BackToApplications",setup(n){return(r,s)=>(a(),t(e,{to:"/prof/",text:"Retour à l'espace enseignant"}))}});export{_};
