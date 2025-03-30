@@ -220,6 +220,11 @@ export const levels: { [key: string]: Level } = {
         url: '/pdf/seconde/algorithmique-programmation.pdf'
       },
       {
+        name: 'Devoirs et examens',
+        description: 'Fiche méthodologique sur la préparation des devoirs et des examens.',
+        url: '/pdf/seconde/ap-examens.pdf'
+      },
+      {
         name: 'Fiche d\'utilisation de la NumWorks',
         description: 'Fiche sur l\'utilisation de la calculatrice NumWorks.',
         url: '/pdf/seconde/calculatrice-numworks.pdf'
@@ -283,6 +288,11 @@ export const levels: { [key: string]: Level } = {
         name: 'Devoir surveillé 4',
         description: 'Devoir surveillé sur Fonctions usuelles, Arithmétique et Droites du plan.',
         url: '/pdf/seconde/devoir-4.pdf'
+      },
+      {
+        name: 'Devoir surveillé 4 (Autre sujet)',
+        description: 'Devoir surveillé sur Fonctions usuelles, Arithmétique et Droites du plan.',
+        url: '/pdf/seconde/devoir-4b.pdf'
       }
     ]
   },
