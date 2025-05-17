@@ -293,6 +293,11 @@ export const levels: { [key: string]: Level } = {
         name: 'Devoir surveillé 4 (Autre sujet)',
         description: 'Devoir surveillé sur Fonctions usuelles, Arithmétique et Droites du plan.',
         url: '/pdf/seconde/devoir-4b.pdf'
+      },
+      {
+        name: 'Devoir surveillé 5',
+        description: 'Devoir surveillé sur Statistiques descriptives, Projection orthogonale et Variations de fonctions.',
+        url: '/pdf/seconde/devoir-5.pdf'
       }
     ]
   },
@@ -321,6 +326,11 @@ export const levels: { [key: string]: Level } = {
         name: 'Devoir surveillé 3',
         description: 'Devoir surveillé sur Nombre dérivé, Probabilités conditionnelles et Suites arithmétiques et géométriques.',
         url: '/pdf/premiere-stmg/devoir-3.pdf'
+      },
+      {
+        name: 'Devoir surveillé 4',
+        description: 'Devoir surveillé sur Fonction dérivée, Variables aléatoires et Fonctions polynômiales de degré 3.',
+        url: '/pdf/premiere-stmg/devoir-4.pdf'
       }
     ]
   }
