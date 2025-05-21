@@ -73,7 +73,7 @@ useNavigationEntry(homeNavigationEntry)
         >
           <div class="text-center text-md-start">
             <p>
-              Bonjour et bienvenue sur <em>{{ siteMeta.title }}</em>. Je suis Hugo Delaunay, professeur agrégé de mathématiques, et
+              Bonjour et bienvenue sur <em>{{ siteMeta.title }}</em>. Je suis Hugo Delaunay, professeur de mathématiques, et
               je mets sur ce petit site web tous mes cours ainsi que les ressources qui y sont rattachées.
               Vous trouverez donc ici des cours de mathématiques, mais également des exercices corrigés, des activités de découverte,
               des devoirs, etc.
