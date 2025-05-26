@@ -1,0 +1,1 @@
+import{b as e}from"./CNfnPZQt.js";import{d as o,k as t,o as a}from"./CkBD909i.js";const _=o({__name:"BackToApplications",setup(n){return(r,s)=>(a(),t(e,{to:"/prof/",text:"Retour à l'espace enseignant"}))}});export{_};

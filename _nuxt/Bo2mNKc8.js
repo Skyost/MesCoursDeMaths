@@ -1,0 +1,1 @@
+import{_ as t}from"./DbXve8lO.js";import{t as n}from"./DbXve8lO.js";import{g as o}from"./CkBD909i.js";import"./BSwAKK8a.js";import"./CzIdi-TL.js";import"./BvDwuH2j.js";import"./Ddkbv6z0.js";import"./BbTSYCed.js";const _=o(t,[["__scopeId","data-v-ec10eab2"]]);export{_ as default,n as teacherNavigationEntry};

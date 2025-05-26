@@ -1,0 +1,1 @@
+import{a as t}from"./CzIdi-TL.js";import{g as n,c as a,o as c,a as o}from"./CkBD909i.js";const _={},r={class:"p-5 text-center"};function s(m,p){const e=t;return c(),a("div",r,[o(e,{variant:"primary",label:"Chargement..."})])}const f=n(_,[["render",s],["__scopeId","data-v-d273290a"]]);export{f as _};
