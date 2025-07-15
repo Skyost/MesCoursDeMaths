@@ -178,7 +178,10 @@ useNavigationEntry(aboutNavigationEntry)
     </section>
     <hr>
     <section>
-      <h2 class="centered">
+      <h2
+        id="contact"
+        class="centered"
+      >
         Contact
       </h2>
       <div class="text-center">

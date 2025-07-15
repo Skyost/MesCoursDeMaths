@@ -60,7 +60,7 @@ export const siteMeta: SiteMeta = {
     dataRepository: 'Cours-HD'
   },
   contact: {
-    url: 'https://script.google.com/macros/s/AKfycby6H_T4MpKlmN4AP7WMpRXHpk50u6wH39a1Tp7lRYX79uHufIeSZFoaTvWOiOcJtfHkgw/exec',
-    recaptchaKey: '6LfDYYQrAAAAAJhwDrkSqSwzMLAUM_kh2k2sqR4T'
+    url: 'https://script.google.com/macros/s/AKfycbx0uW7dE9r8IlG4vNzw5H1eJyNo9EJqkbL0pq3NR25j7xnAj6DAaP79n0R_xnSwUL1mig/exec',
+    recaptchaKey: '6Ldre4QrAAAAABWBKtFDmndRv0SmPDB2ZZqz_l8N'
   }
 }
