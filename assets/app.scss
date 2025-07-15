@@ -7,6 +7,10 @@
 $headings-font-family: 'Raleway', sans-serif;
 $font-family-sans-serif: 'Montserrat', sans-serif;
 $enable-rounded: false;
+$input-bg: $light;
+$input-border-width: 1px;
+$input-border-color: $blue;
+$input-focus-bg: darken($light, 3%);
 
 // 3. Include remainder of required Bootstrap stylesheets
 @import 'bootstrap/scss/variables';
@@ -35,8 +39,8 @@ $enable-rounded: false;
 @import 'bootstrap/scss/spinners';
 @import 'bootstrap/scss/tables';
 @import 'bootstrap/scss/card';
-@import 'bootstrap/scss/alert';
 @import 'bootstrap/scss/list-group';
+@import 'bootstrap/scss/forms';
 
 // 7. Optionally include utilities API last to generate classes based on the Sass map in `_utilities.scss`
 @import 'bootstrap/scss/utilities/api';
@@ -58,4 +62,31 @@ hr {
 
 .vue-icon {
   vertical-align: -0.125em;
+}
+
+.form-control {
+  border-top-width: 0 !important;
+  border-right-width: 0 !important;
+  border-left-width: 0 !important;
+  transition: border-color 0.15s ease-in-out, border-bottom-width 0.2s ease-in-out !important;
+
+  &:focus {
+    box-shadow: none !important;
+    border-bottom-color: $primary !important;
+    border-bottom-width: 6px !important;
+  }
+
+  &:disabled {
+    background-color: darken($light, 3%) !important;
+    color: $text-muted !important;
+    border-bottom-color: $text-muted !important;
+  }
+}
+
+.form-floating label::after {
+  background-color: transparent !important;
+}
+
+.form-floating > .form-control:focus ~ label {
+  color: $primary !important;
 }

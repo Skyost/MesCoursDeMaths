@@ -78,13 +78,15 @@ useNavigationEntry(homeNavigationEntry)
               Vous trouverez donc ici des cours de mathématiques, mais également des exercices corrigés, des activités de découverte,
               des devoirs, etc.
             </p>
-            <p class="mb-0">
-              Tout cela vous est accessible dès maintenant via la <nuxt-link to="/cours/">
-                liste des cours
-              </nuxt-link>,
+            <p>
+              Tout cela vous est accessible dès maintenant via la <nuxt-link to="/cours/">liste des cours</nuxt-link>,
               donc allez y jeter un œil ! De plus, sachez que ce site web est totalement open-source,
               et ses contenus peuvent tout à fait être réutilisés.
               Pour plus d'informations, rendez-vous <a href="#licence">ci-dessous</a> !
+            </p>
+            <p class="mb-0">
+              Si vous souhaitez plus d'informations sur moi ou si vous souhaitez me contacter, vous pouvez le
+              faire sur la <nuxt-link to="/a-propos/">page dédiée</nuxt-link>.
             </p>
           </div>
         </b-col>

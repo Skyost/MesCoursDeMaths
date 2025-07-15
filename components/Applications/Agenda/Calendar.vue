@@ -105,7 +105,7 @@ const formatDate = (date: Date) => {
   <div>
     <b-row>
       <b-col
-        width="3"
+        cols="3"
         md="2"
       >
         <b-button @click="goToPreviousMonth">
@@ -113,7 +113,7 @@ const formatDate = (date: Date) => {
         </b-button>
       </b-col>
       <b-col
-        width="6"
+        cols="6"
         md="8"
         class="col-month"
       >
@@ -123,7 +123,7 @@ const formatDate = (date: Date) => {
         />
       </b-col>
       <b-col
-        width="3"
+        cols="3"
         md="2"
         class="text-end"
       >

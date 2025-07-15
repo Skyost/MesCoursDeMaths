@@ -58,7 +58,7 @@ const changeSeconds = (newSeconds: number) => {
     <b-row class="h-100 ms-0 me-0">
       <b-col
         class="duration-column"
-        width="2"
+        cols="2"
       >
         <b-button
           variant="light"
@@ -79,7 +79,7 @@ const changeSeconds = (newSeconds: number) => {
       </b-col>
       <b-col
         class="duration-column"
-        width="2"
+        cols="2"
       >
         <b-button
           variant="light"
@@ -100,13 +100,13 @@ const changeSeconds = (newSeconds: number) => {
       </b-col>
       <b-col
         class="duration-column"
-        width="auto"
+        cols="auto"
       >
         <span class="duration">:</span>
       </b-col>
       <b-col
         class="duration-column"
-        width="2"
+        cols="2"
       >
         <b-button
           variant="light"
@@ -127,7 +127,7 @@ const changeSeconds = (newSeconds: number) => {
       </b-col>
       <b-col
         class="duration-column"
-        width="2"
+        cols="2"
       >
         <b-button
           variant="light"
