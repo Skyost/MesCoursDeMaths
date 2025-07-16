@@ -54,17 +54,11 @@ watch(currentName, () => currentState.value = isValid() ? FormState.complete : F
 watch(currentEmail, () => currentState.value = isValid() ? FormState.complete : FormState.incomplete)
 watch(currentMessage, () => currentState.value = isValid() ? FormState.complete : FormState.incomplete)
 
-const success = ref<boolean>(false)
-const error = ref<boolean>(false)
+const modal = ref<boolean>(false)
 
 watch(currentState, () => {
-  if (currentState.value == FormState.success) {
-    success.value = true
-    error.value = false
-  }
-  else if (currentState.value == FormState.error) {
-    success.value = false
-    error.value = true
+  if (currentState.value == FormState.success || currentState.value == FormState.error) {
+    modal.value = true
   }
 })
 
@@ -86,6 +80,7 @@ const onFormSubmit = async () => {
     await fetch(
       siteMeta.contact.url,
       {
+        redirect: 'follow',
         method: 'post',
         headers: {
           'Content-Type': 'text/plain;charset=utf-8'
@@ -237,7 +232,6 @@ useNavigationEntry(aboutNavigationEntry)
         <b-form-floating-label
           label="Message"
           label-for="message"
-          class="mb-3"
         >
           <b-form-textarea
             id="message"
@@ -246,28 +240,43 @@ useNavigationEntry(aboutNavigationEntry)
             placeholder="Message"
           />
         </b-form-floating-label>
-        <div class="text-end">
-          <b-button
-            variant="light"
-            type="submit"
-            :disabled="!formSubmitEnabled"
+        <b-row>
+          <b-col
+            cols="12"
+            md="6"
           >
-            <icon name="bi:envelope-arrow-up-fill" /> Envoyer le message
-          </b-button>
-        </div>
+            <small id="recaptcha">
+              Formulaire protégé par <a href="https://www.google.com/recaptcha/">reCAPTCHA</a>.
+            </small>
+          </b-col>
+          <b-col
+            cols="12"
+            md="6"
+            class="mt-3 text-end"
+          >
+            <b-button
+              id="send-button"
+              :variant="formSubmitEnabled ? 'primary' : 'light'"
+              type="submit"
+              :disabled="!formSubmitEnabled"
+            >
+              <icon name="bi:envelope-arrow-up-fill" /> Envoyer le message
+            </b-button>
+          </b-col>
+        </b-row>
         <b-modal
-          v-model="error"
-          title="Erreur"
+          v-model="modal"
+          :title="currentState === FormState.success ? 'Succès' : 'Erreur'"
           ok-only
+          ok-variant="secondary"
+          ok-title="Fermer"
         >
-          Une erreur est survenue. Veuillez réessayer plus tard !
-        </b-modal>
-        <b-modal
-          v-model="success"
-          title="Succès"
-          ok-only
-        >
-          Votre message a été transmis avec succès !
+          <span v-if="currentState === FormState.success">
+            Votre message a été transmis avec succès !
+          </span>
+          <span v-else>
+            Une erreur est survenue. Veuillez réessayer plus tard !
+          </span>
         </b-modal>
       </b-form>
     </section>
@@ -275,6 +284,7 @@ useNavigationEntry(aboutNavigationEntry)
 </template>
 
 <style lang="scss" scoped>
+@import 'assets/bootstrap-mixins';
 @import 'assets/colors';
 
 #quote {
@@ -294,5 +304,15 @@ useNavigationEntry(aboutNavigationEntry)
 
 #message {
   height: 7rem;
+}
+
+#send-button {
+  @include media-breakpoint-down(md) {
+    width: 100%;
+  }
+}
+
+#recaptcha {
+  font-size: 0.8em;
 }
 </style>
