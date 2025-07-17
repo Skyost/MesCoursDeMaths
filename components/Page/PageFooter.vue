@@ -14,10 +14,9 @@ const year = (new Date()).getFullYear()
           lg="6"
         >
           <p class="mb-0">
-            Copyright &copy; {{ year }} — <nuxt-link class="text-decoration-none" to="/a-propos/"><strong v-text="siteMeta.author" /></nuxt-link>.
+            Copyright &copy; {{ year }} — <strong v-text="siteMeta.author" />.
             Tous droits réservés.
-            Voir les <nuxt-link to="/#licence">licences</nuxt-link>.
-            <br>Accéder à l'<nuxt-link to="/prof/">espace enseignant</nuxt-link>.
+            <br>Voir les <nuxt-link to="/#licence">licences</nuxt-link>. Me <nuxt-link to="/a-propos/#contact">contacter</nuxt-link>.
           </p>
         </b-col>
         <b-col

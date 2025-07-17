@@ -114,7 +114,7 @@ useNavigationEntry(aboutNavigationEntry)
       <p>
         Pensé à la fois comme un outil pédagogique qui permet d'offrir des compléments aux cours, tels les corrections
         des exercices, mais aussi comme un outil de partage, ce site web est mon outil principal de travail.
-        J'y publie toutes les ressources qui peuvent intéresser à la fois les élèves comme les collègues
+        J'y publie toutes mes ressources qui peuvent intéresser à la fois les élèves comme les collègues
         (ou toutes les autres personnes intéressées par ce type de contenu) : activités, devoirs, cours, etc.
       </p>
       <blockquote id="quote">
