@@ -1,0 +1,1 @@
+import{b as e}from"./CNVSmY4l.js";import{d as o,K as t,o as a}from"./CgitnTjF.js";const _=o({__name:"BackToApplications",setup(n){return(r,s)=>(a(),t(e,{to:"/prof/",text:"Retour à l'espace enseignant"}))}});export{_};

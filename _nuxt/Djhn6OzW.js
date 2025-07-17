@@ -1,0 +1,1 @@
+import{b as t}from"./CW_FY2TQ.js";import{g as n,c,o,a as _}from"./CgitnTjF.js";const a={},r={class:"p-5 text-center"};function s(m,p){const e=t;return o(),c("div",r,[_(e,{variant:"primary",label:"Chargement..."})])}const f=n(a,[["render",s],["__scopeId","data-v-d273290a"]]);export{f as _};
