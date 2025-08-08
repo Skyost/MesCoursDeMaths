@@ -8,7 +8,7 @@ export const gradesNavigationEntry = {
 
 <script setup lang="ts">
 import type { Grade } from '~/types'
-import { getGradeUrl } from '~/site/lessons'
+import { getGradeRoute } from '~/site/lessons'
 
 const { data: grades, status, error } = await useFetch<Grade[]>(`/_api/latex/`)
 
@@ -38,7 +38,7 @@ usePageHead({ title: 'Liste des niveaux' })
           :title="grade.name"
           :color="grade.color"
           :subtitle="`Cours de ${grade.short}`"
-          :to="getGradeUrl(grade)"
+          :to="getGradeRoute(grade)"
           :image="`/images/${grade.id}/image.svg`"
         />
       </b-col>

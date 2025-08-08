@@ -1,15 +1,13 @@
-import type { LevelId } from '~/types/grade'
-
 /**
  * Represents a linked resource associated with a lesson.
  */
 interface LinkedResource {
   /**
-   * Title of the linked resource.
+   * The title of the linked resource.
    */
   title: string
   /**
-   * URL pointing to the resource.
+   * The URL pointing to the resource.
    */
   url: string
   /**

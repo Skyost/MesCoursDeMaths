@@ -8,6 +8,7 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/eslint',
     'nuxt-cname-generator',
+    '~/../modules/default-options-registerer',
     '~/../modules/commit-sha-file-generator',
     '~/../modules/content-downloader',
     '~/../modules/latex-pdf-generator',
@@ -71,7 +72,6 @@ export default defineNuxtConfig({
     css: {
       preprocessorOptions: {
         scss: {
-          api: 'modern-compiler',
           silenceDeprecations: [
             'mixed-decls',
             'color-functions',
@@ -81,10 +81,6 @@ export default defineNuxtConfig({
         }
       }
     }
-  },
-
-  commitShaFileGenerator: {
-    directory: 'node_modules/.commit-sha-file-generator/'
   },
 
   eslint: {

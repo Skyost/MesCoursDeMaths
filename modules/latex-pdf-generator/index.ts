@@ -6,6 +6,7 @@ import { createResolver, defineNuxtModule, type Resolver, useLogger } from '@nux
 import { LatexChecksumsCalculator, LatexIncludeCommand, PdfGenerator } from 'that-latex-lib'
 import debug from '../../app/site/debug'
 import defaultOptions, { type ModuleOptions } from './options'
+import { defu } from 'defu'
 
 /**
  * The name of the module.
@@ -31,11 +32,23 @@ export default defineNuxtModule<ModuleOptions>({
   setup: (options, nuxt) => {
     const resolver = createResolver(import.meta.url)
     const rootDir = nuxt.options.rootDir
-    const directoryPath = resolver.resolve(rootDir, options.directory)
-    const previousBuildDirectoryPath = resolver.resolve(rootDir, options.previousBuildDirectory, options.destinationDirectory)
-    const destinationDirectoryPath = resolver.resolve(rootDir, 'node_modules', `.${name}`)
+    const directoryPath = resolver.resolve(
+      rootDir,
+      nuxt.options.contentDownloader.downloadDestinations.data,
+      nuxt.options.contentDownloader.dataLatexDirectory
+    )
+    const previousBuildDirectoryPath = resolver.resolve(
+      rootDir,
+      nuxt.options.contentDownloader.downloadDestinations.previousBuild,
+      options.destinationDirectoryName
+    )
+    const destinationDirectoryPath = resolver.resolve(
+      rootDir,
+      'node_modules',
+      `.${name}`
+    )
 
-    const ignores = options.ignores.map(file => resolver.resolve(rootDir, options.directory, file))
+    const ignores = options.ignores.map(file => resolver.resolve(directoryPath, file))
     generatePdf(
       resolver,
       directoryPath,
@@ -47,7 +60,7 @@ export default defineNuxtModule<ModuleOptions>({
 
     nuxt.options.nitro.publicAssets = nuxt.options.nitro.publicAssets || []
     nuxt.options.nitro.publicAssets.push({
-      baseURL: `/${options.destinationDirectory}/`,
+      baseURL: `/${options.destinationDirectoryName}/`,
       dir: destinationDirectoryPath,
       fallthrough: true
     })
@@ -157,14 +170,14 @@ const generateAndCopy = (
   const { wasCached, builtFilePath, checksumsFilePath } = pdfGenerator.generate(
     filePath,
     previousBuildDirectory == null ? undefined : previousBuildDirectory,
-    options.renameFile(destinationFilename ?? path.parse(filePath).name)
+    options.filterFilename(destinationFilename ?? path.parse(filePath).name)
   )
 
   // If PDF generation is successful, copy files to the destination directory.
   if (builtFilePath) {
     let parts = path.parse(builtFilePath)
     let filename = destinationFilename ?? parts.name
-    const destinationFilePath = resolver.resolve(destinationDirectoryPath, options.renameFile(filename) + parts.ext)
+    const destinationFilePath = resolver.resolve(destinationDirectoryPath, options.filterFilename(filename) + parts.ext)
     fs.mkdirSync(destinationDirectoryPath, { recursive: true })
     fs.copyFileSync(builtFilePath, destinationFilePath)
 
@@ -177,7 +190,7 @@ const generateAndCopy = (
     if (checksumsFilePath) {
       parts = path.parse(checksumsFilePath)
       filename = destinationFilename ?? parts.name
-      fs.copyFileSync(checksumsFilePath, resolver.resolve(destinationDirectoryPath, options.renameFile(filename) + parts.ext))
+      fs.copyFileSync(checksumsFilePath, resolver.resolve(destinationDirectoryPath, options.filterFilename(filename) + parts.ext))
 
       // Optionally move checksums file instead of copying.
       if (options.moveFiles) {

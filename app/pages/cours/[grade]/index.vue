@@ -1,11 +1,11 @@
 <script lang="ts">
 import type { Resource, Grade, GradeWithLessons } from '~/types'
-import { getGradeUrl, getLessonUrl } from '~/site/lessons'
+import { getGradeRoute, getLessonRoute } from '~/site/lessons'
 
 export const gradeNavigationEntry = (grade: Grade) => {
   return {
     title: grade.name,
-    to: getGradeUrl(grade),
+    to: getGradeRoute(grade),
     depth: 1
   }
 }
@@ -90,7 +90,7 @@ usePageHead({ title })
             :title="lesson.name"
             :color="grade.color"
             :subtitle="`Chapitre ${lesson.number}`"
-            :to="getLessonUrl(grade, lesson)"
+            :to="getLessonRoute(grade, lesson)"
             :image="`/images/${grade.id}/${lesson.id}-cours/image.svg`"
           />
         </b-col>

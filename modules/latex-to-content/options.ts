@@ -1,15 +1,13 @@
 // noinspection ES6PreferShortImport
 
 import path from 'path'
-import {
-  dataLatexDirectory,
-  downloadDestinations,
-  filterFilename,
-  latexPdfDestinationDirectory
-} from '../../app/site/files'
 import fs from 'fs'
-import * as files from '../../app/site/files'
-import type { GradeWithResources, LinkedResource } from '../../app/types'
+import type { GradeWithResources } from '../../app/types'
+
+/**
+ * Represents the name of the destination directory where LaTeX-related assets, such as images, are stored.
+ */
+const assetsDestinationDirectoryName: string = 'images'
 
 /**
  * Determines if a given file path corresponds to an asset file based on its parent directory name and file extension.
@@ -246,33 +244,50 @@ const picturesTemplate: Record<string, string> = {
 }
 
 /**
+ * A linked resource, linking to a file, and not to a given URL.
+ */
+export interface RawLinkedResource {
+  /**
+   * Title of the linked resource.
+   */
+  title: string
+  /**
+   * The LaTeX file path of the resource.
+   */
+  latexFilePath: string
+  /**
+   * Whether the linked resource represents the current lesson.
+   * Only the first is taken into account.
+   */
+  isCurrentFile?: boolean
+}
+
+/**
  * Retrieves linked resources associated with a LaTeX file located in the provided directory.
  *
  * This function inspects files in the source directory and identifies LaTeX files that share a specific
  * naming pattern with the given file. For each matching file, it constructs necessary linked resource
  * metadata, including the title and URL pointing to a corresponding PDF file.
  *
- * @param sourceDirectoryPath The root directory path where source LaTeX files are located.
  * @param latexFilePath The full file path of the target LaTeX file.
  * @returns An array of linked resource objects that contain metadata, such as the
  * title, URL, and whether the resource corresponds to the current LaTeX file.
  */
-const getLinkedResources = (sourceDirectoryPath: string, latexFilePath: string): LinkedResource[] => {
+const getRawLinkedResources = (latexFilePath: string): RawLinkedResource[] => {
+  const relevantPrefix = '-cours'
   const filename = path.parse(latexFilePath).name
-  if (filename.endsWith('-cours')) {
-    const result = []
-    const prefix = filterFilename(filename)
-    const files = fs.readdirSync(path.dirname(latexFilePath))
-    const buildUrl = (baseUrl: string, file: string) => `/${latexPdfDestinationDirectory}/${baseUrl}/${filterFilename(path.parse(file).name)}.pdf`
+  if (filename.endsWith(relevantPrefix)) {
+    const result: RawLinkedResource[] = []
+    const prefix = filename.substring(0, filename.length - relevantPrefix.length)
+    const directoryPath = path.dirname(latexFilePath)
+    const files = fs.readdirSync(directoryPath)
     for (const file of files) {
       // We don't check for ignores here as there is no match in my setup.
       if (file.startsWith(prefix) && file.endsWith('.tex') && file !== filename) {
-        const relativePath = path.relative(path.resolve(sourceDirectoryPath, downloadDestinations.data, dataLatexDirectory), latexFilePath)
-        const baseUrl = path.dirname(relativePath).replace('\\', '/')
         if (filename + '.tex' === file) {
           result.push({
             title: 'Télécharger le PDF',
-            url: buildUrl(baseUrl, file),
+            latexFilePath: path.resolve(directoryPath, file),
             isCurrentFile: true
           })
         }
@@ -280,7 +295,7 @@ const getLinkedResources = (sourceDirectoryPath: string, latexFilePath: string):
         if (title) {
           result.push({
             title,
-            url: buildUrl(baseUrl, file)
+            latexFilePath: path.resolve(directoryPath, file)
           })
         }
       }
@@ -329,122 +344,27 @@ const getLinkedResourceTitle = (prefix: string, filename: string): string | null
 }
 
 /**
- * Options for this module.
+ * Holds the default options for this module.
  */
-export interface ModuleOptions {
-  /**
-   * An object representing destination paths for various downloads used in the project.
-   */
-  downloadDestinations: {
-    /**
-     * The file path where the previous build data is stored.
-     */
-    previousBuild: string
-    /**
-     * The file path where project-specific data files are stored.
-     */
-    data: string
-  }
-  /**
-   * Represents the directory path where LaTeX files are stored or will be stored.
-   */
-  dataLatexDirectory: string
-  /**
-   * Represents the name of the destination directory where LaTeX-related assets, such as images, are stored.
-   */
-  assetsDestinationDirectoryName: string
-  /**
-   * Reads and retrieves grade data along with associated resources.
-   *
-   * @param directoryPath The path to the directory containing the grade data files.
-   * @returns Returns the grade data combined with its associated resources,
-   * or null if the data is not found or an error occurs.
-   */
-  readGradeData: (directoryPath: string) => GradeWithResources | null
-  /**
-   * Determines if a given file path corresponds to an asset file based on its parent directory name and file extension.
-   *
-   * @param filePath The file path to be evaluated.
-   * @returns Returns true if the file is considered an asset, otherwise false.
-   */
-  isAsset: (filePath: string) => boolean
-  /**
-   * Constructs and returns the destination directory path for LaTeX file assets.
-   *
-   * @param assetsDirectoryPath The base directory path where assets are stored.
-   * @param latexFilePath The file path to the LaTeX file whose assets destination directory needs to be constructed.
-   * @returns The resolved destination directory path for the assets of the provided LaTeX file.
-   */
-  getLatexFileAssetsDestinationDirectoryPath: (assetDirectoryPath: string, latexFilePath: string) => string
-  /**
-   * Constructs the destination directory path for an asset based on its file path and a specified assets directory path.
-   *
-   * @param assetsDirectoryPath The base directory where assets will be stored.
-   * @param filePath The file path of the asset being processed.
-   * @returns The constructed path for the destination directory of the asset.
-   */
-  getAssetDestinationDirectoryPath: (assetDirectoryPath: string, filePath: string) => string
-  /**
-   * Retrieves a list of directories to include when resolving graphics files for a LaTeX document.
-   *
-   * @param latexFilePath The absolute path of the LaTeX file.
-   * @returns An array containing resolved directory paths.
-   */
-  getIncludeGraphicsDirectories: (latexFilePath: string) => string[]
-  /**
-   * Determines if a given file should be transformed based on its name and extension.
-   *
-   * @param filePath The full file path of the file to be evaluated.
-   * @returns True if the file should be transformed, otherwise false.
-   */
-  shouldBeTransformed: (filePath: string) => boolean
-  /**
-   * Filters a given LaTeX filename by removing specific suffixes or altering the filename
-   * if certain suffixes are present at the end.
-   *
-   * @param file The LaTeX filename to filter.
-   * @returns The modified or original filename after processing.
-   */
-  filterFilename(file: string): string
-  /**
-   * Represents the file of the Pandoc redefinitions file.
-   */
-  pandocRedefinitionsFile: string
-  /**
-   * An object containing LaTeX templates for rendering pictures using different configurations.
-   */
-  picturesTemplate: { [key: string]: string }
-  /**
-   * Retrieves linked resources associated with a LaTeX file located in the provided directory.
-   *
-   * @param sourceDirectoryPath The root directory path where source LaTeX files are located.
-   * @param latexFilePath The full file path of the target LaTeX file.
-   * @returns An array of linked resource objects that contain metadata, such as the
-   * title, URL, and whether the resource corresponds to the current LaTeX file.
-   */
-  getLinkedResources: (sourceDirectoryPath: string, latexFilePath: string) => LinkedResource[]
-  /**
-   * A string variable that holds the URL pointing to LaTeX files.
-   */
-  latexFilesUrl: string
+const defaultOptions = {
+  assetsDestinationDirectoryName,
+  readGradeData,
+  isAsset,
+  getLatexFileAssetsDestinationDirectoryPath,
+  getAssetDestinationDirectoryPath: getAssetDestinationDirectoryPath,
+  shouldBeTransformed: shouldBeTransformed,
+  pandocRedefinitionsFile,
+  picturesTemplate,
+  getRawLinkedResources,
+  latexFilesUrl: '/_api/'
 }
 
 /**
  * The default options.
  */
-export default {
-  downloadDestinations: files.downloadDestinations,
-  dataLatexDirectory: files.dataLatexDirectory,
-  assetsDestinationDirectoryName: files.latexAssetsDestinationDirectoryName,
-  readGradeData: readGradeData,
-  isAsset: isAsset,
-  getLatexFileAssetsDestinationDirectoryPath: getLatexFileAssetsDestinationDirectoryPath,
-  getIncludeGraphicsDirectories: files.getIncludeGraphicsDirectories,
-  getAssetDestinationDirectoryPath: getAssetDestinationDirectoryPath,
-  shouldBeTransformed: shouldBeTransformed,
-  filterFilename: files.filterFilename,
-  pandocRedefinitionsFile: pandocRedefinitionsFile,
-  picturesTemplate: picturesTemplate,
-  getLinkedResources: getLinkedResources,
-  latexFilesUrl: '/_api/'
-}
+export default defaultOptions
+
+/**
+ * Options for this module.
+ */
+export type ModuleOptions = typeof defaultOptions

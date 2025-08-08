@@ -1,9 +1,12 @@
 // noinspection ES6PreferShortImport
 
-import { filterFilename } from '../../app/site/files'
 import path from 'path'
-import * as files from '../../app/site/files'
 import debug from '../../app/site/debug'
+
+/**
+ * The directory path where generated PDF files from LaTeX sources will be stored.
+ */
+export const destinationDirectoryName: string = 'pdf'
 
 /**
  * Represents a LaTeX file variant.
@@ -75,63 +78,52 @@ const ignores = [
 ]
 
 /**
- * Options for the PDF generator module.
+ * Retrieves a list of directories to include when resolving graphics files for a LaTeX document.
+ *
+ * @param latexFilePath The absolute path of the LaTeX file.
  */
-export interface ModuleOptions {
-  /**
-   * Specifies the directory path for data Latex files.
-   */
-  directory: string
-  /**
-   * The file path where the previous build data is stored.
-   */
-  previousBuildDirectory: string
-  /**
-   * The directory path where generated PDF files from LaTeX sources will be stored.
-   */
-  destinationDirectory: string
-  /**
-   * Generates an array of variant objects based on the given file path and file content.
-   *
-   * @param {string} filePath The path of the input file.
-   * @param {string} fileContent The content of the input file.
-   * @returns {null | Variant[]} An array of generated variants or `null` if the input file is named 'questions-flash'.
-   */
-  generateVariants: (filePath: string, fileContent: string) => null | Variant[]
-  /**
-   * A list of file names to be ignored during certain operations.
-   */
-  ignores: string[]
-  /**
-   * Retrieves a list of directories to include when resolving graphics files for a LaTeX document.
-   *
-   * @param latexFilePath The absolute path of the LaTeX file.
-   */
-  getIncludeGraphicsDirectories: (latexFilePath: string) => string[]
-  /**
-   * Whether files should be moved instead of copied.
-   */
-  moveFiles: boolean
-  /**
-   * Filters a given LaTeX filename by removing specific suffixes or altering the filename
-   * if certain suffixes are present at the end.
-   *
-   * @param file The LaTeX filename to filter.
-   * @returns The modified or original filename after processing.
-   */
-  renameFile(file: string): string
+export const getIncludeGraphicsDirectories = (latexFilePath: string): string[] => [
+  path.resolve(path.dirname(latexFilePath), path.parse(latexFilePath).name),
+  path.dirname(latexFilePath)
+]
+
+/**
+ * Filters a given LaTeX filename by removing specific suffixes or altering the filename
+ * if certain suffixes are present at the end.
+ *
+ * @param latexFilename The LaTeX filename to filter.
+ * @returns The modified or original filename after processing.
+ */
+const filterFilename = (latexFilename: string) => {
+  let suffixToRemove = '-cours'
+  if (latexFilename.endsWith(suffixToRemove)) {
+    return latexFilename.substring(0, latexFilename.length - suffixToRemove.length)
+  }
+  suffixToRemove = '-cours-impression'
+  if (latexFilename.endsWith(suffixToRemove)) {
+    return latexFilename.substring(0, latexFilename.length - suffixToRemove.length) + '-impression'
+  }
+  return latexFilename
+}
+
+/**
+ * Holds the default options for this module.
+ */
+const defaultOptions = {
+  destinationDirectoryName,
+  generateVariants,
+  ignores,
+  getIncludeGraphicsDirectories,
+  moveFiles: !debug,
+  filterFilename
 }
 
 /**
  * The default options.
  */
-export default {
-  directory: files.downloadDestinations.data + '/' + files.dataLatexDirectory,
-  previousBuildDirectory: files.downloadDestinations.previousBuild,
-  destinationDirectory: files.latexPdfDestinationDirectory,
-  generateVariants: generateVariants,
-  ignores: ignores,
-  getIncludeGraphicsDirectories: files.getIncludeGraphicsDirectories,
-  moveFiles: !debug,
-  renameFile: files.filterFilename
-}
+export default defaultOptions
+
+/**
+ * Options for this module.
+ */
+export type ModuleOptions = typeof defaultOptions

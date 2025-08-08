@@ -7,6 +7,7 @@ import { Octokit } from '@octokit/core'
 import { createResolver, defineNuxtModule, type Resolver, useLogger } from '@nuxt/kit'
 import debug from '../../app/site/debug'
 import defaultOptions, { type ModuleOptions } from './options'
+import { defu } from 'defu'
 
 const name = 'content-downloader'
 
@@ -35,8 +36,23 @@ export default defineNuxtModule<ModuleOptions>({
       latestCommitShaFilePath = resolver.resolve(rootDir, nuxt.options.commitShaFileGenerator.directory, options.latestCommitShaFilename)
     }
 
-    await downloadPreviousBuild(resolver, rootDir, options)
-    await downloadRemoteDirectory(resolver, rootDir, latestCommitShaFilePath, options)
+    const previousBuildDirectories = [
+      ...options.previousBuildDirectories,
+      nuxt.options.latexPdfGenerator.destinationDirectoryName,
+      nuxt.options.latexToContent.assetsDestinationDirectoryName
+    ]
+    await downloadPreviousBuild(
+      resolver,
+      rootDir,
+      previousBuildDirectories,
+      options
+    )
+    await downloadRemoteDirectory(
+      resolver,
+      rootDir,
+      latestCommitShaFilePath,
+      options
+    )
   }
 })
 
@@ -44,10 +60,16 @@ export default defineNuxtModule<ModuleOptions>({
  * Downloads the previous build from Github pages.
  * @param resolver The resolver instance.
  * @param rootDir The source directory.
+ * @param directoriesToExtract The directories to extract from the zipped previous build of the website.
  * @param options The module options.
  * @returns Whether the download is a success.
  */
-async function downloadPreviousBuild(resolver: Resolver, rootDir: string, options: ModuleOptions): Promise<boolean> {
+async function downloadPreviousBuild(
+  resolver: Resolver,
+  rootDir: string,
+  directoriesToExtract: string[],
+  options: ModuleOptions
+): Promise<boolean> {
   try {
     const directoryPath = resolver.resolve(rootDir, options.downloadDestinations.previousBuild)
     if (fs.existsSync(directoryPath)) {
@@ -72,7 +94,7 @@ async function downloadPreviousBuild(resolver: Resolver, rootDir: string, option
     if (!fs.existsSync(parentPath)) {
       fs.mkdirSync(parentPath, { recursive: true })
     }
-    for (const previousBuildDirectory of options.previousBuildDirectories) {
+    for (const previousBuildDirectory of directoriesToExtract) {
       zip.extractEntryTo(`${zipRootDir}${previousBuildDirectory}/`, parentPath)
     }
 

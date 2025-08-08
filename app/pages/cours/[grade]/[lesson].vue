@@ -1,11 +1,11 @@
 <script lang="ts">
 import type { Grade, Lesson, LessonContent } from '~/types'
-import { getLessonUrl, getGradeUrl } from '~/site/lessons'
+import { getLessonRoute, getGradeRoute } from '~/site/lessons'
 
 export const lessonNavigationEntry = (grade: Grade, lesson: Lesson) => {
   return {
     title: lesson.pageTitle,
-    to: getLessonUrl(grade, lesson),
+    to: getLessonRoute(grade, lesson),
     depth: 1
   }
 }
@@ -41,7 +41,7 @@ usePageHead({ title })
         <controls-section>
           <controls-section-title />
           <control
-            :to="getGradeUrl(grade)"
+            :to="getGradeRoute(grade)"
             text="Retourner à la liste des cours"
           />
           <control

@@ -1,20 +1,20 @@
 import type { Grade, Lesson } from '~/types'
 
 /**
- * Returns the URL for a given grade.
+ * Returns the URL to a given grade.
  * @param grade The grade.
- * @returns The grade URL.
+ * @returns The grade route.
  */
-export const getGradeUrl = (grade: Grade): string => {
+export const getGradeRoute = (grade: Grade): string => {
   return `/cours/${grade.id}/`
 }
 
 /**
- * Returns the URL for a given lesson.
+ * Returns the URL to a given lesson.
  * @param grade The lesson grade.
  * @param lesson The lesson.
- * @returns The lesson URL.
+ * @returns The lesson route.
  */
-export const getLessonUrl = (grade: Grade, lesson: Lesson): string => {
-  return `${getGradeUrl(grade)}${lesson.id}/`
+export const getLessonRoute = (grade: Grade, lesson: Lesson): string => {
+  return `${getGradeRoute(grade)}${lesson.id}/`
 }
