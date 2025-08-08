@@ -1,0 +1,450 @@
+// noinspection ES6PreferShortImport
+
+import path from 'path'
+import {
+  dataLatexDirectory,
+  downloadDestinations,
+  filterFilename,
+  latexPdfDestinationDirectory
+} from '../../app/site/files'
+import fs from 'fs'
+import * as files from '../../app/site/files'
+import type { GradeWithResources, LinkedResource } from '../../app/types'
+
+/**
+ * Determines if a given file path corresponds to an asset file based on its parent directory name and file extension.
+ *
+ * @param filePath The file path to be evaluated.
+ * @returns Returns true if the file is considered an asset, otherwise false.
+ */
+const isAsset = (filePath: string): boolean => {
+  const parentDirectoryName = path.basename(path.dirname(filePath))
+  if (parentDirectoryName !== 'images' && !parentDirectoryName.endsWith('-cours')) {
+    return false
+  }
+  const extension = path.parse(filePath).ext
+  return ['.pdf', '.svg', '.png', '.jpeg', '.jpg', '.gif'].includes(extension)
+}
+
+/**
+ * Constructs and returns the destination directory path for LaTeX file assets.
+ *
+ * @param assetsDirectoryPath The base directory path where assets are stored.
+ * @param latexFilePath The file path to the LaTeX file whose assets destination directory needs to be constructed.
+ * @returns The resolved destination directory path for the assets of the provided LaTeX file.
+ */
+const getLatexFileAssetsDestinationDirectoryPath = (assetsDirectoryPath: string, latexFilePath: string): string => {
+  return path.resolve(
+    assetsDirectoryPath,
+    path.basename(path.dirname(latexFilePath)),
+    path.parse(latexFilePath).name
+  )
+}
+
+/**
+ * Constructs the destination directory path for an asset based on its file path and a specified assets directory path.
+ *
+ * @param assetsDirectoryPath The base directory where assets will be stored.
+ * @param filePath The file path of the asset being processed.
+ * @returns The constructed path for the destination directory of the asset.
+ */
+const getAssetDestinationDirectoryPath = (assetsDirectoryPath: string, filePath: string): string => {
+  const parent = path.dirname(filePath)
+  if (path.parse(parent).name === 'images') {
+    const level = path.basename(path.dirname(parent))
+    return path.resolve(
+      assetsDirectoryPath,
+      level
+    )
+  }
+  else {
+    const level = path.basename(path.dirname(path.dirname(parent)))
+    return path.resolve(
+      assetsDirectoryPath,
+      level,
+      path.basename(parent)
+    )
+  }
+}
+
+/**
+ * Reads and retrieves grade data along with associated resources.
+ *
+ * @param directoryPath The path to the directory containing the grade data files.
+ * @returns Returns the grade data combined with its associated resources,
+ * or null if the data is not found or an error occurs.
+ */
+const readGradeData = (directoryPath: string): GradeWithResources | null => {
+  const gradeDataFilePath = path.resolve(directoryPath, 'grade.json')
+  if (!fs.existsSync(gradeDataFilePath)) {
+    return null
+  }
+  const grade = JSON.parse(fs.readFileSync(gradeDataFilePath, { encoding: 'utf-8' }))
+  return grade as GradeWithResources
+}
+
+/**
+ * Determines if a given file should be transformed based on its name and extension.
+ *
+ * @param filePath The full file path of the file to be evaluated.
+ * @returns True if the file should be transformed, otherwise false.
+ */
+const shouldBeTransformed = (filePath: string): boolean => {
+  const filename = path.parse(filePath).name
+  return filename.endsWith('-cours') && path.extname(filePath) === '.tex'
+}
+
+/**
+ * Represents the file of the Pandoc redefinitions file.
+ *
+ * This file is typically used to customize or redefine specific styles,
+ * commands, or formatting options in Pandoc-generated output
+ *
+ * Usage of this variable implies the availability of the corresponding
+ * file in the specified location, which contains necessary LaTeX
+ * redefinitions or customizations compatible with Pandoc.
+ */
+const pandocRedefinitionsFile: string = 'pandoc.tex'
+
+/**
+ * An object containing LaTeX templates for rendering pictures using different configurations.
+ *
+ * The `picturesTemplate` object provides predefined LaTeX document class configurations,
+ * packages, and commands required to generate graphical content. Each property holds a LaTeX
+ * template string with placeholders for dynamic content insertion.
+ */
+const picturesTemplate: Record<string, string> = {
+  /**
+   * Template string for generating a LaTeX document utilizing the TikZ package and Scratch scripts.
+   */
+  scratch: `\\documentclass[tikz]{standalone}
+
+% Load all required packages for my Scratch scripts.
+\\usepackage{scratch3}
+
+\\setscratch{scale=2.0}
+
+% Graphics path.
+{graphicsPath}
+
+\\begin{document}
+  % Content :
+  {extractedContent}
+\\end{document}
+`,
+  /**
+   * A string literal containing LaTeX code to render a standalone TikZ picture document.
+   */
+  tikzpicture: `\\documentclass[tikz]{standalone}
+
+% Load all required packages for my graphics.
+\\usepackage{fourier-otf}
+\\usepackage{fontspec}
+\\usepackage{tkz-euclide}
+\\usepackage{graphicx}
+\\usepackage{gensymb}
+\\usepackage{xlop}
+\\usepackage{ifthen}
+\\usepackage{xparse}
+\\usepackage[group-separator={\\;}, group-minimum-digits=4]{siunitx}
+\\usepackage{tkz-tab}
+
+% Tables :
+
+\\tikzset{t style/.style = {style = dashed}}
+
+% Arrows :
+
+\\tikzset{>={Latex[width=4pt]}}
+
+% Options for xlop.
+\\opset{%
+  dividendbridge,%
+  carrysub,%
+  displayintermediary=all,%
+  displayshiftintermediary=all,%
+  voperator=bottom,%
+  voperation=bottom,%
+  decimalsepsymbol={,},%
+  shiftdecimalsep=divisor%
+}
+
+% Switch math font.
+\\setmathfont{Erewhon Math}
+
+% Load some tikz libraries.
+\\usetikzlibrary{angles}
+\\usetikzlibrary{patterns}
+\\usetikzlibrary{intersections}
+\\usetikzlibrary{shadows.blur}
+\\usetikzlibrary{decorations.pathreplacing}
+\\usetikzlibrary{ext.transformations.mirror}
+\\usetikzlibrary{babel}
+
+% Graphics path.
+{graphicsPath}
+
+% \\dddots command.
+\\newcommand{\\dddots}[1]{\\makebox[#1]{\\dotfill}}
+\\NewDocumentCommand{\\graphfonction}{O{1} O{1} m m m m O{\\x} O{f} O{0.5 below right}}{
+  \\tikzgraph[#1][#2]{#3}{#4}{#5}{#6}
+  \\begin{scope}
+    \\clip (\\xmin,\\ymin) rectangle (\\xmax,\\ymax);
+    \\draw[domain=\\xmin:\\xmax, variable=\\x, graphfonctionlabel=at #9 with {$\\color{teal} \\mathcal{C}_{#8}$}, thick, smooth, teal] plot ({\\x}, {(#7)});
+  \\end{scope}
+}
+
+% \\tikzgraph command.
+\\NewDocumentCommand{\\tikzgraph}{O{1} O{1} m m m m}{
+  \\coordinate (O) at (0,0);
+
+  \\pgfmathparse{#3-0.5}
+  \\edef\\xmin{\\pgfmathresult}
+  \\pgfmathparse{#4-0.5}
+  \\edef\\ymin{\\pgfmathresult}
+  \\pgfmathparse{#5+0.5}
+  \\edef\\xmax{\\pgfmathresult}
+  \\pgfmathparse{#6+0.5}
+  \\edef\\ymax{\\pgfmathresult}
+
+  \\draw[opacity=0.5,thin] (\\xmin,\\ymin) grid (\\xmax,\\ymax);
+  \\foreach \\x in {#3,...,#5} {
+    \\pgfmathparse{int(#1*\\x)}
+    \\edef\\xlabel{\\pgfmathresult}
+    \\ifthenelse{\\x = 0}{}{\\draw[opacity=0.5] (\\x,0.25) -- (\\x,-0.25) node {\\small $\\xlabel$}};
+  }
+  \\foreach \\y in {#4,...,#6} {
+    \\pgfmathparse{int(#2*\\y)}
+    \\edef\\ylabel{\\pgfmathresult}
+    \\ifthenelse{\\y = 0}{}{\\draw[opacity=0.5] (0.25,\\y) -- (-0.25,\\y) node[shift={(-0.1,0)}] {\\small $\\ylabel$}};
+  }
+  \\draw[opacity=0.5] (0,0.25) -- (0,-0.25) node[shift={(-0.35,-0.1)}]{\\small $0$};
+  \\draw[thick,->] (\\xmin,0) -- (\\xmax,0);
+  \\draw[thick,->] (0,\\ymin) -- (0,\\ymax);
+}
+
+% Other commands.
+\\newcommand{\\sipandoc}[2]{#1}
+\\newcommand{\\siimpression}[2]{#2}
+\\newcommand{\\sieleve}[2]{#2}
+
+% 2.0x scale.
+\\tikzset{
+  graphfonctionlabel/.style args={at #1 #2 with #3}{
+    postaction={
+      decorate, decoration={markings, mark= at position #1 with \\node [#2] {#3};}
+    }
+  },
+  every picture/.append style={scale=2.0, every node/.style={scale=2.0}}
+}
+
+\\begin{document}
+  % Content.
+  {extractedContent}
+\\end{document}
+`
+}
+
+/**
+ * Retrieves linked resources associated with a LaTeX file located in the provided directory.
+ *
+ * This function inspects files in the source directory and identifies LaTeX files that share a specific
+ * naming pattern with the given file. For each matching file, it constructs necessary linked resource
+ * metadata, including the title and URL pointing to a corresponding PDF file.
+ *
+ * @param sourceDirectoryPath The root directory path where source LaTeX files are located.
+ * @param latexFilePath The full file path of the target LaTeX file.
+ * @returns An array of linked resource objects that contain metadata, such as the
+ * title, URL, and whether the resource corresponds to the current LaTeX file.
+ */
+const getLinkedResources = (sourceDirectoryPath: string, latexFilePath: string): LinkedResource[] => {
+  const filename = path.parse(latexFilePath).name
+  if (filename.endsWith('-cours')) {
+    const result = []
+    const prefix = filterFilename(filename)
+    const files = fs.readdirSync(path.dirname(latexFilePath))
+    const buildUrl = (baseUrl: string, file: string) => `/${latexPdfDestinationDirectory}/${baseUrl}/${filterFilename(path.parse(file).name)}.pdf`
+    for (const file of files) {
+      // We don't check for ignores here as there is no match in my setup.
+      if (file.startsWith(prefix) && file.endsWith('.tex') && file !== filename) {
+        const relativePath = path.relative(path.resolve(sourceDirectoryPath, downloadDestinations.data, dataLatexDirectory), latexFilePath)
+        const baseUrl = path.dirname(relativePath).replace('\\', '/')
+        if (filename + '.tex' === file) {
+          result.push({
+            title: 'Télécharger le PDF',
+            url: buildUrl(baseUrl, file),
+            isCurrentFile: true
+          })
+        }
+        const title = getLinkedResourceTitle(prefix, file)
+        if (title) {
+          result.push({
+            title,
+            url: buildUrl(baseUrl, file)
+          })
+        }
+      }
+    }
+    return result
+  }
+  return []
+}
+
+/**
+ * Determines the title of a linked resource based on a given filename and prefix.
+ * The function matches the filename against a set of predefined patterns and, if a match is
+ * found, generates a title corresponding to the identified resource type. If no pattern
+ * matches the provided filename, the function returns null.
+ *
+ * @param prefix - The prefix used to construct the regular expressions for matching.
+ * @param filename - The name of the file to test against the predefined patterns.
+ * @returns The generated resource title if a match is found, otherwise null.
+ */
+const getLinkedResourceTitle = (prefix: string, filename: string): string | null => {
+  const resourceTypes = [
+    {
+      filenameRegex: RegExp(prefix + /-activite-([A-Za-zÀ-ÖØ-öø-ÿ\d, ]+)/.source),
+      buildTitle: (match: RegExpExecArray) => `Activité ${match[1]}`
+    },
+    {
+      filenameRegex: RegExp(prefix + /-evaluation/.source),
+      buildTitle: (_: RegExpExecArray) => 'Évaluation'
+    },
+    {
+      filenameRegex: RegExp(prefix + /-interrogation/.source),
+      buildTitle: (_: RegExpExecArray) => 'Interrogation'
+    },
+    {
+      filenameRegex: RegExp(prefix + /-dm/.source),
+      buildTitle: (_: RegExpExecArray) => 'Devoir maison'
+    }
+  ]
+  for (const resourceType of resourceTypes) {
+    const match = resourceType.filenameRegex.exec(filename)
+    if (match != null) {
+      return resourceType.buildTitle(match)
+    }
+  }
+  return null
+}
+
+/**
+ * Options for this module.
+ */
+export interface ModuleOptions {
+  /**
+   * An object representing destination paths for various downloads used in the project.
+   */
+  downloadDestinations: {
+    /**
+     * The file path where the previous build data is stored.
+     */
+    previousBuild: string
+    /**
+     * The file path where project-specific data files are stored.
+     */
+    data: string
+  }
+  /**
+   * Represents the directory path where LaTeX files are stored or will be stored.
+   */
+  dataLatexDirectory: string
+  /**
+   * Represents the name of the destination directory where LaTeX-related assets, such as images, are stored.
+   */
+  assetsDestinationDirectoryName: string
+  /**
+   * Reads and retrieves grade data along with associated resources.
+   *
+   * @param directoryPath The path to the directory containing the grade data files.
+   * @returns Returns the grade data combined with its associated resources,
+   * or null if the data is not found or an error occurs.
+   */
+  readGradeData: (directoryPath: string) => GradeWithResources | null
+  /**
+   * Determines if a given file path corresponds to an asset file based on its parent directory name and file extension.
+   *
+   * @param filePath The file path to be evaluated.
+   * @returns Returns true if the file is considered an asset, otherwise false.
+   */
+  isAsset: (filePath: string) => boolean
+  /**
+   * Constructs and returns the destination directory path for LaTeX file assets.
+   *
+   * @param assetsDirectoryPath The base directory path where assets are stored.
+   * @param latexFilePath The file path to the LaTeX file whose assets destination directory needs to be constructed.
+   * @returns The resolved destination directory path for the assets of the provided LaTeX file.
+   */
+  getLatexFileAssetsDestinationDirectoryPath: (assetDirectoryPath: string, latexFilePath: string) => string
+  /**
+   * Constructs the destination directory path for an asset based on its file path and a specified assets directory path.
+   *
+   * @param assetsDirectoryPath The base directory where assets will be stored.
+   * @param filePath The file path of the asset being processed.
+   * @returns The constructed path for the destination directory of the asset.
+   */
+  getAssetDestinationDirectoryPath: (assetDirectoryPath: string, filePath: string) => string
+  /**
+   * Retrieves a list of directories to include when resolving graphics files for a LaTeX document.
+   *
+   * @param latexFilePath The absolute path of the LaTeX file.
+   * @returns An array containing resolved directory paths.
+   */
+  getIncludeGraphicsDirectories: (latexFilePath: string) => string[]
+  /**
+   * Determines if a given file should be transformed based on its name and extension.
+   *
+   * @param filePath The full file path of the file to be evaluated.
+   * @returns True if the file should be transformed, otherwise false.
+   */
+  shouldBeTransformed: (filePath: string) => boolean
+  /**
+   * Filters a given LaTeX filename by removing specific suffixes or altering the filename
+   * if certain suffixes are present at the end.
+   *
+   * @param file The LaTeX filename to filter.
+   * @returns The modified or original filename after processing.
+   */
+  filterFilename(file: string): string
+  /**
+   * Represents the file of the Pandoc redefinitions file.
+   */
+  pandocRedefinitionsFile: string
+  /**
+   * An object containing LaTeX templates for rendering pictures using different configurations.
+   */
+  picturesTemplate: { [key: string]: string }
+  /**
+   * Retrieves linked resources associated with a LaTeX file located in the provided directory.
+   *
+   * @param sourceDirectoryPath The root directory path where source LaTeX files are located.
+   * @param latexFilePath The full file path of the target LaTeX file.
+   * @returns An array of linked resource objects that contain metadata, such as the
+   * title, URL, and whether the resource corresponds to the current LaTeX file.
+   */
+  getLinkedResources: (sourceDirectoryPath: string, latexFilePath: string) => LinkedResource[]
+  /**
+   * A string variable that holds the URL pointing to LaTeX files.
+   */
+  latexFilesUrl: string
+}
+
+/**
+ * The default options.
+ */
+export default {
+  downloadDestinations: files.downloadDestinations,
+  dataLatexDirectory: files.dataLatexDirectory,
+  assetsDestinationDirectoryName: files.latexAssetsDestinationDirectoryName,
+  readGradeData: readGradeData,
+  isAsset: isAsset,
+  getLatexFileAssetsDestinationDirectoryPath: getLatexFileAssetsDestinationDirectoryPath,
+  getIncludeGraphicsDirectories: files.getIncludeGraphicsDirectories,
+  getAssetDestinationDirectoryPath: getAssetDestinationDirectoryPath,
+  shouldBeTransformed: shouldBeTransformed,
+  filterFilename: files.filterFilename,
+  pandocRedefinitionsFile: pandocRedefinitionsFile,
+  picturesTemplate: picturesTemplate,
+  getLinkedResources: getLinkedResources,
+  latexFilesUrl: '/_api/'
+}

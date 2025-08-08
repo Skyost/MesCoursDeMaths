@@ -1,26 +1,17 @@
 import { defineNuxtConfig } from 'nuxt/config'
 import StylelintPlugin from 'vite-plugin-stylelint'
 import eslintPlugin from '@nabla/vite-plugin-eslint'
-import { siteMeta } from './site/meta'
-import { debug } from './site/debug'
-import { authentication } from './site/authentication'
-
-let url = siteMeta.url
-let apiUrl = siteMeta.apiUrl
-if (debug) {
-  url = 'http://localhost:3000'
-  apiUrl = 'http://localhost:3000/api'
-}
+import siteMeta from './app/site/meta'
 
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
   modules: [
     '@nuxt/eslint',
     'nuxt-cname-generator',
-    '~/modules/commit-sha-file-generator',
-    '~/modules/content-downloader',
-    '~/modules/latex-pdf-generator',
-    '~/modules/latex-to-content',
+    '~/../modules/commit-sha-file-generator',
+    '~/../modules/content-downloader',
+    '~/../modules/latex-pdf-generator',
+    '~/../modules/latex-to-content',
     '@bootstrap-vue-next/nuxt',
     '@nuxtjs/google-fonts',
     'nuxt-link-checker',
@@ -48,22 +39,13 @@ export default defineNuxtConfig({
   },
 
   css: [
-    '~/assets/app.scss',
-    '~/node_modules/katex/dist/katex.min.css'
+    '~/assets/app.scss'
   ],
 
   site: {
     url: siteMeta.url,
     name: siteMeta.title,
     trailingSlash: true
-  },
-
-  runtimeConfig: {
-    public: {
-      githubClientId: authentication.clientId,
-      url,
-      apiUrl
-    }
   },
 
   experimental: {
@@ -101,10 +83,6 @@ export default defineNuxtConfig({
     }
   },
 
-  cname: {
-    host: siteMeta.url
-  },
-
   commitShaFileGenerator: {
     directory: 'node_modules/.commit-sha-file-generator/'
   },
@@ -136,14 +114,6 @@ export default defineNuxtConfig({
     skipInspections: [
       'link-text',
       'no-uppercase-chars'
-    ]
-  },
-
-  sitemap: {
-    exclude: [
-      '/prof/agenda/',
-      '/prof/cours/',
-      '/prof/tableau-blanc/'
     ]
   }
 })
