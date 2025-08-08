@@ -6,6 +6,7 @@ const theme = useTheme()
   <b-navbar
     class="page-navbar"
     v-b-color-mode="'dark'"
+    data-bs-theme="dark"
     toggleable="lg"
     :variant="theme === 'light' ? 'primary' : 'black'"
   >
