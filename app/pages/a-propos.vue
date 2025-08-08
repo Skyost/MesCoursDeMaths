@@ -318,4 +318,10 @@ usePageHead({ title: 'À propos' })
 #recaptcha {
   font-size: 0.8em;
 }
+
+@include color-mode(dark) {
+  #quote {
+    background-color: $dark;
+  }
+}
 </style>

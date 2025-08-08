@@ -80,4 +80,10 @@ import siteMeta from '~/site/meta'
     opacity: 1;
   }
 }
+
+@include color-mode(dark) {
+  .page-header-parent {
+    background-color: black;
+  }
+}
 </style>

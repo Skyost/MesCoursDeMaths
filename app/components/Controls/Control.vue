@@ -11,11 +11,13 @@ withDefaults(
     iconId: 'arrow-left'
   }
 )
+
+const theme = useTheme()
 </script>
 
 <template>
   <b-button
-    variant="light"
+    :variant="theme === 'light' ? 'light' : 'dark'"
     :to="to"
     :href="href"
     :active="active"

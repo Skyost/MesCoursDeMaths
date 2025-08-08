@@ -1,9 +1,14 @@
+<script setup lang="ts">
+const theme = useTheme()
+</script>
+
 <template>
   <b-navbar
-    data-bs-theme="dark"
+    id="page-navbar"
     v-b-color-mode="'dark'"
+    data-bs-theme="dark"
     toggleable="lg"
-    variant="primary"
+    :variant="theme === 'light' ? 'primary' : 'dark'"
   >
     <page-navbar-brand class="d-none d-lg-inline" />
     <b-navbar-toggle target="page-navbar-collapse" />
@@ -32,40 +37,49 @@
   </b-navbar>
 </template>
 
-<script setup lang="ts">
-</script>
-
 <style lang="scss" scoped>
 @import '~/assets/bootstrap-mixins';
 @import '~/assets/colors';
 
-#page-navbar-collapse {
-  @include media-breakpoint-down(lg) {
-    .page-navbar-item {
-      background-color: darken($primary, 5%);
+#page-navbar {
+  #page-navbar-collapse {
+    @include media-breakpoint-down(lg) {
+      .page-navbar-item {
+        background-color: darken($primary, 5%);
 
-      &:first-child {
-        margin-top: 20px;
-      }
+        &:first-child {
+          margin-top: 20px;
+        }
 
-      &:last-child {
-        margin-bottom: 20px;
-      }
+        &:last-child {
+          margin-bottom: 20px;
+        }
 
-      :deep(a) {
-        padding: 10px;
+        :deep(a) {
+          padding: 10px;
+        }
       }
+    }
+  }
+
+  .mobile-navbar-brand {
+    position: absolute;
+    top: var(--bs-navbar-padding-y);
+    right: var(--bs-navbar-padding-x);
+
+    @include media-breakpoint-up(lg) {
+      display: none;
     }
   }
 }
 
-.mobile-navbar-brand {
-  position: absolute;
-  top: var(--bs-navbar-padding-y);
-  right: var(--bs-navbar-padding-x);
-
-  @include media-breakpoint-up(lg) {
-    display: none;
+@include color-mode(dark) {
+  #page-navbar #page-navbar-collapse {
+    @include media-breakpoint-down(lg) {
+      .page-navbar-item {
+        background-color: $dark;
+      }
+    }
   }
 }
 </style>

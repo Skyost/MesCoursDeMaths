@@ -32,6 +32,7 @@ const year = (new Date()).getFullYear()
                   src="/images/technologies/thatlatexlib.svg"
                   alt="That LaTeX lib"
                   title="That LaTeX lib"
+                  class="black"
                 >
               </a>
             </li>
@@ -41,6 +42,7 @@ const year = (new Date()).getFullYear()
                   src="/images/technologies/latex.svg"
                   alt="LaTeX"
                   title="LaTeX"
+                  class="black"
                 >
               </a>
             </li>
@@ -68,6 +70,7 @@ const year = (new Date()).getFullYear()
                   src="/images/technologies/github.svg"
                   alt="Github"
                   title="Github"
+                  class="black"
                 >
               </a>
             </li>
@@ -80,6 +83,8 @@ const year = (new Date()).getFullYear()
 </template>
 
 <style lang="scss" scoped>
+@import '~/assets/bootstrap-mixins';
+
 .page-footer {
   position: relative;
   padding: 1rem 0.5rem;
@@ -100,6 +105,12 @@ const year = (new Date()).getFullYear()
       height: 1em;
       padding: 0 0.3em;
     }
+  }
+}
+
+@include color-mode(dark) {
+  .page-footer .logos .black {
+    filter: invert(1);
   }
 }
 </style>

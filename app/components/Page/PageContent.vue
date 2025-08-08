@@ -53,6 +53,18 @@
   }
 }
 
+@include color-mode(dark) {
+  .page-content-parent {
+    .page-content {
+      background-color: darken($dark, 5%);
+    }
+
+    &::before {
+      background-color: black;
+    }
+  }
+}
+
 :deep(h1.centered),
 :deep(h2.centered) {
   text-align: center;

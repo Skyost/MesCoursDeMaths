@@ -16,7 +16,6 @@ withDefaults(defineProps<{
 <template>
   <nuxt-link
     class="image-card"
-    :class="color"
     :to="to"
   >
     <b-row>
@@ -48,6 +47,7 @@ withDefaults(defineProps<{
 </template>
 
 <style lang="scss" scoped>
+@import '~/assets/bootstrap-mixins';
 @import '~/assets/colors';
 
 .image-card {
@@ -68,6 +68,16 @@ withDefaults(defineProps<{
     padding-bottom: 0;
     margin-bottom: 0;
     margin-top: 10px;
+    hyphens: auto;
+
+    @include media-breakpoint-up(sm) {
+      line-clamp: 3;
+      -webkit-line-clamp: 3;
+      box-orient: vertical;
+      -webkit-box-orient: vertical;
+      display: -webkit-box;
+      overflow: hidden;
+    }
   }
 
   .subtitle {
@@ -112,6 +122,16 @@ withDefaults(defineProps<{
   &.indigo .subtitle {
     color: $indigo;
     border-bottom-color: $indigo;
+  }
+}
+
+@include color-mode(dark) {
+  .image-card {
+    background-color: $dark;
+
+    &:hover {
+      background-color: lighten($dark, 7%);
+    }
   }
 }
 </style>

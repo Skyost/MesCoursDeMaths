@@ -15,6 +15,14 @@ const root = ref<HTMLElement | null>(null)
 const route = useRoute()
 
 const setupDocument = async () => {
+  const images = root.value!.querySelectorAll<HTMLElement>('img')
+  for (const image of images) {
+    const alt = image.getAttribute('alt')
+    if (alt?.startsWith('tikzpicture-')) {
+      image.classList.add('tikz')
+    }
+  }
+
   const tables = root.value!.querySelectorAll<HTMLElement>('table')
   for (const table of tables) {
     table.classList.add('table', 'table-bordered', 'table-hover')
@@ -64,6 +72,14 @@ const setupDocument = async () => {
         base.replaceWith(element)
       }
     }
+
+    const parent = element.parentElement
+    if (parent?.tagName === 'P') {
+      const isDotlineParagraph = parent.children.length === 2 && parent.firstElementChild?.tagName === 'BR' && parent.lastElementChild === element
+      if (isDotlineParagraph) {
+        parent.classList.add('dotline-paragraph')
+      }
+    }
   }
 
   const exercises = root.value!.querySelectorAll<HTMLElement>('.bubble-exercice')
@@ -78,7 +94,7 @@ const setupDocument = async () => {
   let scrollCollapse
   for (let i = 0; i < exercises.length; i++) {
     const exercise = exercises[i]
-    const correction = exercise.nextElementSibling
+    const correction = exercise?.nextElementSibling
     if (correction && correction.classList.contains('bubble-correction')) {
       const id = `correction-${i + 1}`
       const expanded = route.hash === `#${id}`
@@ -113,7 +129,7 @@ const setupDocument = async () => {
     print.classList.add('button-exercice')
     print.classList.add('button-print')
     print.onclick = async () => {
-      const canvas = await html2canvas(exercise)
+      const canvas = await html2canvas(exercise!)
       const newWindow = window.open()
       if (newWindow) {
         const img = newWindow.document.createElement('img')
@@ -127,8 +143,8 @@ const setupDocument = async () => {
       }
     }
     print.innerHTML = `${printIconHtml} Imprimer`
-    exercise.parentNode?.insertBefore(print, exercise.nextSibling)
-    exercise.style.marginBottom = 'calc(1.6em + 1.5rem)'
+    exercise!.parentNode?.insertBefore(print, exercise!.nextSibling)
+    exercise!.style.marginBottom = 'calc(1.6em + 1.5rem)'
   }
   if (scrollCollapse) {
     scrollCollapse.scrollIntoView(true)
@@ -153,6 +169,7 @@ onMounted(setupDocument)
 </template>
 
 <style lang="scss">
+@import '~/assets/bootstrap-mixins';
 @import '~/assets/colors';
 @import 'katex/dist/katex.min.css';
 
@@ -261,6 +278,10 @@ onMounted(setupDocument)
       &.button-print {
         float: right;
       }
+    }
+
+    .dotline-paragraph {
+      width: 100%;
     }
 
     .dotline {
@@ -407,5 +428,20 @@ onMounted(setupDocument)
 
 .bubble-correction {
   @include bubble-style('✔ Correction de l\'exercice ' counter(exercice), #e8eaf6, #3f51b5);
+}
+
+@include color-mode(dark) {
+  .bubble-objectifs,
+  .bubble-retenir,
+  .bubble-exemple,
+  .bubble-exercice,
+  .bubble-information,
+  .bubble-correction {
+    background-color: $dark;
+  }
+
+  img.tikz {
+    filter: invert(1) hue-rotate(180deg) brightness(0.9) contrast(1.1);;
+  }
 }
 </style>

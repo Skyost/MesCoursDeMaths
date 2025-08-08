@@ -12,6 +12,8 @@ $input-border-width: 1px;
 $input-border-color: $blue;
 $input-focus-bg: darken($light, 3%);
 
+$color-mode-type: data;
+
 // 3. Include remainder of required Bootstrap stylesheets
 @import 'bootstrap/scss/variables';
 @import 'bootstrap/scss/variables-dark';
@@ -52,7 +54,6 @@ html {
 
 body {
   min-height: 100%;
-  background-color: #f8f8f8;
 }
 
 hr {
@@ -80,6 +81,12 @@ hr {
     background-color: darken($light, 3%) !important;
     color: $text-muted !important;
     border-bottom-color: $text-muted !important;
+  }
+}
+
+@include color-mode(dark) {
+  .form-control {
+    background-color: $dark !important;
   }
 }
 
