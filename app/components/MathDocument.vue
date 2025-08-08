@@ -440,6 +440,17 @@ onMounted(setupDocument)
     background-color: $dark;
   }
 
+  .math-document {
+    h2 {
+      color: var(--bs-headings-color);
+    }
+
+    h3 {
+      color: var(--bs-headings-color);
+      border-bottom: 1px solid rgba(white, 0.15);
+    }
+  }
+
   img.tikz {
     filter: invert(1) hue-rotate(180deg) brightness(0.9) contrast(1.1);;
   }

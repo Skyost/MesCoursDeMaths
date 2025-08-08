@@ -64,59 +64,76 @@
     }
   }
 }
+</style>
 
-:deep(h1.centered),
-:deep(h2.centered) {
-  text-align: center;
-  border-bottom: none;
+<style lang="scss">
+@import '~/assets/bootstrap-mixins';
+@import '~/assets/colors';
 
-  &::before,
-  &::after {
-    $size: 0.2em;
+.page-content {
+  h1.centered,
+  h2.centered {
+    text-align: center;
+    border-bottom: none;
 
-    content: '';
-    display: inline-block;
-    height: $size;
-    width: $size;
-    background-color: $primary;
-    vertical-align: $size;
-    border-radius: 100%;
+    &::before,
+    &::after {
+      $size: 0.2em;
+
+      content: '';
+      display: inline-block;
+      height: $size;
+      width: $size;
+      background-color: $primary;
+      vertical-align: $size;
+      border-radius: 100%;
+    }
+
+    &::before {
+      margin-right: 0.75em;
+    }
+
+    &::after {
+      margin-left: 0.75em;
+    }
   }
 
-  &::before {
-    margin-right: 0.75em;
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
+    border-bottom: 1px solid rgba(black, 0.25);
+    padding-bottom: 0.2em;
+    margin-bottom: 0.5em;
   }
 
-  &::after {
-    margin-left: 0.75em;
+  .modal-header h5 {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  code {
+    font-size: 1em;
+  }
+
+  a:not([role='button']) {
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
 }
 
-:deep(h1),
-:deep(h2),
-:deep(h3),
-:deep(h4),
-:deep(h5) {
-  border-bottom: 1px solid rgba(black, 0.25);
-  padding-bottom: 0.2em;
-  margin-bottom: 0.5em;
-}
-
-:deep(.modal-header h5) {
-  border-bottom: none;
-  margin-bottom: 0;
-  padding-bottom: 0;
-}
-
-:deep(code) {
-  font-size: 1em;
-}
-
-:deep(a:not([role='button'])) {
-  text-decoration: none;
-
-  &:hover {
-    text-decoration: underline;
+@include color-mode(dark) {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
+    border-bottom: 1px solid rgba(white, 0.25);
   }
 }
 </style>

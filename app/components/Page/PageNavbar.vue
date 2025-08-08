@@ -4,7 +4,7 @@ const theme = useTheme()
 
 <template>
   <b-navbar
-    id="page-navbar"
+    class="page-navbar"
     v-b-color-mode="'dark'"
     data-bs-theme="dark"
     toggleable="lg"
@@ -41,7 +41,7 @@ const theme = useTheme()
 @import '~/assets/bootstrap-mixins';
 @import '~/assets/colors';
 
-#page-navbar {
+.page-navbar {
   #page-navbar-collapse {
     @include media-breakpoint-down(lg) {
       .page-navbar-item {
@@ -74,7 +74,7 @@ const theme = useTheme()
 }
 
 @include color-mode(dark) {
-  #page-navbar #page-navbar-collapse {
+  .page-navbar #page-navbar-collapse {
     @include media-breakpoint-down(lg) {
       .page-navbar-item {
         background-color: $dark;

@@ -16,6 +16,7 @@ withDefaults(defineProps<{
 <template>
   <nuxt-link
     class="image-card"
+    :class="color"
     :to="to"
   >
     <b-row>
@@ -132,6 +133,10 @@ withDefaults(defineProps<{
     &:hover {
       background-color: lighten($dark, 7%);
     }
+  }
+
+  .subtitle {
+    color: var(--bs-headings-color) !important;
   }
 }
 </style>
