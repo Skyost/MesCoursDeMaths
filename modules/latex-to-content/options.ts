@@ -49,17 +49,17 @@ const getLatexFileAssetsDestinationDirectoryPath = (assetsDirectoryPath: string,
 const getAssetDestinationDirectoryPath = (assetsDirectoryPath: string, filePath: string): string => {
   const parent = path.dirname(filePath)
   if (path.parse(parent).name === 'images') {
-    const level = path.basename(path.dirname(parent))
+    const gradeId = path.basename(path.dirname(parent))
     return path.resolve(
       assetsDirectoryPath,
-      level
+      gradeId
     )
   }
   else {
-    const level = path.basename(path.dirname(path.dirname(parent)))
+    const gradeId = path.basename(path.dirname(path.dirname(parent)))
     return path.resolve(
       assetsDirectoryPath,
-      level,
+      gradeId,
       path.basename(parent)
     )
   }

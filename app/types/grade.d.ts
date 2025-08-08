@@ -1,18 +1,13 @@
 import type { Lesson } from '~/types/lesson'
 
 /**
- * Enumeration of possible grades for a math lesson.
- */
-export type LevelId = 'sixieme' | 'cinquieme' | 'quatrieme' | 'troisieme' | 'seconde' | 'premiere-stmg'
-
-/**
  * Represents the grade of a math lesson.
  */
 export interface Grade {
   /**
    * Unique identifier for the grade.
    */
-  id: LevelId
+  id: string
 
   /**
    * Name or description of the grade.
