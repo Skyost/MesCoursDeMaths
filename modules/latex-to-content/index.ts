@@ -12,7 +12,6 @@ import { storageKey } from './common'
 import defaultOptions, { type ModuleOptions } from './options'
 import type { ModuleOptions as ContentDownloaderModuleOptions } from '../content-downloader/options'
 import type { ModuleOptions as LatexPdfGeneratorModuleOptions } from '../latex-pdf-generator/options'
-import { defu } from 'defu'
 
 /**
  * The name of this module.

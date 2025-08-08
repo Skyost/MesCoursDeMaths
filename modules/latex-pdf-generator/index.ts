@@ -6,7 +6,6 @@ import { createResolver, defineNuxtModule, type Resolver, useLogger } from '@nux
 import { LatexChecksumsCalculator, LatexIncludeCommand, PdfGenerator } from 'that-latex-lib'
 import debug from '../../app/site/debug'
 import defaultOptions, { type ModuleOptions } from './options'
-import { defu } from 'defu'
 
 /**
  * The name of the module.

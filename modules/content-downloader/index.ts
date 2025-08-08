@@ -7,7 +7,6 @@ import { Octokit } from '@octokit/core'
 import { createResolver, defineNuxtModule, type Resolver, useLogger } from '@nuxt/kit'
 import debug from '../../app/site/debug'
 import defaultOptions, { type ModuleOptions } from './options'
-import { defu } from 'defu'
 
 const name = 'content-downloader'
 
