@@ -3,14 +3,11 @@
   "version": "1.5.0",
   "private": true,
   "scripts": {
-    "vercel": "vercel dev",
-    "dev": "npx nuxi dev",
-    "build": "npx nuxi build",
-    "start": "npx nuxi start",
-    "generate": "npx nuxi generate",
-    "lint:js": "eslint --ext \".js,.vue\" --ignore-path .gitignore .",
-    "lint:style": "stylelint \"**/*.{vue,css}\" --ignore-path .gitignore",
-    "lint": "npm run lint:js && npm run lint:style"
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
   },
   "dependencies": {
     "nuxt": "^4.0.3"
