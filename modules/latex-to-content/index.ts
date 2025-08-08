@@ -56,7 +56,7 @@ export default defineNuxtModule<ModuleOptions>({
     // Transforms .tex files into content for Nuxt.
     const dataLatexDirectory = nuxt.options.contentDownloader.dataLatexDirectory
     const latexDestinationPath = resolver.resolve(moduleDirectoryPath, dataLatexDirectory)
-    processGrades(
+    await processGrades(
       resolver,
       rootDirectoryPath,
       resolver.resolve(dataDirectoryPath, dataLatexDirectory),
@@ -149,7 +149,7 @@ const processAssets = (
  * @param contentDownloaderOptions The options of the content downloader module.
  * @param latexPdfGeneratorOptions The options of the PDF generator module.
  */
-const processGrades = (
+const processGrades = async (
   resolver: Resolver,
   rootDirectoryPath: string,
   directoryPath: string,
@@ -157,7 +157,7 @@ const processGrades = (
   options: ModuleOptions,
   contentDownloaderOptions: ContentDownloaderModuleOptions,
   latexPdfGeneratorOptions: LatexPdfGeneratorModuleOptions
-) => {
+): Promise<void> => {
   // Contains all grades.
   const gradesData: {
     grade: GradeWithResources
@@ -179,7 +179,7 @@ const processGrades = (
     // Try to read the grade data, and if it's a success, then we add it to the list.
     const grade = options.readGradeData(filePath)
     if (grade) {
-      const transformed = processGradeFiles(
+      const transformed = await processGradeFiles(
         resolver,
         rootDirectoryPath,
         filePath,
@@ -238,7 +238,7 @@ const processGrades = (
  * @param latexPdfGeneratorOptions The options of the PDF generator module.
  * @returns The list of transformed files.
  */
-const processGradeFiles = (
+const processGradeFiles = async (
   resolver: Resolver,
   rootDirectoryPath: string,
   gradeDirectoryPath: string,
@@ -246,7 +246,7 @@ const processGradeFiles = (
   options: ModuleOptions,
   contentDownloaderOptions: ContentDownloaderModuleOptions,
   latexPdfGeneratorOptions: LatexPdfGeneratorModuleOptions
-): LessonContent[] => {
+): Promise<LessonContent[]> => {
   // Get the list of files in the directory.
   const files = fs.readdirSync(gradeDirectoryPath)
 
@@ -259,7 +259,7 @@ const processGradeFiles = (
 
     // If the file should be transformed, we transform it, and we add it to the list.
     if (fs.lstatSync(filePath).isFile() && options.shouldBeTransformed(filePath)) {
-      const result = transformLatexFile(
+      const result = await transformLatexFile(
         resolver,
         rootDirectoryPath,
         filePath,
@@ -287,7 +287,7 @@ const processGradeFiles = (
  * @param contentDownloaderOptions The options of the content downloader module.
  * @param latexPdfGeneratorOptions The options of the PDF generator module.
  */
-const transformLatexFile = (
+const transformLatexFile = async (
   resolver: Resolver,
   rootDirectoryPath: string,
   filePath: string,
@@ -295,7 +295,7 @@ const transformLatexFile = (
   options: ModuleOptions,
   contentDownloaderOptions: ContentDownloaderModuleOptions,
   latexPdfGeneratorOptions: LatexPdfGeneratorModuleOptions
-): LessonContent | undefined => {
+): Promise<LessonContent | undefined> => {
   // Absolute path to the .tex file.
   logger.info(`Processing ${filePath}...`)
   fs.mkdirSync(targetDirectoryPath, { recursive: true })
@@ -349,7 +349,7 @@ const transformLatexFile = (
     })
   })
   // Transforms the raw content into HTML.
-  const { htmlResult: root } = pandocTransformer.transform(filePath, fs.readFileSync(filePath, { encoding: 'utf8' }))
+  const { htmlResult: root } = await pandocTransformer.transform(filePath, fs.readFileSync(filePath, { encoding: 'utf8' }))
 
   let filename = path.parse(filePath).name
   if (root) {
@@ -581,18 +581,22 @@ class TikzPictureImageExtractor extends LatexImageExtractorInDirectory {
  * A math renderer with some custom macros.
  */
 class KatexRendererWithMacros extends KatexRenderer {
+  constructor() {
+    super(
+      {
+        macros: {
+          '\\parallelslant': '\\mathbin{\\!/\\mkern-5mu/\\!}',
+          '\\ensuremath': '#1',
+          '\\dotfillline': '\\htmlClass{dots}{}',
+          '\\dotfillsize': '\\htmlStyle{width: #1}{\\dotfillline}'
+        }
+      }
+    )
+  }
+
   override filterUnknownSymbols(math: string): string {
     return super.filterUnknownSymbols(math)
       .replace(/(\\left *|\\right *)*\\VERT/g, '$1 | $1 | $1 |')
       .replace(/\\overset{(.*)}&{(.*)}/g, '&\\overset{$1}{$2}')
-  }
-
-  override getMacros() {
-    return {
-      '\\parallelslant': '\\mathbin{\\!/\\mkern-5mu/\\!}',
-      '\\ensuremath': '#1',
-      '\\dotfillline': '\\htmlClass{dots}{}',
-      '\\dotfillsize': '\\htmlStyle{width: #1}{\\dotfillline}'
-    }
   }
 }

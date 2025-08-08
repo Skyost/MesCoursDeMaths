@@ -27,7 +27,7 @@
     "adm-zip": "^0.5.16",
     "bootstrap": "^5.3.7",
     "bootstrap-vue-next": "^0.30.4",
-    "eslint": "^9.32.0",
+    "eslint": "^9.33.0",
     "html2canvas": "^1.4.1",
     "node-html-parser": "^7.0.1",
     "nuxt-cname-generator": "^2.0.0",
@@ -35,10 +35,10 @@
     "recaptcha-v3": "^1.10.0",
     "sass": "^1.90.0",
     "sass-loader": "^16.0.5",
-    "stylelint": "^16.23.0",
+    "stylelint": "^16.23.1",
     "stylelint-config-recommended-vue": "^1.6.1",
     "stylelint-config-standard-scss": "^15.0.1",
-    "that-latex-lib": "^2.0.4",
+    "that-latex-lib": "^2.1.2",
     "vite-plugin-stylelint": "^6.0.2"
   }
 }
