@@ -2,22 +2,8 @@ import { execSync } from 'child_process'
 import fs from 'fs'
 import path from 'path'
 import { addServerHandler, createResolver, defineNuxtModule, useLogger } from '@nuxt/kit'
-import { storageKey, filename } from './common.ts'
-
-/**
- * Options for the commit SHA file generator module.
- */
-export interface ModuleOptions {
-  /**
-   * The file target URL.
-   */
-  targetUrl: string
-
-  /**
-   * The directory.
-   */
-  directory: string
-}
+import { storageKey, filename } from './common'
+import defaultOptions, { type ModuleOptions } from './options'
 
 /**
  * The name of the commit SHA file generator module.
@@ -37,22 +23,19 @@ export default defineNuxtModule<ModuleOptions>({
     name,
     version: '0.0.1',
     configKey: 'commitShaFileGenerator',
-    compatibility: { nuxt: '^3.0.0' }
+    compatibility: { nuxt: '^4.0.0' }
   },
-  defaults: {
-    targetUrl: '/_api/',
-    directory: `node_modules/.${name}/`
-  },
+  defaults: defaultOptions,
   setup: (options, nuxt) => {
     const resolver = createResolver(import.meta.url)
-    const srcDir = nuxt.options.srcDir
+    const rootDir = nuxt.options.rootDir
 
     // Retrieve commit hash information.
-    const long = execSync('git rev-parse HEAD', { cwd: srcDir }).toString().trim()
-    const short = execSync('git rev-parse --short HEAD', { cwd: srcDir }).toString().trim()
+    const long = execSync('git rev-parse HEAD', { cwd: rootDir }).toString().trim()
+    const short = execSync('git rev-parse --short HEAD', { cwd: rootDir }).toString().trim()
 
     // Merge with other data.
-    const directoryPath = resolver.resolve(srcDir, options.directory)
+    const directoryPath = resolver.resolve(rootDir, options.directory)
     const filePath = resolver.resolve(directoryPath, filename)
     let latestCommitData = {
       websiteRepository: { long, short }

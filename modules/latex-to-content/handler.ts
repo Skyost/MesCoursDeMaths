@@ -1,15 +1,19 @@
-import { storageKey } from './common.ts'
+import { storageKey } from './common'
+import { defineEventHandler, createError } from 'h3'
+import { useStorage } from 'nitropack/runtime/internal/storage'
 
 export default defineEventHandler(async (event) => {
   const params = event.context.params
-  if (!params?.level) {
-    throw createError({ status: 404 })
+  let filePath = 'index.json'
+  if (params?.grade) {
+    if (params?.lesson) {
+      filePath = `${params?.grade}/${params?.lesson}/index.json`
+    }
+    else {
+      filePath = `${params?.grade}/index.json`
+    }
   }
-  let lesson = params.lesson ?? 'index'
-  if (!lesson.endsWith('.json')) {
-    lesson = lesson += '.json'
-  }
-  const json = await useStorage(`assets:${storageKey}`).getItem(params.level + '/' + lesson)
+  const json = await useStorage(`assets:${storageKey}`).getItem(filePath)
   if (!json) {
     throw createError({ status: 404 })
   }

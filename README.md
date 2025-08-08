@@ -1,130 +1,67 @@
 # Mes cours de maths
 
 Bienvenue sur la page Github du site web [Mes cours de maths](https://mes-cours-de-maths.fr) !
-Il s'agit d'un petit site web où je dépose tous mes cours de mathématiques ainsi que les ressources
-qui y sont liées.
+Il s'agit d'un petit site web (open-source !) où je dépose tous mes cours de mathématiques
+ainsi que les ressources qui y sont liées.
 
-Ce site est totalement open-source : vous pouvez tout à fait en exécuter une instance personnelle.
-Pour cela, suivez le guide ci-dessous.
+![GitHub Created At](https://img.shields.io/github/created-at/Skyost/MesCoursDeMaths)
+![GitHub License](https://img.shields.io/github/license/Skyost/MesCoursDeMaths)
+![GitHub top language](https://img.shields.io/github/languages/top/Skyost/MesCoursDeMaths)
 
-## Installation
+## Technologies
 
-Il est totalement possible pour vous de cloner le projet pour l'utiliser vous aussi !
-Pour cela, suivez le guide ci-dessous. Attention, des connaissances en NodeJS (notamment) sont requises.
+Pour son développement, ce site web a recours principalement à :
 
-### Création d'applications et de jetons
+* [Nuxt](https://nuxt.com) et [Vue](https://vuejs.org).
+* [ThatLatexLib](https://github.com/Skyost/ThatLatexLib).
+* [Bootstrap](https://getbootstrap.com) et [Bootstrap Vue Next](https://bootstrap-vue-next.github.io/bootstrap-vue-next/).
 
-Sur Github, il va falloir créer une application OAUTH. Pour cela, rendez-vous sur
-[ce lien](https://github.com/settings/applications/new).
+Il est hébergé sur [Github Pages](http://pages.github.com).
 
-* Dans `Application name`, mettez ce que vous souhaitez.
-* Dans `Homepage URL`, mettez l'URL de votre site web.
-* Dans `Authorization callback URL`, mettez l'URL de votre [API hébergée sur Vercel](#création-dun-projet-vercel).
-  Se référer à [https://docs.github.com/en/developers/apps/building-oauth-apps/authorizing-oauth-apps#redirect-urls](ce lien)
-  pour le dernier champ.
+## Comment ça marche ?
 
-Par la suite, notez votre `Client ID` quelque-part et générez un nouveau `Client secret`. Copiez-le aussi
-et ne le perdez surtout pas. Nous en aurons également besoin plus tard.
+Afin d'afficher une liste des cours, ce site va télécharger le contenu
+d'un dépot distant qui, lui, contient les données qui suivent cette structure :
 
-### Cloner le projet
-
-Il vous suffit de [cliquer ici](https://github.com/Skyost/MesCoursDeMaths/fork) pour cloner le projet.
-Cela créera un nouveau dépôt sur Github où vous pourrez [configurer](#configuration) votre nouveau site web.
-
-Dans les paramètres de votre dépôt Github, il va falloir créer deux secrets :
-* `CLIENT_SECRET`, qui doit contenir votre `Client secret`.
-* `PERSONAL_ACCESS_TOKEN`, qui contient votre `Personal access token` créé précédemment.
-  Cette étape est requise uniquement si vous utilisez un dépôt séparé pour héberger vos données.
-
-### Configuration
-
-Pour configurer le site web (nom, dépôt Github, répertoire des cours, etc.), il vous faut modifier le
-fichier `site/authentication.ts`. Indiquez votre `Client ID` dans le champ `clientId`
-(j'ai personnellement choisi de le laisser dans la variable d'environnement `CLIENT_ID`, mais c'est à vous de voir).
-
-Pour modifier le contenu de la page d'accueil, il faut éditer le fichier `pages/index.vue`.
-Une façon plus rapide (et intuitive...) de modifier les pages sera sûrement ajoutée à l'avenir.
-
-Vous pouvez également modifier la plupart des paramètres dans le fichier `site/content.js`. Ceci vous permettra
-de personnaliser les fichiers à compiler en PDF, à transformer en markdown, où se situent les images, etc.
-Le fichier `site/levels.ts` contient les différents niveaux disponibles. Chacun d'eux doit posséder un sous-dossier
-dans votre répertoire LaTeX.
-
-### Création d'un dépôt de données
-
-Cette étape est optionnelle : vous pouvez parfaitement vous servir du même dépôt que le site web
-pour y stocker vos données LaTeX. Pour cela, dans `site/meta.js`, laissez `dataRepository` à la même valeur que `repository`.
-
-Si vous souhaitez utiliser un dépôt séparé (par exemple, afin de garder les sources LaTeX privées ; ou tout
-simplement pour séparer le contenu de sa présentation), créez-en un sur Github et indiquez sa valeur dans
-`dataRepository`. Celui-ci doit contenir le `lessonsDirectory`.
-
-Si votre dépôt est privé, nous allons devoir créer un `Personal access token`. Pour cela rendez-vous sur
-[ce lien](https://github.com/settings/tokens/new). Nommez-le comme vous souhaitez et cochez la case `repo`.
-Notez quelque-part le jeton que vous obtenez.
-
-### Structure des fichiers LaTeX
-
-Vos fichiers LaTeX peuvent être structurés comme vous le souhaitez, du moment qu'ils sont interprétables
-par [KaTeX](https://katex.org). Ceux-ci doivent tout de même définir deux environnements :
-
-* `doctitle` qui doit correspondre au titre de votre document.
-* `docnumber` qui peut correspondre à un numéro de chapitre par exemple.
-
-Afin d'être compilables par [Pandoc](https://pandoc.org), vous pouvez créer un fichier `pandoc.tex`,
-à placer dans le `lessonsDirectory`. Voici par exemple le contenu du mien :
-
-```tex
-% Ceci me permet de remplacer ma commande \cours dans mes fichiers LaTeX.
-\providecommand{\cours}[3]{%
-	\begin{doctitle}%
-		#2%
-	\end{doctitle}%
-}
-
-% Et ceci me permet de remplacer ma commande \chapitrenumero dans mes fichiers LaTeX.
-\providecommand{\chapitrenumero}[1]{%
-	\begin{docnumber}%
-		#1%
-	\end{docnumber}%
-}
+```
+.
+└── données/
+    └── latex/
+        ├── niveau-1/
+        │   ├── images/
+        │   ├── grade.json
+        │   ├── activite.tex
+        │   ├── premier-cours.tex
+        │   └── deuxieme-cours.tex
+        ├── niveau-2/
+        │   ├── images/
+        │   ├── grade.json
+        │   ├── activite.tex
+        │   ├── premier-cours.tex
+        │   └── deuxieme-cours.tex
+        └── ...
 ```
 
-### Création d'un projet Vercel
+Les fichiers `grade.json` permettent d'indiquer que le répertoire courant est
+bien celui d'un niveau (`sixieme`, `seconde`, ...) et d'y apporter quelques éléments
+de contexte.
 
-Afin que l'accès enseignant soit fonctionnel, nous avons encore besoin de créer un projet sur [Vercel](https://vercel.com/).
-Inscrivez-vous si ce n'est pas déjà fait et créez un nouveau projet à partir du dépôt Github cloné.
+Tous les fichiers qui finissent par `-cours.tex` sont ceux qui sont transformés
+et affichés (par exemple, [ici](https://mes-cours-de-maths.fr/cours/cinquieme/nombres-relatifs/)).
 
-Une fois créé, nous allons devoir ajouter deux variables d'environnements (dans les paramètres du projet Vercel) :
+Enfin, tous les fichiers `.tex` sont compilés afin d'être mis à disposition en téléchargement.
 
-* `GITHUB_CLIENT_SECRET`, qui contient votre `Client secret`.
-* `ENCRYPTION_KEY`, qui contient 32 caractères générés de manière aléatoire (majuscules, minuscules et chiffres uniquement).
+## License
 
-Dans les paramètres généraux, inscrivez `npx nuxi dev ../` en commande de développement et `vercel/` en répertoire racine.
-Le domaine spécifié dans _Domains_ doit correspondre avec l'`apiUrl` du fichier `site/meta.js`.
+Ce projet est disponible sous licence [GNU GPL v3](https://github.com/Skyost/MesCoursDeMaths/blob/main/LICENSE).
+Les contenus que vous pouvez y trouver sont, eux, disponibles sous licence
+[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.fr).
 
-Enfin, [pour éviter des builds inutiles](https://www.codejam.info/2021/09/vercel-without-preview-deployments.html),
-écrivez par exemple 
+## Contributions
 
-```shell
-if [[ "$VERCEL_GIT_COMMIT_REF" == "master" ]] ; then echo "✅ Ref is 'master'. The build can proceed !"; exit 1; else echo "🛑 Ref is not 'master'. Cancelling build..."; exit 0; fi
-```
+Toutes les contributions sont appréciées ! N'hésitez pas à :
 
-dans la section _Ignored Build Step_ de l'onglet _Git_.
-
-N'oubliez pas de modifier également le fichier `vercel/index.html`.
-
-## Tests locaux
-
-Pour tester localement votre site web, une commande suffit : `npm run vercel`. Il vous faut également
-créer un fichier `.env` contenant toutes variables d'environnement listées [précédemment](#création-dun-projet-vercel).
-
-Si vous souhaitez tester le site en local avec toutes les fonctionnalités, il faudra également adapter les variables
-d'environnement ajoutées sur Vercel (en spécifiant bien lesquelles doivent être utilisées en production, et lesquelles
-doivent l'être en développement).
-
-Il faut également ajouter une variable d'environnement de développement intitulée `DEBUG_MODE` et contenant la valeur `true`.
-
-Voici un aperçu des mes variables d'environnement :
-
-![Variables d'environnement](https://user-images.githubusercontent.com/3882599/172180030-ad6c6f70-094b-49a8-88fd-69328c6fdb60.png)
+* [Envoyer](https://github.com/Skyost/MesCoursDeMaths/stargazers) une étoile sur GitHub.
+* [Signaler](https://github.com/Skyost/MesCoursDeMaths/issues/new/choose) une erreur ou demander une nouvelle
+  fonctionnalité.
+* [Donner](https://paypal.me/Skyost) pour supporter le développeur.

@@ -2,21 +2,16 @@
 
 import fs from 'fs'
 import path from 'path'
-import {
-  addServerHandler,
-  createResolver,
-  defineNuxtModule,
-  addPrerenderRoutes,
-  type Resolver,
-  useLogger
-} from '@nuxt/kit'
+import { addServerHandler, createResolver, defineNuxtModule, addPrerenderRoutes, useLogger, type Resolver } from '@nuxt/kit'
 import { KatexRenderer, LatexImageExtractorInDirectory, PandocCommand, PandocTransformer, SvgGenerator } from 'that-latex-lib'
 import type { HTMLElement } from 'node-html-parser'
-import { siteContentSettings } from '../../site/content'
-import { debug } from '../../site/debug'
-import type { LessonContent, LinkedResource } from '../../types'
-import { getFilename, normalizeString } from '../../utils/utils.ts'
-import { storageKey } from './common.ts'
+import debug from '../../app/site/debug'
+import { getGradeRoute, getLessonRoute } from '../../app/site/lessons'
+import type { Grade, GradeWithResources, Lesson, LessonContent, LinkedResource } from '../../app/types'
+import { storageKey } from './common'
+import defaultOptions, { type ModuleOptions } from './options'
+import type { ModuleOptions as ContentDownloaderModuleOptions } from '../content-downloader/options'
+import type { ModuleOptions as LatexPdfGeneratorModuleOptions } from '../latex-pdf-generator/options'
 
 /**
  * The name of this module.
@@ -29,28 +24,6 @@ const name = 'latex-to-content'
 const logger = useLogger(name)
 
 /**
- * Options for this module.
- */
-export interface ModuleOptions {
-  downloadDestinations: {
-    previousBuild: string
-    data: string
-  }
-  dataLatexDirectory: string
-  assetsDestinationDirectoryName: string
-  isAsset: (filePath: string) => boolean
-  getLatexFileAssetsDestinationDirectoryPath: (assetDirectoryPath: string, latexFilePath: string) => string
-  getAssetDestinationDirectoryPath: (assetDirectoryPath: string, filePath: string) => string
-  getIncludeGraphicsDirectories: (latexFilePath: string) => string[]
-  shouldBeTransformed: (filePath: string) => boolean
-  filterFilename(file: string): string
-  pandocRedefinitionsFile: string
-  picturesTemplate: { [key: string]: string }
-  getLinkedResources: (sourceDirectoryPath: string, latexFilePath: string) => LinkedResource[]
-  latexFilesUrl: string
-}
-
-/**
  * Nuxt module for transforming .tex files in Nuxt content.
  */
 export default defineNuxtModule<ModuleOptions>({
@@ -58,35 +31,16 @@ export default defineNuxtModule<ModuleOptions>({
     name,
     version: '0.0.1',
     configKey: 'latexToContent',
-    compatibility: { nuxt: '^3.0.0' }
+    compatibility: { nuxt: '^4.0.0' }
   },
-  defaults: {
-    downloadDestinations: siteContentSettings.downloadDestinations,
-    dataLatexDirectory: siteContentSettings.dataLatexDirectory,
-    assetsDestinationDirectoryName: siteContentSettings.latexAssetsDestinationDirectoryName,
-    isAsset: siteContentSettings.isAsset,
-    getLatexFileAssetsDestinationDirectoryPath: siteContentSettings.getLatexFileAssetsDestinationDirectoryPath,
-    getIncludeGraphicsDirectories: siteContentSettings.getIncludeGraphicsDirectories,
-    getAssetDestinationDirectoryPath: siteContentSettings.getAssetDestinationDirectoryPath,
-    shouldBeTransformed: siteContentSettings.shouldBeTransformed,
-    filterFilename: siteContentSettings.filterFilename,
-    pandocRedefinitionsFile: siteContentSettings.pandocRedefinitionsFile,
-    picturesTemplate: siteContentSettings.picturesTemplate,
-    getLinkedResources: siteContentSettings.getLinkedResources,
-    latexFilesUrl: '/_api/'
-  },
+  defaults: defaultOptions,
   async setup(options, nuxt) {
     const resolver = createResolver(import.meta.url)
-    const sourceDirectoryPath = nuxt.options.srcDir
-
-    // Set up Nitro externals for .tex content transformation.
-    nuxt.options.nitro.externals = nuxt.options.nitro.externals || {}
-    nuxt.options.nitro.externals.inline = nuxt.options.nitro.externals.inline || []
-    nuxt.options.nitro.externals.inline.push(resolver.resolve('.'))
+    const rootDirectoryPath = nuxt.options.rootDir
 
     // Process additional assets such as images.
-    const dataDirectoryPath = resolver.resolve(sourceDirectoryPath, options.downloadDestinations.data)
-    const moduleDirectoryPath = resolver.resolve(sourceDirectoryPath, 'node_modules', `.${name}`)
+    const dataDirectoryPath = resolver.resolve(rootDirectoryPath, nuxt.options.contentDownloader.downloadDestinations.data)
+    const moduleDirectoryPath = resolver.resolve(rootDirectoryPath, 'node_modules', `.${name}`)
     const assetsDestinationPath = resolver.resolve(moduleDirectoryPath, options.assetsDestinationDirectoryName)
     processAssets(resolver, dataDirectoryPath, assetsDestinationPath, options)
 
@@ -100,10 +54,19 @@ export default defineNuxtModule<ModuleOptions>({
     logger.success(`Pointing "/${options.assetsDestinationDirectoryName}/" to "${assetsDestinationPath}".`)
 
     // Transforms .tex files into content for Nuxt.
-    const latexDestinationPath = resolver.resolve(moduleDirectoryPath, options.dataLatexDirectory)
-    processLatexFiles(resolver, sourceDirectoryPath, resolver.resolve(dataDirectoryPath, options.dataLatexDirectory), latexDestinationPath, options)
+    const dataLatexDirectory = nuxt.options.contentDownloader.dataLatexDirectory
+    const latexDestinationPath = resolver.resolve(moduleDirectoryPath, dataLatexDirectory)
+    processGrades(
+      resolver,
+      rootDirectoryPath,
+      resolver.resolve(dataDirectoryPath, dataLatexDirectory),
+      latexDestinationPath,
+      options,
+      nuxt.options.contentDownloader,
+      nuxt.options.latexPdfGenerator
+    )
     nuxt.options.nitro.publicAssets.push({
-      baseURL: `${options.latexFilesUrl}${options.dataLatexDirectory}/`,
+      baseURL: `${options.latexFilesUrl}${dataLatexDirectory}/`,
       dir: latexDestinationPath,
       fallthrough: true
     })
@@ -113,14 +76,18 @@ export default defineNuxtModule<ModuleOptions>({
       dir: latexDestinationPath
     })
     addServerHandler({
-      route: `${options.latexFilesUrl}${options.dataLatexDirectory}/:level`,
+      route: `${options.latexFilesUrl}${dataLatexDirectory}/`,
       handler: resolver.resolve(`./handler.ts`)
     })
     addServerHandler({
-      route: `${options.latexFilesUrl}${options.dataLatexDirectory}/:level/:lesson`,
+      route: `${options.latexFilesUrl}${dataLatexDirectory}/:grade`,
       handler: resolver.resolve(`./handler.ts`)
     })
-    logger.success(`Pointing "${options.latexFilesUrl}${options.dataLatexDirectory}/" to "${latexDestinationPath}".`)
+    addServerHandler({
+      route: `${options.latexFilesUrl}${dataLatexDirectory}/:grade/:lesson`,
+      handler: resolver.resolve(`./handler.ts`)
+    })
+    logger.success(`Pointing "${options.latexFilesUrl}${dataLatexDirectory}/" to "${latexDestinationPath}".`)
   }
 })
 
@@ -172,89 +139,177 @@ const processAssets = (
 }
 
 /**
- * Process all Latex files of a given directory.
+ * Processes grade directories, transforms grade data, and writes the processed information into JSON files.
  *
- * @param resolver The Nuxt resolver.
- * @param sourceDirectoryPath The Nuxt source directory path.
- * @param directoryPath The directory where the Latex files are stored.
- * @param targetDirectoryPath Where to put the processed files.
- * @param options The module option.
+ * @param resolver - Provides methods for resolving file and directory paths.
+ * @param rootDirectoryPath - The root directory path from which the grade data processing begins.
+ * @param directoryPath - The directory path containing the grade folders to process.
+ * @param targetDirectoryPath - The directory path where the processed JSON files will be saved.
+ * @param options - Configuration options for processing grades, including methods to read and manage grade data.
+ * @param contentDownloaderOptions The options of the content downloader module.
+ * @param latexPdfGeneratorOptions The options of the PDF generator module.
  */
-const processLatexFiles = (
+const processGrades = (
   resolver: Resolver,
-  sourceDirectoryPath: string,
+  rootDirectoryPath: string,
   directoryPath: string,
   targetDirectoryPath: string,
-  options: ModuleOptions
+  options: ModuleOptions,
+  contentDownloaderOptions: ContentDownloaderModuleOptions,
+  latexPdfGeneratorOptions: LatexPdfGeneratorModuleOptions
 ) => {
+  // Contains all grades.
+  const gradesData: {
+    grade: GradeWithResources
+    transformed: LessonContent[]
+  }[] = []
+
   // Get the list of files in the directory.
   const files = fs.readdirSync(directoryPath)
 
   // Iterate through each file in the directory.
-  const index = []
   for (const file of files) {
     const filePath = resolver.resolve(directoryPath, file)
 
-    // If the file is a directory, recursively process its assets.
-    if (fs.lstatSync(filePath).isDirectory()) {
-      processLatexFiles(resolver, sourceDirectoryPath, filePath, resolver.resolve(targetDirectoryPath, file), options)
+    // If the file is not a directory, then it cannot be a grade folder.
+    if (!fs.lstatSync(filePath).isDirectory()) {
       continue
     }
 
-    if (options.shouldBeTransformed(filePath)) {
-      const result = processLatexFile(resolver, sourceDirectoryPath, filePath, targetDirectoryPath, options)
-      if (result) {
-        fs.writeFileSync(
-          resolver.resolve(targetDirectoryPath, `${result.id}.json`),
-          JSON.stringify(result)
-        )
-        const { body, 'linked-resources': _, ...indexObject } = result
-        index.push(indexObject)
-      }
+    // Try to read the grade data, and if it's a success, then we add it to the list.
+    const grade = options.readGradeData(filePath)
+    if (grade) {
+      const transformed = processGradeFiles(
+        resolver,
+        rootDirectoryPath,
+        filePath,
+        resolver.resolve(targetDirectoryPath, file),
+        options,
+        contentDownloaderOptions,
+        latexPdfGeneratorOptions
+      )
+      gradesData.push({ grade, transformed })
     }
   }
-  if (index.length > 0) {
-    fs.writeFileSync(
-      resolver.resolve(targetDirectoryPath, `index.json`),
-      JSON.stringify(index)
-    )
-    for (const page of index) {
-      addPrerenderRoutes(`/cours/${page.level}/${page.id}/`)
+
+  // Then we can write all corresponding JSON files.
+  const grades: Grade[] = []
+  for (const { grade: gradeWithResources, transformed: lessonContents } of gradesData) {
+    const gradeTargetDirectoryPath = resolver.resolve(targetDirectoryPath, gradeWithResources.id)
+
+    const lessons: Lesson[] = []
+    for (const lessonContent of lessonContents) {
+      const lessonDirectoryPath = resolver.resolve(gradeTargetDirectoryPath, lessonContent.id)
+      fs.mkdirSync(lessonDirectoryPath, { recursive: true })
+
+      const lessonFilePath = resolver.resolve(lessonDirectoryPath, 'index.json')
+      fs.writeFileSync(lessonFilePath, JSON.stringify(lessonContent))
+
+      const { body, linkedResources, ...lesson } = lessonContent
+      lessons.push(lesson)
+
+      addPrerenderRoutes(getLessonRoute(gradeWithResources, lesson))
     }
-    addPrerenderRoutes(`/cours/${index[0].level}/`)
+
+    lessons.sort((a, b) => a.number - b.number)
+    const gradeFilePath = resolver.resolve(gradeTargetDirectoryPath, 'index.json')
+    fs.writeFileSync(gradeFilePath, JSON.stringify({ ...gradeWithResources, lessons }))
+
+    const { otherResources, ...grade } = gradeWithResources
+    grades.push(grade)
+
+    addPrerenderRoutes(getGradeRoute(grade))
   }
+
+  grades.sort((a, b) => b.short.localeCompare(a.short))
+  const indexFilePath = resolver.resolve(targetDirectoryPath, 'index.json')
+  fs.writeFileSync(indexFilePath, JSON.stringify(grades))
 }
 
 /**
- * Progress a given Latex file to transform it into HTML.
+ * Process all Latex files of a given directory.
  *
  * @param resolver The Nuxt resolver.
- * @param sourceDirectoryPath The Nuxt source directory path.
- * @param filePath The path to the file.
- * @param targetDirectoryPath Where to put the processed files.
+ * @param rootDirectoryPath The Nuxt root directory path.
+ * @param gradeDirectoryPath The directory where the Latex files are stored.
+ * @param targetDirectoryPath Where to put the transformed files.
  * @param options The module option.
+ * @param contentDownloaderOptions The options of the content downloader module.
+ * @param latexPdfGeneratorOptions The options of the PDF generator module.
+ * @returns The list of transformed files.
  */
-const processLatexFile = (
+const processGradeFiles = (
   resolver: Resolver,
-  sourceDirectoryPath: string,
+  rootDirectoryPath: string,
+  gradeDirectoryPath: string,
+  targetDirectoryPath: string,
+  options: ModuleOptions,
+  contentDownloaderOptions: ContentDownloaderModuleOptions,
+  latexPdfGeneratorOptions: LatexPdfGeneratorModuleOptions
+): LessonContent[] => {
+  // Get the list of files in the directory.
+  const files = fs.readdirSync(gradeDirectoryPath)
+
+  // The transformed files.
+  const transformed: LessonContent[] = []
+
+  // Iterate through each file in the directory.
+  for (const file of files) {
+    const filePath = resolver.resolve(gradeDirectoryPath, file)
+
+    // If the file should be transformed, we transform it, and we add it to the list.
+    if (fs.lstatSync(filePath).isFile() && options.shouldBeTransformed(filePath)) {
+      const result = transformLatexFile(
+        resolver,
+        rootDirectoryPath,
+        filePath,
+        targetDirectoryPath,
+        options,
+        contentDownloaderOptions,
+        latexPdfGeneratorOptions
+      )
+      if (result) {
+        transformed.push(result)
+      }
+    }
+  }
+  return transformed
+}
+
+/**
+ * Processes a given Latex file to transform it into HTML.
+ *
+ * @param resolver The Nuxt resolver.
+ * @param rootDirectoryPath The Nuxt root directory path.
+ * @param filePath The path to the file.
+ * @param targetDirectoryPath Where to put the transformed files.
+ * @param options The module option.
+ * @param contentDownloaderOptions The options of the content downloader module.
+ * @param latexPdfGeneratorOptions The options of the PDF generator module.
+ */
+const transformLatexFile = (
+  resolver: Resolver,
+  rootDirectoryPath: string,
   filePath: string,
   targetDirectoryPath: string,
-  options: ModuleOptions
+  options: ModuleOptions,
+  contentDownloaderOptions: ContentDownloaderModuleOptions,
+  latexPdfGeneratorOptions: LatexPdfGeneratorModuleOptions
 ): LessonContent | undefined => {
   // Absolute path to the .tex file.
   logger.info(`Processing ${filePath}...`)
   fs.mkdirSync(targetDirectoryPath, { recursive: true })
 
   // Extract images from the .tex file content and return the modified content.
-  const moduleDataDirectoryPath = resolver.resolve(sourceDirectoryPath, 'node_modules', `.${name}`)
+  const moduleDataDirectoryPath = resolver.resolve(rootDirectoryPath, 'node_modules', `.${name}`)
   const assetsRootDirectoryPath = resolver.resolve(moduleDataDirectoryPath, options.assetsDestinationDirectoryName)
 
   // Load the Pandoc redefinitions header content.
   const pandocHeader = fs.readFileSync(
     resolver.resolve(
-      sourceDirectoryPath,
-      options.downloadDestinations.data,
-      options.dataLatexDirectory,
+      rootDirectoryPath,
+      contentDownloaderOptions.downloadDestinations.data,
+      contentDownloaderOptions.dataLatexDirectory,
       options.pandocRedefinitionsFile
     ),
     { encoding: 'utf8' }
@@ -266,8 +321,8 @@ const processLatexFile = (
       assetsRootDirectoryPath,
       {
         getImageCacheDirectoryPath: resolvedImageTexFilePath => path.resolve(
-          sourceDirectoryPath,
-          options.downloadDestinations.previousBuild,
+          rootDirectoryPath,
+          contentDownloaderOptions.downloadDestinations.previousBuild,
           path.dirname(
             path.relative(
               moduleDataDirectoryPath,
@@ -280,11 +335,11 @@ const processLatexFile = (
     imageExtractors: Object.keys(options.picturesTemplate).map(
       blockType => new TikzPictureImageExtractor(
         blockType,
-        options.picturesTemplate[blockType],
+        options.picturesTemplate[blockType]!,
         options.getLatexFileAssetsDestinationDirectoryPath(assetsRootDirectoryPath, filePath),
-        options.getIncludeGraphicsDirectories,
+        latexPdfGeneratorOptions.getIncludeGraphicsDirectories,
         moduleDataDirectoryPath,
-        resolver.resolve(sourceDirectoryPath, options.downloadDestinations.previousBuild)
+        resolver.resolve(rootDirectoryPath, contentDownloaderOptions.downloadDestinations.previousBuild)
       )
     ),
     mathRenderer: new KatexRendererWithMacros(),
@@ -296,7 +351,7 @@ const processLatexFile = (
   // Transforms the raw content into HTML.
   const { htmlResult: root } = pandocTransformer.transform(filePath, fs.readFileSync(filePath, { encoding: 'utf8' }))
 
-  let filename = getFilename(filePath)
+  let filename = path.parse(filePath).name
   if (root) {
     // Remove empty titles from the HTML content.
     removeEmptyTitles(root)
@@ -308,8 +363,28 @@ const processLatexFile = (
     adjustColSize(root)
 
     // Return the parsed content object.
-    filename = options.filterFilename(filename)
-    const header = getHeader(filePath, root, options.getLinkedResources(sourceDirectoryPath, filePath))
+    filename = latexPdfGeneratorOptions.filterFilename(filename)
+
+    // Get raw linked resources.
+    const rawLinkedResources = options.getRawLinkedResources(filePath)
+
+    // And transform them for the header.
+    const buildUrl = (latexFilePath: string) => {
+      const relativePath = path.relative(path.resolve(rootDirectoryPath, contentDownloaderOptions.downloadDestinations.data, contentDownloaderOptions.dataLatexDirectory), latexFilePath)
+      const baseUrl = path.dirname(relativePath).replace('\\', '/')
+      return `/${latexPdfGeneratorOptions.destinationDirectoryName}/${baseUrl}/${latexPdfGeneratorOptions.filterFilename(path.parse(latexFilePath).name)}.pdf`
+    }
+    const header = getHeader(
+      filePath,
+      root,
+      rawLinkedResources.map((resource) => {
+        return {
+          title: resource.title,
+          url: buildUrl(resource.latexFilePath),
+          isCurrentFile: resource.isCurrentFile
+        }
+      })
+    )
     logger.success(`Successfully processed ${filePath} !`)
     return {
       id: filename,
@@ -373,16 +448,16 @@ const adjustColSize = (root: HTMLElement) => {
     if (columns.length === 2) {
       if (sizeElement && sizeElement.text.trim().length > 0) {
         const size = parseFloat(sizeElement.text.trim())
-        columns[0].setAttribute('style', `--column-size: ${size};`)
-        columns[1].setAttribute('style', `--column-size: ${1 - size};`)
+        columns[0]!.setAttribute('style', `--column-size: ${size};`)
+        columns[1]!.setAttribute('style', `--column-size: ${1 - size};`)
       }
       else {
-        columns[0].classList.remove('col')
-        columns[1].classList.remove('col')
-        columns[0].classList.add('col-12')
-        columns[1].classList.add('col-12')
-        columns[0].classList.add('col-lg-6')
-        columns[1].classList.add('col-lg-6')
+        columns[0]!.classList.remove('col')
+        columns[1]!.classList.remove('col')
+        columns[0]!.classList.add('col-12')
+        columns[1]!.classList.add('col-12')
+        columns[0]!.classList.add('col-lg-6')
+        columns[1]!.classList.add('col-lg-6')
       }
     }
     sizeElement?.remove()
@@ -407,8 +482,8 @@ const getHeader = (filePath: string, root: HTMLElement, linkedResources: LinkedR
   // Populate header with slug and title if available.
   if (title) {
     header.name = title.innerHTML.trim()
-    header['page-title'] = title.text.trim()
-    header['page-title-search'] = normalizeString(header['page-title'])
+    header.pageTitle = title.text.trim()
+    header.pageTitleSearch = normalizeString(header.pageTitle)
   }
 
   // Get and parse chapter number.
@@ -417,20 +492,25 @@ const getHeader = (filePath: string, root: HTMLElement, linkedResources: LinkedR
     header.number = parseInt(number.innerHTML.trim())
   }
 
-  // Set the level. Remember that lessons should be placed in their level directory.
-  header.level = path.basename(path.dirname(filePath))
-
   // Get and parse linked resources.
   const linkedResourceWithoutPdf = [...linkedResources]
   const pdfIndex = linkedResources.findIndex(resource => resource.isCurrentFile)
   if (pdfIndex !== -1) {
-    header.pdf = linkedResourceWithoutPdf[pdfIndex].url
+    header.pdf = linkedResourceWithoutPdf[pdfIndex]!.url
     linkedResourceWithoutPdf.splice(pdfIndex, 1)
   }
-  header['linked-resources'] = linkedResourceWithoutPdf
+  header.linkedResources = linkedResourceWithoutPdf
 
   return header
 }
+
+/**
+ * Normalizes a string by removing diacritics and converting to lowercase.
+ *
+ * @param string Input string.
+ * @returns Normalized string.
+ */
+const normalizeString = (string: string): string => string.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase()
 
 /**
  * Extracts Tikz pictures from a file.
