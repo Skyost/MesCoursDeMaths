@@ -303,17 +303,10 @@ const transformLatexFile = async (
   // Extract images from the .tex file content and return the modified content.
   const moduleDataDirectoryPath = resolver.resolve(rootDirectoryPath, 'node_modules', `.${name}`)
   const assetsRootDirectoryPath = resolver.resolve(moduleDataDirectoryPath, options.assetsDestinationDirectoryName)
+  const latexDirectoryPath = resolver.resolve(rootDirectoryPath, contentDownloaderOptions.downloadDestinations.data, contentDownloaderOptions.dataLatexDirectory)
 
   // Load the Pandoc redefinitions header content.
-  const pandocHeader = fs.readFileSync(
-    resolver.resolve(
-      rootDirectoryPath,
-      contentDownloaderOptions.downloadDestinations.data,
-      contentDownloaderOptions.dataLatexDirectory,
-      options.pandocRedefinitionsFile
-    ),
-    { encoding: 'utf8' }
-  )
+  const pandocHeader = fs.readFileSync(resolver.resolve(latexDirectoryPath, options.pandocRedefinitionsFile), { encoding: 'utf8' })
 
   // Parse the Pandoc HTML output.
   const pandocTransformer = new PandocTransformer({
@@ -338,6 +331,7 @@ const transformLatexFile = async (
         options.picturesTemplate[blockType]!,
         options.getLatexFileAssetsDestinationDirectoryPath(assetsRootDirectoryPath, filePath),
         latexPdfGeneratorOptions.getIncludeGraphicsDirectories,
+        latexDirectoryPath,
         moduleDataDirectoryPath,
         resolver.resolve(rootDirectoryPath, contentDownloaderOptions.downloadDestinations.previousBuild)
       )
@@ -451,14 +445,6 @@ const adjustColSize = (root: HTMLElement) => {
         columns[0]!.setAttribute('style', `--column-size: ${size};`)
         columns[1]!.setAttribute('style', `--column-size: ${1 - size};`)
       }
-      else {
-        columns[0]!.classList.remove('col')
-        columns[1]!.classList.remove('col')
-        columns[0]!.classList.add('col-12')
-        columns[1]!.classList.add('col-12')
-        columns[0]!.classList.add('col-lg-6')
-        columns[1]!.classList.add('col-lg-6')
-      }
     }
     sizeElement?.remove()
   }
@@ -484,12 +470,14 @@ const getHeader = (filePath: string, root: HTMLElement, linkedResources: LinkedR
     header.name = title.innerHTML.trim()
     header.pageTitle = title.text.trim()
     header.pageTitleSearch = normalizeString(header.pageTitle)
+    title.parentNode.remove()
   }
 
   // Get and parse chapter number.
   const number = root.querySelector('.docnumber p')
   if (number) {
     header.number = parseInt(number.innerHTML.trim())
+    number.parentNode.remove()
   }
 
   // Get and parse linked resources.
@@ -532,6 +520,7 @@ class TikzPictureImageExtractor extends LatexImageExtractorInDirectory {
    * @param template The current template.
    * @param destinationDirectoryPath The destination directory path.
    * @param getIncludeGraphicsDirectories Function to get directories for `includegraphics` in LaTeX files.
+   * @param latexDirectoryPath The Latex directory path.
    * @param moduleDataDirectoryPath The module data directory path.
    * @param previousBuildDirectoryPath The previous build directory path.
    */
@@ -540,13 +529,15 @@ class TikzPictureImageExtractor extends LatexImageExtractorInDirectory {
     template: string,
     destinationDirectoryPath: string,
     getIncludeGraphicsDirectories: (latexFilePath: string) => string[],
+    latexDirectoryPath: string,
     moduleDataDirectoryPath: string,
     previousBuildDirectoryPath: string
   ) {
+    const preparedTemplate = template.replaceAll('{latexDirectoryPath}', latexDirectoryPath)
     super(
       blockType,
       destinationDirectoryPath,
-      (extractedImageTexFilePath: string, latexContent: string) => template
+      (extractedImageTexFilePath: string, latexContent: string) => preparedTemplate
         .replace(
           '{graphicsPath}',
           '\\graphicspath{' + getIncludeGraphicsDirectories(extractedImageTexFilePath)
@@ -587,8 +578,9 @@ class KatexRendererWithMacros extends KatexRenderer {
         macros: {
           '\\parallelslant': '\\mathbin{\\!/\\mkern-5mu/\\!}',
           '\\ensuremath': '#1',
-          '\\dotfillline': '\\htmlClass{dots}{}',
-          '\\dotfillsize': '\\htmlStyle{width: #1}{\\dotfillline}'
+          '\\expandeddotline': '\\htmlClass{dotline}{}',
+          '\\sizeddotline': '\\htmlStyle{width: #1}{\\expandeddotline}',
+          '\\num': '#1'
         }
       }
     )
@@ -596,7 +588,8 @@ class KatexRendererWithMacros extends KatexRenderer {
 
   override filterUnknownSymbols(math: string): string {
     return super.filterUnknownSymbols(math)
-      .replace(/(\\left *|\\right *)*\\VERT/g, '$1 | $1 | $1 |')
-      .replace(/\\overset{(.*)}&{(.*)}/g, '&\\overset{$1}{$2}')
+      .replaceAll(/(\\left *|\\right *)*\\VERT/g, '$1 | $1 | $1 |')
+      .replaceAll(/\\overset{(.*)}&{(.*)}/g, '&\\overset{$1}{$2}')
+      .replaceAll('\\sizeddotline{}', '\\expandeddotline')
   }
 }

@@ -162,6 +162,18 @@ const generateAndCopy = (
           {
             extensions: ['.cls']
           }
+        ),
+        new LatexIncludeCommand(
+          'usepackage',
+          {
+            extensions: ['.sty']
+          }
+        ),
+        new LatexIncludeCommand(
+          'RequirePackage',
+          {
+            extensions: ['.sty']
+          }
         )
       ]
     })

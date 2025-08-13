@@ -33,7 +33,7 @@ const setupDocument = async () => {
     wrapper.appendChild(table)
   }
 
-  const dotLines = root.value!.querySelectorAll<HTMLElement>('.dots')
+  const dotLines = root.value!.querySelectorAll<HTMLElement>('.dotline')
   for (const dotLine of dotLines) {
     const katexHtml = dotLine.closest<HTMLElement>('.katex-html')
     const katex = katexHtml?.closest<HTMLElement>('.katex')
@@ -82,7 +82,7 @@ const setupDocument = async () => {
     }
   }
 
-  const exercises = root.value!.querySelectorAll<HTMLElement>('.bubble-exercice')
+  const exercises = root.value!.querySelectorAll<HTMLElement>('.bubble-exercise')
   let printIconHtml = ''
   try {
     const printIcon = await loadIcon('bi:printer-fill')
@@ -104,7 +104,7 @@ const setupDocument = async () => {
       correction.parentNode?.insertBefore(details, correction)
       correction.remove()
       const summary = document.createElement('summary')
-      summary.classList.add('button-exercice', 'button-correction')
+      summary.classList.add('button-exercise', 'button-correction')
       summary.textContent = 'Correction'
       details.insertBefore(summary, details.firstChild)
       if (expanded) {
@@ -126,7 +126,7 @@ const setupDocument = async () => {
     }
 
     const print = document.createElement('span')
-    print.classList.add('button-exercice')
+    print.classList.add('button-exercise')
     print.classList.add('button-print')
     print.onclick = async () => {
       const canvas = await html2canvas(exercise!)
@@ -210,7 +210,7 @@ onMounted(setupDocument)
 }
 
 .math-document {
-  counter-reset: headline-2 headline-3 exercice;
+  counter-reset: headline-2 headline-3 exercise;
 
   h1::after {
     display: block;
@@ -266,7 +266,7 @@ onMounted(setupDocument)
       }
     }
 
-    .button-exercice {
+    .button-exercise {
       font-size: 0.8em;
       margin-top: calc(-1.6em - 1.5rem);
       cursor: pointer;
@@ -377,6 +377,18 @@ onMounted(setupDocument)
         max-width: 100%;
       }
     }
+
+    :deep(.katex-display) {
+      margin: 0.5em 0;
+
+      > .katex {
+        white-space: normal;
+      }
+
+      > .base {
+        margin: 0.25em 0;
+      }
+    }
   }
 
   &.red h1::after {
@@ -404,22 +416,22 @@ onMounted(setupDocument)
   }
 }
 
-.bubble-objectifs {
+.bubble-objectives {
   @include bubble-style('👌 Objectifs', #fceae9, #e74c3c);
 }
 
-.bubble-retenir {
+.bubble-remember {
   @include bubble-style('👀 À retenir', #ebf3fb, #3583d6);
 }
 
-.bubble-exemple {
+.bubble-example {
   @include bubble-style('💡 Exemple', #dcf3d8, #26a65b);
 }
 
-.bubble-exercice {
-  counter-increment: exercice;
+.bubble-exercise {
+  counter-increment: exercise;
 
-  @include bubble-style('📝 Exercice ' counter(exercice), #e0f2f1, #009688);
+  @include bubble-style('📝 Exercice ' counter(exercise), #e0f2f1, #009688);
 }
 
 .bubble-information {
@@ -427,14 +439,14 @@ onMounted(setupDocument)
 }
 
 .bubble-correction {
-  @include bubble-style('✔ Correction de l\'exercice ' counter(exercice), #e8eaf6, #3f51b5);
+  @include bubble-style('✔ Correction de l\'exercice ' counter(exercise), #e8eaf6, #3f51b5);
 }
 
 @include color-mode(dark) {
-  .bubble-objectifs,
-  .bubble-retenir,
-  .bubble-exemple,
-  .bubble-exercice,
+  .bubble-objectives,
+  .bubble-remember,
+  .bubble-example,
+  .bubble-exercise,
   .bubble-information,
   .bubble-correction {
     background-color: $dark;
@@ -452,7 +464,7 @@ onMounted(setupDocument)
   }
 
   img.tikz {
-    filter: invert(1) hue-rotate(180deg) brightness(0.9) contrast(1.1);;
+    filter: invert(1) hue-rotate(180deg) brightness(0.9) contrast(1.1);
   }
 }
 </style>
