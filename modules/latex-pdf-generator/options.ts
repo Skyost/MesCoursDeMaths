@@ -38,26 +38,28 @@ const generateVariants = (filePath: string, fileContent: string): null | Variant
   if (filename === 'questions-flash') {
     return null
   }
-  const regex = /\\documentclass(\[[A-Za-zÀ-ÖØ-öø-ÿ\d, =.\\-]*\])?{([A-Za-zÀ-ÖØ-öø-ÿ\d, .-\/]+)}/gs
-  if (!regex.test(fileContent)) {
+
+  const beginDocument = '\\begin{document}'
+  if (!fileContent.includes(beginDocument)) {
     return null
   }
+
   const filteredFilename = filterFilename(filename)
   const printVariant: Variant = {
     filename: `${filteredFilename}-impression`,
-    fileContent: fileContent.replace(regex, '\\documentclass$1{$2}\n\n\\include{../common/includes/print}'),
+    fileContent: fileContent.replace(beginDocument, `\\include{../common/includes/print}\n${beginDocument}`),
     type: 'impression'
   }
   const result = [printVariant]
   if (filename.endsWith('-cours')) {
     const studentVariant: Variant = {
       filename: `${filteredFilename}-eleve`,
-      fileContent: fileContent.replace(regex, '\\documentclass$1{$2}\n\n\\include{../common/includes/student}'),
+      fileContent: fileContent.replace(beginDocument, `\\include{../common/includes/student}\n${beginDocument}`),
       type: 'élève'
     }
     const studentPrintVariant: Variant = {
       filename: `${filteredFilename}-eleve-impression`,
-      fileContent: fileContent.replace(regex, '\\documentclass$1{$2}\n\n\\include{../common/includes/print}\n\\include{../common/includes/student}'),
+      fileContent: fileContent.replace(beginDocument, `\\include{../common/includes/print}\n\\include{../common/includes/student}\n${beginDocument}`),
       type: 'élève / impression'
     }
     result.push(studentVariant, studentPrintVariant)
