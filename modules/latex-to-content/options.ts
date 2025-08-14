@@ -102,7 +102,7 @@ const shouldBeTransformed = (filePath: string): boolean => {
  * file in the specified location, which contains necessary LaTeX
  * redefinitions or customizations compatible with Pandoc.
  */
-const pandocRedefinitionsFile: string = 'pandoc.tex'
+const pandocRedefinitionsFile: string = 'common/includes/pandoc.tex'
 
 /**
  * An object containing LaTeX templates for rendering pictures using different configurations.
@@ -118,15 +118,16 @@ const picturesTemplate: Record<string, string> = {
   scratch: `\\documentclass[tikz]{standalone}
 
 % Load all required packages for my Scratch scripts.
-\\usepackage{scratch3}
+\\usepackage{{latexDirectoryPath}/common/scratchalgo}
 
-\\setscratch{scale=2.0}
+% 1.25x scale.
+\\setscratch{scale=1.25}
 
 % Graphics path.
 {graphicsPath}
 
 \\begin{document}
-  % Content :
+  % Content.
   {extractedContent}
 \\end{document}
 `,
@@ -136,104 +137,25 @@ const picturesTemplate: Record<string, string> = {
   tikzpicture: `\\documentclass[tikz]{standalone}
 
 % Load all required packages for my graphics.
-\\usepackage{fourier-otf}
-\\usepackage{fontspec}
-\\usepackage{tkz-euclide}
-\\usepackage{graphicx}
-\\usepackage{gensymb}
-\\usepackage{xlop}
-\\usepackage{ifthen}
-\\usepackage{xparse}
-\\usepackage[group-separator={\\;}, group-minimum-digits=4]{siunitx}
-\\usepackage{tkz-tab}
+\\usepackage{{latexDirectoryPath}/common/common}
+\\usepackage{{latexDirectoryPath}/common/functions}
+\\usepackage{{latexDirectoryPath}/common/printable}
+\\usepackage[nocorrections]{{latexDirectoryPath}/common/transformable}
 
-% Tables :
-
-\\tikzset{t style/.style = {style = dashed}}
-
-% Arrows :
-
+% Arrows.
 \\tikzset{>={Latex[width=4pt]}}
-
-% Options for xlop.
-\\opset{%
-  dividendbridge,%
-  carrysub,%
-  displayintermediary=all,%
-  displayshiftintermediary=all,%
-  voperator=bottom,%
-  voperation=bottom,%
-  decimalsepsymbol={,},%
-  shiftdecimalsep=divisor%
-}
-
-% Switch math font.
-\\setmathfont{Erewhon Math}
-
-% Load some tikz libraries.
-\\usetikzlibrary{angles}
-\\usetikzlibrary{patterns}
-\\usetikzlibrary{intersections}
-\\usetikzlibrary{shadows.blur}
-\\usetikzlibrary{decorations.pathreplacing}
-\\usetikzlibrary{ext.transformations.mirror}
-\\usetikzlibrary{babel}
 
 % Graphics path.
 {graphicsPath}
 
-% \\dddots command.
-\\newcommand{\\dddots}[1]{\\makebox[#1]{\\dotfill}}
-\\NewDocumentCommand{\\graphfonction}{O{1} O{1} m m m m O{\\x} O{f} O{0.5 below right}}{
-  \\tikzgraph[#1][#2]{#3}{#4}{#5}{#6}
-  \\begin{scope}
-    \\clip (\\xmin,\\ymin) rectangle (\\xmax,\\ymax);
-    \\draw[domain=\\xmin:\\xmax, variable=\\x, graphfonctionlabel=at #9 with {$\\color{teal} \\mathcal{C}_{#8}$}, thick, smooth, teal] plot ({\\x}, {(#7)});
-  \\end{scope}
-}
-
-% \\tikzgraph command.
-\\NewDocumentCommand{\\tikzgraph}{O{1} O{1} m m m m}{
-  \\coordinate (O) at (0,0);
-
-  \\pgfmathparse{#3-0.5}
-  \\edef\\xmin{\\pgfmathresult}
-  \\pgfmathparse{#4-0.5}
-  \\edef\\ymin{\\pgfmathresult}
-  \\pgfmathparse{#5+0.5}
-  \\edef\\xmax{\\pgfmathresult}
-  \\pgfmathparse{#6+0.5}
-  \\edef\\ymax{\\pgfmathresult}
-
-  \\draw[opacity=0.5,thin] (\\xmin,\\ymin) grid (\\xmax,\\ymax);
-  \\foreach \\x in {#3,...,#5} {
-    \\pgfmathparse{int(#1*\\x)}
-    \\edef\\xlabel{\\pgfmathresult}
-    \\ifthenelse{\\x = 0}{}{\\draw[opacity=0.5] (\\x,0.25) -- (\\x,-0.25) node {\\small $\\xlabel$}};
-  }
-  \\foreach \\y in {#4,...,#6} {
-    \\pgfmathparse{int(#2*\\y)}
-    \\edef\\ylabel{\\pgfmathresult}
-    \\ifthenelse{\\y = 0}{}{\\draw[opacity=0.5] (0.25,\\y) -- (-0.25,\\y) node[shift={(-0.1,0)}] {\\small $\\ylabel$}};
-  }
-  \\draw[opacity=0.5] (0,0.25) -- (0,-0.25) node[shift={(-0.35,-0.1)}]{\\small $0$};
-  \\draw[thick,->] (\\xmin,0) -- (\\xmax,0);
-  \\draw[thick,->] (0,\\ymin) -- (0,\\ymax);
-}
-
-% Other commands.
-\\newcommand{\\sipandoc}[2]{#1}
-\\newcommand{\\siimpression}[2]{#2}
-\\newcommand{\\sieleve}[2]{#2}
-
-% 2.0x scale.
+% 1.25x scale.
 \\tikzset{
   graphfonctionlabel/.style args={at #1 #2 with #3}{
     postaction={
       decorate, decoration={markings, mark= at position #1 with \\node [#2] {#3};}
     }
   },
-  every picture/.append style={scale=2.0, every node/.style={scale=2.0}}
+  every picture/.append style={scale=1.25, every node/.style={scale=1.25}}
 }
 
 \\begin{document}

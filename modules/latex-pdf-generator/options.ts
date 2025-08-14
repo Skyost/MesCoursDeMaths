@@ -38,23 +38,26 @@ const generateVariants = (filePath: string, fileContent: string): null | Variant
   if (filename === 'questions-flash') {
     return null
   }
-  const regex = /\\documentclass(\[[A-Za-zÀ-ÖØ-öø-ÿ\d, =.\\-]*])?{([A-Za-zÀ-ÖØ-öø-ÿ\d/, .-]+)}/gs
+  const regex = /\\documentclass(\[[A-Za-zÀ-ÖØ-öø-ÿ\d, =.\\-]*\])?{([A-Za-zÀ-ÖØ-öø-ÿ\d, .-\/]+)}/gs
+  if (!regex.test(fileContent)) {
+    return null
+  }
   const filteredFilename = filterFilename(filename)
   const printVariant: Variant = {
     filename: `${filteredFilename}-impression`,
-    fileContent: fileContent.replace(regex, '\\documentclass$1{$2}\n\n\\include{../impression}'),
+    fileContent: fileContent.replace(regex, '\\documentclass$1{$2}\n\n\\include{../common/includes/print}'),
     type: 'impression'
   }
   const result = [printVariant]
   if (filename.endsWith('-cours')) {
     const studentVariant: Variant = {
       filename: `${filteredFilename}-eleve`,
-      fileContent: fileContent.replace(regex, '\\documentclass$1{$2}\n\n\\include{../eleve}'),
+      fileContent: fileContent.replace(regex, '\\documentclass$1{$2}\n\n\\include{../common/includes/student}'),
       type: 'élève'
     }
     const studentPrintVariant: Variant = {
       filename: `${filteredFilename}-eleve-impression`,
-      fileContent: fileContent.replace(regex, '\\documentclass$1{$2}\n\n\\include{../impression}\n\\include{../eleve}'),
+      fileContent: fileContent.replace(regex, '\\documentclass$1{$2}\n\n\\include{../common/includes/print}\n\\include{../common/includes/student}'),
       type: 'élève / impression'
     }
     result.push(studentVariant, studentPrintVariant)
@@ -67,14 +70,10 @@ const generateVariants = (filePath: string, fileContent: string): null | Variant
  * These file names typically represent files that should not be processed
  * or included in specific workflows or tasks.
  */
-const ignores = [
-  'devoir.tex',
-  'eleve.tex',
-  'geogebra.tex',
-  'groupes.tex',
-  'impression.tex',
-  'pandoc.tex',
-  'scratch.tex'
+const ignores: string[] = [
+  'common/includes/student.tex',
+  'common/includes/print.tex',
+  'common/includes/pandoc.tex'
 ]
 
 /**
