@@ -82,7 +82,7 @@ const setupDocument = async () => {
     }
   }
 
-  const exercises = root.value!.querySelectorAll<HTMLElement>('.exercise')
+  const exercises = root.value!.querySelectorAll<HTMLElement>('.bubble-exercise')
   let printIconHtml = ''
   try {
     const printIcon = await loadIcon('bi:printer-fill')
@@ -95,7 +95,7 @@ const setupDocument = async () => {
   for (let i = 0; i < exercises.length; i++) {
     const exercise = exercises[i]
     const correction = exercise?.nextElementSibling
-    if (correction && correction.classList.contains('correction')) {
+    if (correction && correction.classList.contains('bubble-correction')) {
       const id = `correction-${i + 1}`
       const expanded = route.hash === `#${id}`
       const details = document.createElement('details')
@@ -416,40 +416,44 @@ onMounted(setupDocument)
   }
 }
 
-.objectives {
+.bubble-objectives {
   @include bubble-style('👌 Objectifs', #fceae9, #e74c3c);
 }
 
-.remember {
+.bubble-remember {
   @include bubble-style('👀 À retenir', #ebf3fb, #3583d6);
 }
 
-.example {
+.bubble-example {
   @include bubble-style('💡 Exemple', #dcf3d8, #26a65b);
 }
 
-.exercise {
+.bubble-exercise {
   counter-increment: exercise;
 
   @include bubble-style('📝 Exercice ' counter(exercise), #e0f2f1, #009688);
 }
 
-.information {
+.bubble-information {
   @include bubble-style('☝ Information', #fce4ec, #e91e63);
 }
 
-.correction {
+.bubble-correction {
   @include bubble-style('✔ Correction de l\'exercice ' counter(exercise), #e8eaf6, #3f51b5);
 }
 
 @include color-mode(dark) {
-  .objectives,
-  .remember,
-  .example,
-  .exercise,
-  .information,
-  .correction {
+  .bubble-objectives,
+  .bubble-remember,
+  .bubble-example,
+  .bubble-exercise,
+  .bubble-information,
+  .bubble-correction {
     background-color: $dark;
+
+    &:hover {
+      background-color: darken($dark, 2%);
+    }
   }
 
   .math-document {
