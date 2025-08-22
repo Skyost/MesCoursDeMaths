@@ -26,7 +26,6 @@ jobs:
   build:
     needs: configure
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 360
     container:
       image: skyost/latex-docker
       options: --user ${{ needs.configure.outputs.containerUser }}

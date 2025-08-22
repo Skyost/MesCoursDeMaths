@@ -11,6 +11,7 @@ export default defineNuxtConfig({
     '~/../modules/default-options-registerer',
     '~/../modules/commit-sha-file-generator',
     '~/../modules/content-downloader',
+    '~/../modules/latex-bundles-generator',
     '~/../modules/latex-pdf-generator',
     '~/../modules/latex-to-content',
     '@bootstrap-vue-next/nuxt',

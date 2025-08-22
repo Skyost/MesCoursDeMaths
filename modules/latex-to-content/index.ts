@@ -587,9 +587,15 @@ class KatexRendererWithMacros extends KatexRenderer {
   }
 
   override filterUnknownSymbols(math: string): string {
+    const formatNumber = (raw: string): string => {
+      const parts = raw.split(/[.,]/)
+      parts[0] = parts[0]!.replace(/\B(?=(\d{3})+(?!\d))/g, '\\;')
+      return parts.length > 1 ? `${parts[0]},{${parts[1]}}` : parts[0]
+    }
     return super.filterUnknownSymbols(math)
-      .replaceAll(/(\\left *|\\right *)*\\VERT/g, '$1 | $1 | $1 |')
-      .replaceAll(/\\overset{(.*)}&{(.*)}/g, '&\\overset{$1}{$2}')
+      .replace(/\\num\{([0-9][0-9., ]*)}/g, (_, digits) => formatNumber(digits))
+      .replace(/(\\left *|\\right *)*\\VERT/g, '$1 | $1 | $1 |')
+      .replace(/\\overset{(.*)}&{(.*)}/g, '&\\overset{$1}{$2}')
       .replaceAll('\\sizeddotline{}', '\\expandeddotline')
   }
 }

@@ -196,11 +196,11 @@ export interface RawLinkedResource {
  * title, URL, and whether the resource corresponds to the current LaTeX file.
  */
 const getRawLinkedResources = (latexFilePath: string): RawLinkedResource[] => {
-  const relevantPrefix = '-cours'
+  const relevantSuffix = '-cours'
   const filename = path.parse(latexFilePath).name
-  if (filename.endsWith(relevantPrefix)) {
+  if (filename.endsWith(relevantSuffix)) {
     const result: RawLinkedResource[] = []
-    const prefix = filename.substring(0, filename.length - relevantPrefix.length)
+    const prefix = filename.substring(0, filename.length - relevantSuffix.length)
     const directoryPath = path.dirname(latexFilePath)
     const files = fs.readdirSync(directoryPath)
     for (const file of files) {
@@ -254,6 +254,10 @@ const getLinkedResourceTitle = (prefix: string, filename: string): string | null
     {
       filenameRegex: RegExp(prefix + /-dm/.source),
       buildTitle: (_: RegExpExecArray) => 'Devoir maison'
+    },
+    {
+      filenameRegex: RegExp(prefix + /-TP/.source),
+      buildTitle: (_: RegExpExecArray) => 'TP'
     }
   ]
   for (const resourceType of resourceTypes) {

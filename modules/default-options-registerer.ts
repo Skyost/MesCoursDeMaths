@@ -1,6 +1,7 @@
 import { defu } from 'defu'
 import commitShaFileGeneratorOptions from './commit-sha-file-generator/options'
 import contentDownloaderOptions from './content-downloader/options'
+import latexBundlesGeneratorOptions from './latex-bundles-generator/options'
 import latexPdfGeneratorOptions from './latex-pdf-generator/options'
 import latexToContentOptions from './latex-to-content/options'
 import { defineNuxtModule, useLogger } from '@nuxt/kit'
@@ -22,6 +23,7 @@ export default defineNuxtModule((options, nuxt) => {
   logger.info('Registering default options...')
   nuxt.options.commitShaFileGenerator = defu(nuxt.options.commitShaFileGenerator, commitShaFileGeneratorOptions)
   nuxt.options.contentDownloader = defu(nuxt.options.contentDownloader, contentDownloaderOptions)
+  nuxt.options.latexBundlesGenerator = defu(nuxt.options.latexBundlesGenerator, latexBundlesGeneratorOptions)
   nuxt.options.latexPdfGenerator = defu(nuxt.options.latexPdfGenerator, latexPdfGeneratorOptions)
   nuxt.options.latexToContent = defu(nuxt.options.latexToContent, latexToContentOptions)
   logger.success('Done.')
