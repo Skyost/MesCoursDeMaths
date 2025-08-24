@@ -12,6 +12,7 @@ import { storageKey } from './common'
 import defaultOptions, { type ModuleOptions } from './options'
 import type { ModuleOptions as ContentDownloaderModuleOptions } from '../content-downloader/options'
 import type { ModuleOptions as LatexPdfGeneratorModuleOptions } from '../latex-pdf-generator/options'
+import { defu } from 'defu'
 
 /**
  * The name of this module.
@@ -356,6 +357,9 @@ const transformLatexFile = async (
     // Adjust columns size in the HTML content.
     adjustColSize(root)
 
+    // Handle sources environments.
+    handleSources(root)
+
     // Return the parsed content object.
     filename = latexPdfGeneratorOptions.filterFilename(filename)
 
@@ -389,6 +393,29 @@ const transformLatexFile = async (
   else {
     logger.error(`Failed to process ${filePath}.`)
   }
+}
+
+/**
+ * Allows to parse Latex's key-value parameters.
+ *
+ * @param params The parameters to parse.
+ * @returns The parsed parameters.
+ */
+const parseKeyValParams = (params: HTMLElement): Record<string, string> => {
+  const result: Record<string, string> = {}
+  let currentKey: string | null = null
+  for (const node of params.childNodes) {
+    if (node.nodeType === Node.TEXT_NODE) {
+      const matches = [...node.textContent!.matchAll(/([a-zA-Z0-9_]+)\s*=/g)]
+      matches.forEach(m => currentKey = m[1]!)
+    }
+    else if (node.nodeType === Node.ELEMENT_NODE && currentKey) {
+      result[currentKey] = (node as HTMLElement).outerHTML
+      currentKey = null
+    }
+  }
+
+  return result
 }
 
 /**
@@ -438,15 +465,40 @@ const adjustColSize = (root: HTMLElement) => {
   const rows = root.querySelectorAll('.row')
   for (const row of rows) {
     const columns = row.querySelectorAll('> .col')
-    const sizeElement = row.querySelector('> .first-col-size')
+    const params = row.querySelector('> .params')
     if (columns.length === 2) {
-      if (sizeElement && sizeElement.text.trim().length > 0) {
-        const size = parseFloat(sizeElement.text.trim())
-        columns[0]!.setAttribute('style', `--column-size: ${size};`)
-        columns[1]!.setAttribute('style', `--column-size: ${1 - size};`)
+      if (params && params.text.trim().length > 0) {
+        const rawWidth = parseKeyValParams(params)?.width
+        if (rawWidth) {
+          const size = parseFloat(rawWidth)
+          columns[0]!.setAttribute('style', `--column-size: ${size};`)
+          columns[1]!.setAttribute('style', `--column-size: ${1 - size};`)
+        }
       }
     }
-    sizeElement?.remove()
+    params?.remove()
+  }
+}
+
+/**
+ * Handle sources environments.
+ *
+ * @param root The root HTML element of the document.
+ */
+const handleSources = (root: HTMLElement) => {
+  const sources = root.querySelectorAll('.src, .box-src')
+  for (const source of sources) {
+    const paragraphs = source.querySelectorAll('> p')
+    const url = paragraphs[1]!.innerHTML
+    let params: Record<string, string> = {}
+    if (paragraphs.length === 2) {
+      params = parseKeyValParams(paragraphs[0]!)
+    }
+    params = defu(params, {
+      prefix: source.classList.contains('box-src') ? 'D\'après ' : 'Source : ',
+      text: new URL(url).hostname
+    })
+    source.innerHTML = `<span>${params.prefix} <a href="${encodeURI(url)}">${params.text}</a></span>`
   }
 }
 
