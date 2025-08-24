@@ -14,12 +14,22 @@ const root = ref<HTMLElement | null>(null)
 
 const route = useRoute()
 
+const { show } = useModal('image-modal')
+const imageModalImage = ref<HTMLImageElement | null>(null)
+
 const setupDocument = async () => {
   const images = root.value!.querySelectorAll<HTMLElement>('img')
   for (const image of images) {
     const alt = image.getAttribute('alt')
     if (alt?.startsWith('tikzpicture-')) {
       image.classList.add('tikz')
+    }
+    image.onclick = () => {
+      // if (clone.src.endsWith('.svg')) {
+      //   clone.setAttribute('style', 'min-width: 90%;')
+      // }
+      imageModalImage.value = image.cloneNode(true) as HTMLImageElement
+      show()
     }
   }
 
@@ -165,6 +175,28 @@ onMounted(setupDocument)
       class="math-document-content"
       v-html="body"
     />
+    <b-modal
+      id="image-modal"
+      title="Image"
+      cancel-title="Fermer"
+      cancel-variant="secondary"
+      size="xl"
+    >
+      <img
+        :alt="imageModalImage?.alt"
+        :src="imageModalImage?.src"
+        :style="imageModalImage?.getAttribute('style')"
+      >
+      <template #ok>
+        <b-button
+          variant="primary"
+          :href="imageModalImage?.src"
+          download
+        >
+          Télécharger l'image
+        </b-button>
+      </template>
+    </b-modal>
   </div>
 </template>
 
@@ -182,6 +214,7 @@ onMounted(setupDocument)
   padding: calc(20px + 0.6em + 4px) 20px calc(20px - 1rem);
   margin-bottom: 1.5rem;
   transition: background-color 200ms;
+  overflow-x: auto;
 
   h4 {
     color: $titleColor;
@@ -207,6 +240,12 @@ onMounted(setupDocument)
     text-transform: uppercase;
     padding: 2px 8px;
   }
+}
+
+#image-modal .modal-body {
+  text-align: center;
+  overflow-x: auto;
+  background-color: white;
 }
 
 .math-document {
@@ -278,6 +317,13 @@ onMounted(setupDocument)
       &.button-print {
         float: right;
       }
+    }
+
+    .src,
+    .box-src {
+      font-size: 0.8em;
+      text-align: right;
+      margin-bottom: 0.5rem;
     }
 
     .dotline-paragraph {
@@ -378,17 +424,17 @@ onMounted(setupDocument)
       }
     }
 
-    :deep(.katex-display) {
-      margin: 0.5em 0;
-
-      > .katex {
-        white-space: normal;
-      }
-
-      > .base {
-        margin: 0.25em 0;
-      }
-    }
+    // .katex-display {
+    //   margin: 0.5em 0;
+    //
+    //   > .katex {
+    //     white-space: normal;
+    //   }
+    //
+    //   > .base {
+    //     margin: 0.25em 0;
+    //   }
+    // }
   }
 
   &.red h1::after {

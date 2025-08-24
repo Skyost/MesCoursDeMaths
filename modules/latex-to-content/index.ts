@@ -13,6 +13,7 @@ import defaultOptions, { type ModuleOptions } from './options'
 import type { ModuleOptions as ContentDownloaderModuleOptions } from '../content-downloader/options'
 import type { ModuleOptions as LatexPdfGeneratorModuleOptions } from '../latex-pdf-generator/options'
 import { defu } from 'defu'
+import NodeType from 'node-html-parser/dist/nodes/type'
 
 /**
  * The name of this module.
@@ -357,6 +358,9 @@ const transformLatexFile = async (
     // Adjust columns size in the HTML content.
     adjustColSize(root)
 
+    // Handle framed images.
+    handleFramedImages(root)
+
     // Handle sources environments.
     handleSources(root)
 
@@ -405,11 +409,11 @@ const parseKeyValParams = (params: HTMLElement): Record<string, string> => {
   const result: Record<string, string> = {}
   let currentKey: string | null = null
   for (const node of params.childNodes) {
-    if (node.nodeType === Node.TEXT_NODE) {
+    if (node.nodeType === NodeType.TEXT_NODE) {
       const matches = [...node.textContent!.matchAll(/([a-zA-Z0-9_]+)\s*=/g)]
       matches.forEach(m => currentKey = m[1]!)
     }
-    else if (node.nodeType === Node.ELEMENT_NODE && currentKey) {
+    else if (node.nodeType === NodeType.ELEMENT_NODE && currentKey) {
       result[currentKey] = (node as HTMLElement).outerHTML
       currentKey = null
     }
@@ -481,6 +485,24 @@ const adjustColSize = (root: HTMLElement) => {
 }
 
 /**
+ * Handle framed images.
+ *
+ * @param root The root HTML element of the document.
+ */
+const handleFramedImages = (root: HTMLElement) => {
+  const framed = root.querySelectorAll('.framed')
+  for (const child of framed) {
+    if (child.childElementCount === 1 && child.firstElementChild!.tagName === 'P') {
+      const p = child.firstElementChild!
+      if (p.childElementCount === 1 && p.firstElementChild!.tagName === 'IMG') {
+        p.firstElementChild!.classList.add('framed')
+        child.replaceWith(p)
+      }
+    }
+  }
+}
+
+/**
  * Handle sources environments.
  *
  * @param root The root HTML element of the document.
@@ -489,13 +511,13 @@ const handleSources = (root: HTMLElement) => {
   const sources = root.querySelectorAll('.src, .box-src')
   for (const source of sources) {
     const paragraphs = source.querySelectorAll('> p')
-    const url = paragraphs[1]!.innerHTML
+    const url = paragraphs[paragraphs.length - 1]!.innerHTML
     let params: Record<string, string> = {}
     if (paragraphs.length === 2) {
       params = parseKeyValParams(paragraphs[0]!)
     }
     params = defu(params, {
-      prefix: source.classList.contains('box-src') ? 'D\'après ' : 'Source : ',
+      prefix: source.classList.contains('box-src') ? 'D\'après' : 'Source :',
       text: new URL(url).hostname
     })
     source.innerHTML = `<span>${params.prefix} <a href="${encodeURI(url)}">${params.text}</a></span>`
