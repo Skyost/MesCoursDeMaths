@@ -18,21 +18,6 @@ const { show } = useModal('image-modal')
 const imageModalImage = ref<HTMLImageElement | null>(null)
 
 const setupDocument = async () => {
-  const images = root.value!.querySelectorAll<HTMLElement>('img')
-  for (const image of images) {
-    const alt = image.getAttribute('alt')
-    if (alt?.startsWith('tikzpicture-')) {
-      image.classList.add('tikz')
-    }
-    image.onclick = () => {
-      // if (clone.src.endsWith('.svg')) {
-      //   clone.setAttribute('style', 'min-width: 90%;')
-      // }
-      imageModalImage.value = image.cloneNode(true) as HTMLImageElement
-      show()
-    }
-  }
-
   const tables = root.value!.querySelectorAll<HTMLElement>('table')
   for (const table of tables) {
     table.classList.add('table', 'table-bordered', 'table-hover')
@@ -158,6 +143,17 @@ const setupDocument = async () => {
   }
   if (scrollCollapse) {
     scrollCollapse.scrollIntoView(true)
+  }
+  const images = root.value!.querySelectorAll<HTMLElement>('img')
+  for (const image of images) {
+    const alt = image.getAttribute('alt')
+    if (alt?.startsWith('tikzpicture-')) {
+      image.classList.add('tikz')
+    }
+    image.onclick = () => {
+      imageModalImage.value = image.cloneNode(true) as HTMLImageElement
+      show()
+    }
   }
 }
 
