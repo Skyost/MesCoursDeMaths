@@ -369,6 +369,11 @@ onMounted(setupDocument)
       list-style-type: '— ';
     }
 
+    ol > li > p:first-child > .katex-display:only-child > .katex > .katex-html > .base,
+    ul > li > p:first-child > .katex-display:only-child > .katex > .katex-html > .base {
+      vertical-align: top;
+    }
+
     details[id^='correction'] {
       &[open] > *:not(summary) {
         animation: open 0.5s;
