@@ -247,12 +247,17 @@ onMounted(setupDocument)
 .math-document {
   counter-reset: headline-2 headline-3 exercise;
 
-  h1::after {
-    display: block;
-    content: '';
-    width: 60px;
-    height: 5px;
-    margin: 10px 0 15px;
+  h1 {
+    border-bottom: none;
+    margin-bottom: 0;
+
+    &::after {
+      display: block;
+      content: '';
+      width: 60px;
+      height: 5px;
+      margin: 10px 0 15px;
+    }
   }
 
   .math-document-content {
