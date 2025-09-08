@@ -177,6 +177,7 @@ onMounted(setupDocument)
       cancel-title="Fermer"
       cancel-variant="secondary"
       size="xl"
+      centered
     >
       <img
         :alt="imageModalImage?.alt"

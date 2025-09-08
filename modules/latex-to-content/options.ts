@@ -140,7 +140,7 @@ const picturesTemplate: Record<string, string> = {
 \\usepackage{{latexDirectoryPath}/common/common}
 \\usepackage{{latexDirectoryPath}/common/functions}
 \\usepackage{{latexDirectoryPath}/common/printable}
-\\usepackage[nocorrections]{{latexDirectoryPath}/common/transformable}
+\\usepackage[image]{{latexDirectoryPath}/common/transformable}
 
 % Arrows.
 \\tikzset{>={Latex[width=4pt]}}
@@ -148,14 +148,14 @@ const picturesTemplate: Record<string, string> = {
 % Graphics path.
 {graphicsPath}
 
-% 1.25x scale.
+% 1.3x scale.
 \\tikzset{
   graphfonctionlabel/.style args={at #1 #2 with #3}{
     postaction={
       decorate, decoration={markings, mark= at position #1 with \\node [#2] {#3};}
     }
   },
-  every picture/.append style={scale=1.25, every node/.style={scale=1.25}}
+  every picture/.append style={scale=1.3, every node/.style={scale=1.3}}
 }
 
 \\begin{document}
@@ -256,7 +256,7 @@ const getLinkedResourceTitle = (prefix: string, filename: string): string | null
       buildTitle: (_: RegExpExecArray) => 'Devoir maison'
     },
     {
-      filenameRegex: RegExp(prefix + /-TP/.source),
+      filenameRegex: RegExp(prefix + /-tp/.source),
       buildTitle: (_: RegExpExecArray) => 'TP'
     }
   ]

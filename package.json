@@ -9,10 +9,10 @@
     "preview": "nuxt preview"
   },
   "dependencies": {
-    "nuxt": "^4.0.3"
+    "nuxt": "^4.1.1"
   },
   "devDependencies": {
-    "@bootstrap-vue-next/nuxt": "^0.30.5",
+    "@bootstrap-vue-next/nuxt": "^0.40.1",
     "@iconify-json/bi": "^1.2.6",
     "@nabla/vite-plugin-eslint": "^2.0.6",
     "@nuxt/eslint": "^1.9.0",
@@ -26,16 +26,16 @@
     "@types/katex": "^0.16.7",
     "adm-zip": "^0.5.16",
     "bootstrap": "^5.3.8",
-    "bootstrap-vue-next": "^0.30.5",
-    "eslint": "^9.34.0",
+    "bootstrap-vue-next": "^0.40.1",
+    "eslint": "^9.35.0",
     "html2canvas": "^1.4.1",
     "node-html-parser": "^7.0.1",
     "nuxt-cname-generator": "^2.0.0",
     "nuxt-link-checker": "^4.3.1",
     "recaptcha-v3": "^1.10.0",
-    "sass": "^1.91.0",
+    "sass": "^1.92.1",
     "sass-loader": "^16.0.5",
-    "stylelint": "^16.23.1",
+    "stylelint": "^16.24.0",
     "stylelint-config-recommended-vue": "^1.6.1",
     "stylelint-config-standard-scss": "^15.0.1",
     "that-latex-lib": "^2.1.2",
