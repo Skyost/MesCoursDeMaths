@@ -14,7 +14,7 @@ const root = ref<HTMLElement | null>(null)
 
 const route = useRoute()
 
-const { show } = useModal('image-modal')
+const { show } = useToggle('image-modal')
 const imageModalImage = ref<HTMLImageElement | null>(null)
 
 const setupDocument = async () => {
@@ -177,7 +177,6 @@ onMounted(setupDocument)
       cancel-title="Fermer"
       cancel-variant="secondary"
       size="xl"
-      centered
     >
       <img
         :alt="imageModalImage?.alt"
