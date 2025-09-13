@@ -3,7 +3,11 @@
 import fs from 'fs'
 import path from 'path'
 import { addServerHandler, createResolver, defineNuxtModule, addPrerenderRoutes, useLogger, type Resolver } from '@nuxt/kit'
-import { KatexRenderer, LatexImageExtractorInDirectory, PandocCommand, PandocTransformer, SvgGenerator } from 'that-latex-lib'
+import {
+  KatexRenderer,
+  LatexChecksumsCalculator, LatexImageExtractorInDirectory,
+  LatexIncludeCommand, PandocCommand, PandocTransformer, SvgGenerator
+} from 'that-latex-lib'
 import type { HTMLElement } from 'node-html-parser'
 import debug from '../../app/site/debug'
 import { getGradeRoute, getLessonRoute } from '../../app/site/lessons'
@@ -608,20 +612,39 @@ class TikzPictureImageExtractor extends LatexImageExtractorInDirectory {
     previousBuildDirectoryPath: string
   ) {
     const preparedTemplate = template.replaceAll('{latexDirectoryPath}', latexDirectoryPath)
+    const includeGraphicsDirectories = getIncludeGraphicsDirectories(latexDirectoryPath)
     super(
       blockType,
       destinationDirectoryPath,
       (extractedImageTexFilePath: string, latexContent: string) => preparedTemplate
         .replace(
           '{graphicsPath}',
-          '\\graphicspath{' + getIncludeGraphicsDirectories(extractedImageTexFilePath)
+          '\\graphicspath{' + includeGraphicsDirectories
             .map(directory => `{${directory.replaceAll('\\', '\\\\')}}`)
             .join('\n') + '}'
         )
         .replace('{extractedContent}', latexContent),
       {
         svgGenerator: new SvgGenerator({
-          generateIfExists: !debug
+          generateIfExists: !debug,
+          checksumsCalculator: new LatexChecksumsCalculator({
+            latexIncludeCommands: [
+              LatexIncludeCommand.includeGraphics(includeGraphicsDirectories),
+              ...LatexIncludeCommand.defaultLatexIncludeCommands,
+              new LatexIncludeCommand(
+                'usepackage',
+                {
+                  extensions: ['.sty']
+                }
+              ),
+              new LatexIncludeCommand(
+                'RequirePackage',
+                {
+                  extensions: ['.sty']
+                }
+              )
+            ]
+          })
         })
       }
     )

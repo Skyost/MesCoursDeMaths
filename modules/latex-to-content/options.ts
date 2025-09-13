@@ -138,6 +138,7 @@ const picturesTemplate: Record<string, string> = {
 
 % Load all required packages for my graphics.
 \\usepackage{{latexDirectoryPath}/common/common}
+\\usepackage{{latexDirectoryPath}/common/tikzgeometry}
 \\usepackage{{latexDirectoryPath}/common/functions}
 \\usepackage{{latexDirectoryPath}/common/printable}
 \\usepackage[image]{{latexDirectoryPath}/common/transformable}
@@ -150,11 +151,6 @@ const picturesTemplate: Record<string, string> = {
 
 % 1.3x scale.
 \\tikzset{
-  graphfonctionlabel/.style args={at #1 #2 with #3}{
-    postaction={
-      decorate, decoration={markings, mark= at position #1 with \\node [#2] {#3};}
-    }
-  },
   every picture/.append style={scale=1.3, every node/.style={scale=1.3}}
 }
 
