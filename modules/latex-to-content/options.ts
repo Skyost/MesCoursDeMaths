@@ -137,7 +137,7 @@ const picturesTemplate: Record<string, string> = {
   tikzpicture: `\\documentclass[tikz]{standalone}
 
 % Load all required packages for my graphics.
-\\usepackage{{latexDirectoryPath}/common/common}
+\\usepackage[fontspath={{latexDirectoryPath}/common/fonts/}]{{latexDirectoryPath}/common/common}
 \\usepackage{{latexDirectoryPath}/common/tikzgeometry}
 \\usepackage{{latexDirectoryPath}/common/functions}
 \\usepackage{{latexDirectoryPath}/common/printable}
