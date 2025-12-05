@@ -112,17 +112,16 @@ usePageHead({ title: 'À propos' })
         À propos
       </h1>
       <p>
-        Pensé à la fois comme un outil pédagogique qui permet d'offrir des compléments aux cours, tels les corrections
-        des exercices, mais aussi comme un outil de partage, ce site web est mon outil principal de travail.
+        Pensé à la fois comme un accessoire pédagogique qui permet d'offrir des compléments à mes cours, comme des corrections
+        d'exercices, mais aussi comme un espace de partage, ce site web est mon principal outil de travail.
         J'y publie toutes mes ressources qui peuvent intéresser à la fois les élèves comme les collègues
-        (ou toutes les autres personnes intéressées par ce type de contenu) : activités, devoirs, cours, etc.
+        (ou toutes les autres personnes intriguées par ce type de contenu) : activités, devoirs, cours, etc.
       </p>
       <blockquote id="quote">
         <icon name="bi:quote" />
         <p>
           Une éducation mathématique à la fois théorique et pratique [...] peut exercer la plus heureuse influence sur
-          la
-          formation de l'esprit. Nous pouvons ainsi espérer former des hommes ayant foi dans la raison, et sachant qu'il
+          la formation de l'esprit. Nous pouvons ainsi espérer former des hommes ayant foi dans la raison, et sachant qu'il
           ne faut pas chercher à biaiser en face d'un raisonnement juste : on n'a qu'à s'incliner.
         </p>
         <p class="text-end mb-0">
@@ -287,8 +286,8 @@ usePageHead({ title: 'À propos' })
 </template>
 
 <style lang="scss" scoped>
-@import '~/assets/bootstrap-mixins';
-@import '~/assets/colors';
+@import '@/assets/bootstrap-mixins';
+@import '@/assets/colors';
 
 #quote {
   font-size: 0.9em;

@@ -7,8 +7,8 @@
 </template>
 
 <style lang="scss" scoped>
-@import '~/assets/bootstrap-mixins';
-@import '~/assets/colors';
+@import '@/assets/bootstrap-mixins';
+@import '@/assets/colors';
 
 .page-content-parent {
   position: relative;
@@ -67,8 +67,8 @@
 </style>
 
 <style lang="scss">
-@import '~/assets/bootstrap-mixins';
-@import '~/assets/colors';
+@import '@/assets/bootstrap-mixins';
+@import '@/assets/colors';
 
 .page-content {
   h1.centered,

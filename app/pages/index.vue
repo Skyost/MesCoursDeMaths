@@ -182,7 +182,7 @@ usePageHead({ title: 'Accueil' })
 </template>
 
 <style lang="scss" scoped>
-@import '~/assets/bootstrap-mixins';
+@import '@/assets/bootstrap-mixins';
 
 .column-image {
   width: 100%;

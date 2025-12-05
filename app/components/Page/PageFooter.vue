@@ -83,7 +83,7 @@ const year = (new Date()).getFullYear()
 </template>
 
 <style lang="scss" scoped>
-@import '~/assets/bootstrap-mixins';
+@import '@/assets/bootstrap-mixins';
 
 .page-footer {
   position: relative;

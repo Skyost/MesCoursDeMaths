@@ -197,8 +197,8 @@ onMounted(setupDocument)
 </template>
 
 <style lang="scss">
-@import '~/assets/bootstrap-mixins';
-@import '~/assets/colors';
+@import '@/assets/bootstrap-mixins';
+@import '@/assets/colors';
 @import 'katex/dist/katex.min.css';
 
 @mixin bubble-style($text, $backgroundColor, $titleColor) {

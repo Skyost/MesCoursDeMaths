@@ -48,8 +48,8 @@ withDefaults(defineProps<{
 </template>
 
 <style lang="scss" scoped>
-@import '~/assets/bootstrap-mixins';
-@import '~/assets/colors';
+@import '@/assets/bootstrap-mixins';
+@import '@/assets/colors';
 
 .image-card {
   display: block;

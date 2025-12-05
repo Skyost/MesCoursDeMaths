@@ -20,8 +20,8 @@ import siteMeta from '~/site/meta'
 </template>
 
 <style lang="scss" scoped>
-@import '~/assets/bootstrap-mixins';
-@import '~/assets/colors';
+@import '@/assets/bootstrap-mixins';
+@import '@/assets/colors';
 
 .page-header-parent {
   position: relative;

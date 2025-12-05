@@ -38,8 +38,8 @@ const theme = useTheme()
 </template>
 
 <style lang="scss" scoped>
-@import '~/assets/bootstrap-mixins';
-@import '~/assets/colors';
+@import '@/assets/bootstrap-mixins';
+@import '@/assets/colors';
 
 .page-navbar {
   #page-navbar-collapse {

@@ -15,7 +15,7 @@ const theme = useUpdateTheme()
 </template>
 
 <style lang="scss">
-@import '~/assets/bootstrap-mixins';
+@import '@/assets/bootstrap-mixins';
 
 @include color-mode(light) {
   body {
