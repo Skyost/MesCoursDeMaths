@@ -8,7 +8,7 @@ import {
   LatexChecksumsCalculator, LatexImageExtractorInDirectory,
   LatexIncludeCommand, PandocCommand, PandocTransformer, SvgGenerator
 } from 'that-latex-lib'
-import type { HTMLElement } from 'node-html-parser'
+import { NodeType, type HTMLElement } from 'node-html-parser'
 import debug from '../../app/site/debug'
 import { getGradeRoute, getLessonRoute } from '../../app/site/lessons'
 import type { Grade, GradeWithResources, Lesson, LessonContent, LinkedResource } from '../../app/types'
@@ -17,7 +17,6 @@ import defaultOptions, { type ModuleOptions } from './options'
 import type { ModuleOptions as ContentDownloaderModuleOptions } from '../content-downloader/options'
 import type { ModuleOptions as LatexPdfGeneratorModuleOptions } from '../latex-pdf-generator/options'
 import { defu } from 'defu'
-import NodeType from 'node-html-parser/dist/nodes/type'
 
 /**
  * The name of this module.
