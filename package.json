@@ -11,7 +11,7 @@
     "clean": "nuxi cleanup"
   },
   "dependencies": {
-    "nuxt": "^4.4.8"
+    "nuxt": "^4.5.0"
   },
   "devDependencies": {
     "@bootstrap-vue-next/nuxt": "^0.45.8",
@@ -31,6 +31,7 @@
     "bootstrap-vue-next": "^0.45.8",
     "eslint": "^10.7.0",
     "html2canvas": "^1.4.1",
+    "katex": "^0.17.0",
     "node-html-parser": "^9.0.0",
     "nuxt-cname-generator": "^2.0.0",
     "nuxt-link-checker": "^5.1.2",
