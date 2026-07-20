@@ -65,11 +65,18 @@ export default defineNuxtConfig({
     }
   },
 
+  build: {
+    transpile: ['bootstrap-vue-next']
+  },
+
   vite: {
     plugins: [
       StylelintPlugin(),
       eslintPlugin()
     ],
+    ssr: {
+      noExternal: ['bootstrap-vue-next']
+    },
     css: {
       preprocessorOptions: {
         scss: {
@@ -99,7 +106,8 @@ export default defineNuxtConfig({
   },
 
   icon: {
-    provider: 'iconify',
+    provider: 'server',
+    fallbackToApi: false,
     class: 'vue-icon'
   },
 
