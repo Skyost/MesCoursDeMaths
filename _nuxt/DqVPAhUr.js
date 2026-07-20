@@ -1,0 +1,1 @@
+var e=(e,t)=>{if(!t)return null;if(e)return e.value.get(t)?.getActive()},t=(t,n)=>e(t,n)?.value.value??!1;export{t as n,e as t};
