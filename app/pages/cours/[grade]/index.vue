@@ -71,7 +71,7 @@ usePageHead({ title })
           <control
             v-if="grade.otherResources && grade.otherResources.length > 0"
             text="Autres ressources"
-            icon-id="file-earmark-text-fill"
+            icon-id="bi:file-earmark-text-fill"
             @click="otherResourcesModal = !otherResourcesModal"
           />
         </controls-section>

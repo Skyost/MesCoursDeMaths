@@ -47,19 +47,19 @@ usePageHead({ title })
           <control
             :href="lessonContent.pdf"
             text="Télécharger le PDF"
-            icon-id="file-earmark-pdf-fill"
+            icon-id="bi:file-earmark-pdf-fill"
           />
         </controls-section>
         <controls-section v-if="lessonContent.linkedResources.length > 0">
           <controls-section-title
-            icon-id="paperclip"
+            icon-id="bi:paperclip"
             title="Ressources associées"
           />
           <control
             v-for="resource in lessonContent.linkedResources"
             :key="resource.url"
             :href="resource.url"
-            :icon-id="resource.url.endsWith('.pdf') ? 'file-earmark-pdf-fill' : 'file-earmark-text-fill'"
+            :icon-id="resource.url.endsWith('.pdf') ? 'bi:file-earmark-pdf-fill' : 'bi:file-earmark-text-fill'"
             :text="resource.title"
           />
         </controls-section>

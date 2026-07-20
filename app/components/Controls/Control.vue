@@ -8,7 +8,7 @@ withDefaults(
     active?: boolean
   }>(),
   {
-    iconId: 'arrow-left'
+    iconId: 'bi:arrow-left'
   }
 )
 
@@ -24,7 +24,7 @@ const theme = useTheme()
   >
     <icon
       v-if="iconId"
-      :name="`bi:${iconId}`"
+      :name="iconId"
     /> {{ text }}
   </b-button>
 </template>

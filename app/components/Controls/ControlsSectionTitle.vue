@@ -6,13 +6,13 @@ withDefaults(
   }>(),
   {
     title: 'Navigation',
-    iconId: 'list'
+    iconId: 'bi:list'
   }
 )
 </script>
 
 <template>
-  <span class="title"><icon :name="`bi:${iconId}`" /> {{ title }}</span>
+  <span class="title"><icon :name="`${iconId}`" /> {{ title }}</span>
 </template>
 
 <style scoped lang="scss">
