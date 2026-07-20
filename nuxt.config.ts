@@ -57,7 +57,7 @@ export default defineNuxtConfig({
       }
     }
   },
-  compatibilityDate: '2024-07-01',
+  compatibilityDate: '2026-07-01',
 
   nitro: {
     prerender: {
@@ -106,9 +106,11 @@ export default defineNuxtConfig({
   },
 
   icon: {
-    provider: 'server',
-    fallbackToApi: false,
-    class: 'vue-icon'
+    provider: 'none',
+    class: 'vue-icon',
+    clientBundle: {
+      scan: true,
+    },
   },
 
   linkChecker: {
