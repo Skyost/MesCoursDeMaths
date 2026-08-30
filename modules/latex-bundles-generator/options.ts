@@ -1,5 +1,6 @@
 import * as fs from 'fs'
 import * as path from 'path'
+import { findLatexDocMacro, resolveLatexDocumentTitle } from '../common/latex-document'
 
 /**
  * Represents a bundle of LaTeX files that are used to generate a single PDF document.
@@ -89,7 +90,7 @@ const bundleLatexTemplate: string = `\\documentclass{../common/class}
 
 \\begin{document}
 
-\\doc{{title}}
+\\doc
 
 \\AtEndEnvironment{document}{\\newpage}
 
@@ -209,12 +210,11 @@ const getBundlePart = (latexFilePath: string): LatexBundlePartWithTitle | null =
   }
 
   const docEndIndex = content.indexOf('\\end{document}')
-  const docMacroRegex = /\\doc(?:\s*\[([^\]]*)])?\s*\{([^}]*)}\s*(?:\[(.*?)])?/gs
-  matchResult = docMacroRegex.exec(content)
+  const docMacro = findLatexDocMacro(content)
   let title
-  if (matchResult && matchResult.length > 0) {
-    docBeginIndex = matchResult.index + matchResult[0].length
-    title = matchResult[2]
+  if (docMacro) {
+    docBeginIndex = docMacro.endIndex
+    title = resolveLatexDocumentTitle(latexFilePath, docMacro)
   }
   else {
     docBeginIndex += '\\begin{document}'.length

@@ -16,6 +16,7 @@ import { storageKey } from './common'
 import defaultOptions, { type ModuleOptions } from './options'
 import type { ModuleOptions as ContentDownloaderModuleOptions } from '../content-downloader/options'
 import type { ModuleOptions as LatexPdfGeneratorModuleOptions } from '../latex-pdf-generator/options'
+import { findLatexDocMacro, resolveLatexDocumentTitle, setLatexDocMacroTitle } from '../common/latex-document'
 import { defu } from 'defu'
 
 /**
@@ -313,6 +314,19 @@ const transformLatexFile = async (
   // Load the Pandoc redefinitions header content.
   const pandocHeader = fs.readFileSync(resolver.resolve(latexDirectoryPath, options.pandocRedefinitionsFile), { encoding: 'utf8' })
 
+  // Resolve the title that the real LaTeX macro normally reads from names.json, then rewrite the
+  // macro to the legacy form understood by the Pandoc redefinitions header.
+  const latexContent = fs.readFileSync(filePath, { encoding: 'utf8' })
+  const docMacro = findLatexDocMacro(latexContent)
+  if (!docMacro) {
+    throw new Error(`No \\doc macro found in "${filePath}".`)
+  }
+  const documentTitle = resolveLatexDocumentTitle(filePath, docMacro)
+  if (documentTitle === undefined) {
+    throw new Error(`No title found for "${filePath}". Add a matching entry to names.json or use \\doc[Title].`)
+  }
+  const pandocLatexContent = setLatexDocMacroTitle(latexContent, docMacro, documentTitle)
+
   // Parse the Pandoc HTML output.
   const pandocTransformer = new PandocTransformer({
     imageSrcResolver: PandocTransformer.resolveFromAssetsRoot(
@@ -348,7 +362,7 @@ const transformLatexFile = async (
     })
   })
   // Transforms the raw content into HTML.
-  const { htmlResult: root } = await pandocTransformer.transform(filePath, fs.readFileSync(filePath, { encoding: 'utf8' }))
+  const { htmlResult: root } = await pandocTransformer.transform(filePath, pandocLatexContent)
 
   let filename = path.parse(filePath).name
   if (root) {
@@ -382,6 +396,7 @@ const transformLatexFile = async (
     const header = getHeader(
       filePath,
       root,
+      documentTitle,
       rawLinkedResources.map((resource) => {
         return {
           title: resource.title,
@@ -532,23 +547,33 @@ const handleSources = (root: HTMLElement) => {
  *
  * @param filePath The file path of the document.
  * @param root The root HTML element of the document.
+ * @param documentTitle The title resolved from the `\doc` macro or `names.json`.
  * @param linkedResources The resources to link with this document.
  * @returns Header information.
  */
-const getHeader = (filePath: string, root: HTMLElement, linkedResources: LinkedResource[]): { [key: string]: any } => {
+const getHeader = (
+  filePath: string,
+  root: HTMLElement,
+  documentTitle: string,
+  linkedResources: LinkedResource[]
+): { [key: string]: any } => {
   // Initialize the header object with the slug.
   const header: { [key: string]: any } = { }
 
   // Get the document title element.
   const title = root.querySelector('.doctitle p')
 
-  // Populate header with slug and title if available.
+  // Populate the title from Pandoc when possible, and fall back to the already resolved value.
   if (title) {
     header.name = title.innerHTML.trim()
     header.pageTitle = title.text.trim()
-    header.pageTitleSearch = normalizeString(header.pageTitle)
     title.parentNode.remove()
   }
+  else {
+    header.name = documentTitle
+    header.pageTitle = documentTitle
+  }
+  header.pageTitleSearch = normalizeString(header.pageTitle)
 
   // Get and parse chapter number.
   const number = root.querySelector('.docnumber p')
