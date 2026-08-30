@@ -204,7 +204,7 @@ const getBundlePart = (latexFilePath: string): LatexBundlePartWithTitle | null =
   let preambleBeginIndex = 0
   const preambleEndIndex = docBeginIndex
   const documentClassRegex = /\\documentclass(?:\s*\[([^\]]*)])?\s*\{([^}]*)}/gs
-  let matchResult = documentClassRegex.exec(preamble)
+  const matchResult = documentClassRegex.exec(preamble)
   if (matchResult && matchResult.length > 0) {
     preambleBeginIndex = matchResult.index + matchResult[0].length
   }

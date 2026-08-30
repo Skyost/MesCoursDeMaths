@@ -236,6 +236,10 @@ const getRawLinkedResources = (latexFilePath: string): RawLinkedResource[] => {
 const getLinkedResourceTitle = (prefix: string, filename: string): string | null => {
   const resourceTypes = [
     {
+      filenameRegex: RegExp(prefix + /-fiche-([A-Za-zÀ-ÖØ-öø-ÿ\d, ]+)/.source),
+      buildTitle: (match: RegExpExecArray) => `Fiche ${match[1]}`
+    },
+    {
       filenameRegex: RegExp(prefix + /-activite-([A-Za-zÀ-ÖØ-öø-ÿ\d, ]+)/.source),
       buildTitle: (match: RegExpExecArray) => `Activité ${match[1]}`
     },
