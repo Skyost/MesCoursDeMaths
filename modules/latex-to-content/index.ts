@@ -400,6 +400,7 @@ const transformLatexFile = async (
       rawLinkedResources.map((resource) => {
         return {
           title: resource.title,
+          group: resource.group,
           url: buildUrl(resource.latexFilePath),
           isCurrentFile: resource.isCurrentFile
         }

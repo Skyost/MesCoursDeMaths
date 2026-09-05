@@ -29,6 +29,13 @@ const onMathDocumentMounted = () => {
 
 const title = computed(() => grade.value && lessonContent.value ? `${grade.value.name} > ${lessonContent.value.pageTitle}` : 'Affichage d\'un cours')
 usePageHead({ title })
+
+const linkedResourcesGroups = computed(() => {
+  if (grade.value && lessonContent.value) {
+    return Array.from(new Set(lessonContent.value.linkedResources.map(resource => resource.group))).sort()
+  }
+  return []
+})
 </script>
 
 <template>
@@ -55,13 +62,24 @@ usePageHead({ title })
             icon-id="bi:paperclip"
             title="Ressources associées"
           />
-          <control
-            v-for="resource in lessonContent.linkedResources"
-            :key="resource.url"
-            :href="resource.url"
-            :icon-id="resource.url.endsWith('.pdf') ? 'bi:file-earmark-pdf-fill' : 'bi:file-earmark-text-fill'"
-            :text="resource.title"
-          />
+          <template
+            v-for="(linkedResourcesGroup, index) in linkedResourcesGroups"
+            :key="`linked-resources-${index}`"
+          >
+            <span
+              v-if="linkedResourcesGroup"
+              class="linked-resource-group"
+            >
+              {{ linkedResourcesGroup }}
+            </span>
+            <control
+              v-for="resource in lessonContent.linkedResources.filter(resource => resource.group === linkedResourcesGroup)"
+              :key="resource.url"
+              :href="resource.url"
+              :icon-id="resource.url.endsWith('.pdf') ? 'bi:file-earmark-pdf-fill' : 'bi:file-earmark-text-fill'"
+              :text="resource.title"
+            />
+          </template>
         </controls-section>
       </controls>
       <main>
@@ -100,5 +118,11 @@ usePageHead({ title })
   &:last-of-type {
     margin-bottom: 24px;
   }
+}
+
+.linked-resource-group {
+  flex-basis: 100%;
+  text-align: right;
+  font-size: 0.6em;
 }
 </style>

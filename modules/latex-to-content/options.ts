@@ -170,6 +170,10 @@ export interface RawLinkedResource {
    */
   title: string
   /**
+   * Group of the linked resource.
+   */
+  group: string | null
+  /**
    * The LaTeX file path of the resource.
    */
   latexFilePath: string
@@ -205,14 +209,15 @@ const getRawLinkedResources = (latexFilePath: string): RawLinkedResource[] => {
         if (filename + '.tex' === file) {
           result.push({
             title: 'Télécharger le PDF',
+            group: null,
             latexFilePath: path.resolve(directoryPath, file),
             isCurrentFile: true
           })
         }
-        const title = getLinkedResourceTitle(prefix, file)
-        if (title) {
+        const data = getLinkedResource(prefix, file)
+        if (data) {
           result.push({
-            title,
+            ...data,
             latexFilePath: path.resolve(directoryPath, file)
           })
         }
@@ -233,37 +238,50 @@ const getRawLinkedResources = (latexFilePath: string): RawLinkedResource[] => {
  * @param filename - The name of the file to test against the predefined patterns.
  * @returns The generated resource title if a match is found, otherwise null.
  */
-const getLinkedResourceTitle = (prefix: string, filename: string): string | null => {
+
+const getLinkedResource = (prefix: string, filename: string): {
+  title: string
+  group: string
+} | null => {
   const resourceTypes = [
     {
       filenameRegex: RegExp(prefix + /-fiche-([A-Za-zÀ-ÖØ-öø-ÿ\d, ]+)/.source),
-      buildTitle: (match: RegExpExecArray) => `Fiche ${match[1]}`
+      buildTitle: (match: RegExpExecArray) => `Fiche ${match[1]}`,
+      group: 'Exercices'
     },
     {
       filenameRegex: RegExp(prefix + /-activite-([A-Za-zÀ-ÖØ-öø-ÿ\d, ]+)/.source),
-      buildTitle: (match: RegExpExecArray) => `Activité ${match[1]}`
+      buildTitle: (match: RegExpExecArray) => `Activité ${match[1]}`,
+      group: 'Activités'
     },
     {
       filenameRegex: RegExp(prefix + /-evaluation/.source),
-      buildTitle: (_: RegExpExecArray) => 'Évaluation'
+      buildTitle: (_: RegExpExecArray) => 'Évaluation',
+      group: 'Évaluations'
     },
     {
       filenameRegex: RegExp(prefix + /-interrogation/.source),
-      buildTitle: (_: RegExpExecArray) => 'Interrogation'
+      buildTitle: (_: RegExpExecArray) => 'Interrogation',
+      group: 'Évaluations'
     },
     {
       filenameRegex: RegExp(prefix + /-dm/.source),
-      buildTitle: (_: RegExpExecArray) => 'Devoir maison'
+      buildTitle: (_: RegExpExecArray) => 'Devoir maison',
+      group: 'Évaluations'
     },
     {
       filenameRegex: RegExp(prefix + /-tp/.source),
-      buildTitle: (_: RegExpExecArray) => 'TP'
+      buildTitle: (_: RegExpExecArray) => 'TP',
+      group: 'Informatique'
     }
   ]
   for (const resourceType of resourceTypes) {
     const match = resourceType.filenameRegex.exec(filename)
     if (match != null) {
-      return resourceType.buildTitle(match)
+      return {
+        title: resourceType.buildTitle(match),
+        group: resourceType.group
+      }
     }
   }
   return null

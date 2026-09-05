@@ -7,6 +7,10 @@ interface LinkedResource {
    */
   title: string
   /**
+   * The group of the linked resource.
+   */
+  group: string | null
+  /**
    * The URL pointing to the resource.
    */
   url: string
