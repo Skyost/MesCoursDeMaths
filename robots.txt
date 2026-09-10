@@ -1,0 +1,6 @@
+# START nuxt-robots (indexable)
+User-agent: *
+Disallow: 
+
+Sitemap: https://mes-cours-de-maths.fr/sitemap.xml
+# END nuxt-robots
