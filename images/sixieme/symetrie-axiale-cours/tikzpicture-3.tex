@@ -1,0 +1,61 @@
+\documentclass[tikz]{standalone}
+
+% Load all required packages for my graphics.
+\usepackage[fontspath={/__w/MesCoursDeMaths/MesCoursDeMaths/node_modules/.data/latex/common/fonts/}]{/__w/MesCoursDeMaths/MesCoursDeMaths/node_modules/.data/latex/common/common}
+\usepackage{/__w/MesCoursDeMaths/MesCoursDeMaths/node_modules/.data/latex/common/tikzgeometry}
+\usepackage{/__w/MesCoursDeMaths/MesCoursDeMaths/node_modules/.data/latex/common/functions}
+\usepackage{/__w/MesCoursDeMaths/MesCoursDeMaths/node_modules/.data/latex/common/printable}
+\usepackage[image]{/__w/MesCoursDeMaths/MesCoursDeMaths/node_modules/.data/latex/common/transformable}
+
+% Arrows.
+\tikzset{>={Latex[width=4pt]}}
+
+% Graphics path.
+\graphicspath{{/__w/MesCoursDeMaths/MesCoursDeMaths/node_modules/.data/latex}
+{/__w/MesCoursDeMaths/MesCoursDeMaths/node_modules/.data}}
+
+% 1.3x scale.
+\tikzset{
+  every picture/.append style={scale=1.3, every node/.style={scale=1.3}}
+}
+
+\begin{document}
+  % Content.
+  \begin{tikzpicture}
+        \pgfmathsetseed{7}
+        \papergrid[border=black, fill=white, add=0]{0}{0}{5}{5};
+        \draw[very thick] (2.5,0) coordinate (A) -- (2.5,5) coordinate (B);
+        \draw[very thick] (2,5) -- (2.5,4) -- (1,4.5) -- (0,4) -- (0,2.5) -- (1,1.5) -- (2,1) -- (1,0.5) -- (1.5,0) -- (2.5,0) -- (1.5,0.5) -- (2.5,1) -- (2.5,2.5) -- (2,1.5) -- (1.5,1.5) -- (0.5,2.5) -- (0.5,3.5) -- (1,4) -- (2,3.5) -- (2.5,2.5);
+        \draw[very thick] (2,2) -- (1.5,2) -- (1,2.5) -- (1,3.5) -- (2,3) -- cycle;
+        \draw[very thick] (2.5,0.5) -- (2,0.5);
+
+        \node at (B) [below right] {$(d)$};
+
+        \begin{scope}[shift={(7,0)}]
+          \papergrid[border=black, fill=white, add=0]{0}{0}{5}{5};
+          \draw[very thick] (0,0) coordinate (C) -- (5,5) coordinate (D);
+          \draw[very thick] (5,5) -- (5,0) -- (0,0) -- (0.5,0.5) -- (4.5,0.5) -- (4.5,4.5) -- (4,4) -- (4,1) -- (1,1);
+          \draw[very thick] (2,1) -- (1.5,1.5);
+          \draw[very thick] (3,1) -- (2,2);
+          \draw[very thick] (4,1) -- (2.5,2.5);
+          \draw[very thick] (4,2) -- (3,3);
+          \draw[very thick] (4,3) -- (3.5,3.5);
+          \node at (4.5,4.5) [left] {$(d)$};
+        \end{scope}
+
+        \begin{scope}[mirror=(A)--(B)]
+          \draw[very thick] (2,5) -- (2.5,4) -- (1,4.5) -- (0,4) -- (0,2.5) -- (1,1.5) -- (2,1) -- (1,0.5) -- (1.5,0) -- (2.5,0) -- (1.5,0.5) -- (2.5,1) -- (2.5,2.5) -- (2,1.5) -- (1.5,1.5) -- (0.5,2.5) -- (0.5,3.5) -- (1,4) -- (2,3.5) -- (2.5,2.5);
+          \draw[very thick] (2,2) -- (1.5,2) -- (1,2.5) -- (1,3.5) -- (2,3) -- cycle;
+          \draw[very thick] (2.5,0.5) -- (2,0.5);
+        \end{scope}
+
+        \begin{scope}[shift={(7,0)}, mirror=(C)--(D)]
+          \draw[very thick] (5,5) -- (5,0) -- (0,0) -- (0.5,0.5) -- (4.5,0.5) -- (4.5,4.5) -- (4,4) -- (4,1) -- (1,1);
+          \draw[very thick] (2,1) -- (1.5,1.5);
+          \draw[very thick] (3,1) -- (2,2);
+          \draw[very thick] (4,1) -- (2.5,2.5);
+          \draw[very thick] (4,2) -- (3,3);
+          \draw[very thick] (4,3) -- (3.5,3.5);
+        \end{scope}
+      \end{tikzpicture}
+\end{document}
